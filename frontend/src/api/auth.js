@@ -1,4 +1,3 @@
-// src/api/auth.js
 import request from "./request";
 
 // 注册接口

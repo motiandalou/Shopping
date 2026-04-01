@@ -5,12 +5,6 @@ import { registerApi } from "../../api/auth";
 export default function Register() {
   const navigate = useNavigate();
 
-  // const onFinish = (values) => {
-  //   // 本地存储注册信息
-  //   localStorage.setItem("user", JSON.stringify(values));
-  //   message.success("注册成功！请登录");
-  //   navigate("/login");
-  // };
   const onFinish = async (values) => {
     try {
       // 调用封装好的注册接口
