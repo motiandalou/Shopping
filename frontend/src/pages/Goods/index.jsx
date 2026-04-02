@@ -6,155 +6,105 @@ import {
   Select,
   Form,
   Modal,
-  Upload,
   message,
   Popconfirm,
   Space,
   Card,
 } from "antd";
+import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import {
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  ArrowUpOutlined,
-  ArrowDownOutlined,
-} from "@ant-design/icons";
-import axios from "axios";
+  getGoodsList,
+  addGoods,
+  updateGoods,
+  deleteGoods,
+} from "../../api/goods";
+
+// 导入分类接口
 import { getCategoryList } from "../../api/category";
 
-// 配置 axios 请求头（登录后把 token 存在 localStorage）
-const request = axios.create({
-  baseURL: "http://localhost:8080", // 你的后端地址
-  headers: {
-    Authorization: "Bearer " + localStorage.getItem("token"),
-  },
-});
-
-// 商品管理主页面
 export default function GoodsManage() {
   const [form] = Form.useForm();
   const [searchForm] = Form.useForm();
 
-  // 商品列表
   const [goodsList, setGoodsList] = useState([]);
-  // 分类列表
   const [categoryList, setCategoryList] = useState([]);
-  // 弹窗显示
   const [modalVisible, setModalVisible] = useState(false);
-  // 是编辑还是新增
   const [isEdit, setIsEdit] = useState(false);
-  // 当前编辑商品
   const [currentGoods, setCurrentGoods] = useState(null);
-  // 分页
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     total: 0,
   });
 
-  // 页面加载：获取商品列表 + 分类列表
   useEffect(() => {
-    getGoodsList();
+    fetchGoodsList();
     fetchCategoryList();
   }, [pagination.current]);
 
-  // ======================
-  // 1. 获取商品列表
-  // ======================
-  const getGoodsList = async () => {
+  // 获取商品列表
+  const fetchGoodsList = async () => {
     try {
       const params = {
-        page: pagination.current,
-        size: pagination.pageSize,
         ...searchForm.getFieldsValue(),
       };
-      const res = await request.get("/api/admin/goods/list", { params });
-      setGoodsList(res.data.list);
+      const res = await getGoodsList(params);
+      setGoodsList(res.data);
       setPagination({
         ...pagination,
-        total: res.data.total,
+        total: res.data?.length || 0,
       });
     } catch (err) {
       message.error("获取商品列表失败");
     }
   };
 
-  // 获取商品分类
+  // 获取分类
   const fetchCategoryList = async () => {
     try {
       const res = await getCategoryList();
       setCategoryList(res.data);
     } catch (err) {
-      message.error(res.msg);
+      message.error("获取分类失败");
     }
   };
 
-  // ======================
-  // 3. 新增商品
-  // ======================
-  const addGoods = async (values) => {
+  // 新增
+  const handleAdd = async (values) => {
     try {
-      await request.post("/api/admin/goods", values);
+      await addGoods(values);
       message.success("新增成功");
       setModalVisible(false);
-      getGoodsList();
+      fetchGoodsList();
     } catch (err) {
       message.error("新增失败");
     }
   };
 
-  // ======================
-  // 4. 修改商品
-  // ======================
-  const updateGoods = async (values) => {
+  // 修改
+  const handleUpdate = async (values) => {
     try {
-      await request.put(`/api/admin/goods/${currentGoods.goodsId}`, values);
+      await updateGoods({ ...values, id: currentGoods.id });
       message.success("修改成功");
       setModalVisible(false);
-      getGoodsList();
+      fetchGoodsList();
     } catch (err) {
       message.error("修改失败");
     }
   };
 
-  // ======================
-  // 5. 上下架
-  // ======================
-  const changeStatus = async (id, status) => {
+  // 删除
+  const handleDelete = async (id) => {
     try {
-      await request.put(`/api/admin/goods/status/${id}`, { status });
-      message.success(status === 1 ? "上架成功" : "下架成功");
-      getGoodsList();
-    } catch (err) {
-      message.error("操作失败");
-    }
-  };
-
-  // ======================
-  // 6. 删除商品
-  // ======================
-  const deleteGoods = async (id) => {
-    try {
-      await request.delete(`/api/admin/goods/${id}`);
+      await deleteGoods(id);
       message.success("删除成功");
-      getGoodsList();
+      fetchGoodsList();
     } catch (err) {
       message.error("删除失败");
     }
   };
 
-  // ======================
-  // 打开新增弹窗
-  // ======================
-  const handleAdd = () => {
-    setIsEdit(false);
-    form.resetFields();
-    setModalVisible(true);
-  };
-
-  // ======================
-  // 打开编辑弹窗
-  // ======================
+  // 打开编辑
   const handleEdit = (record) => {
     setIsEdit(true);
     setCurrentGoods(record);
@@ -162,43 +112,29 @@ export default function GoodsManage() {
     setModalVisible(true);
   };
 
-  // ======================
-  // 提交表单
-  // ======================
+  // 打开新增
+  const openAddModal = () => {
+    setIsEdit(false);
+    form.resetFields();
+    setModalVisible(true);
+  };
+
+  // 提交
   const handleSubmit = () => {
     form.validateFields().then((values) => {
       if (isEdit) {
-        updateGoods(values);
+        handleUpdate(values);
       } else {
-        addGoods(values);
+        handleAdd(values);
       }
     });
   };
 
-  // ======================
-  // 表格列
-  // ======================
   const columns = [
     {
-      title: "ID",
-      dataIndex: "goodsId",
-      key: "goodsId",
-      width: 80,
-    },
-    {
-      title: "商品封面",
-      render: (_, record) => (
-        <img
-          src={record.cover}
-          width={50}
-          alt="cover"
-        />
-      ),
-    },
-    {
       title: "商品名称",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "goodsName",
+      key: "goodsName",
     },
     {
       title: "分类",
@@ -217,10 +153,26 @@ export default function GoodsManage() {
       key: "stock",
     },
     {
+      title: "封面图",
+      dataIndex: "coverImg",
+      key: "coverImg",
+      render: (url) =>
+        url ? (
+          <img
+            src={url}
+            width={50}
+            alt="cover"
+          />
+        ) : (
+          "无"
+        ),
+    },
+    {
       title: "状态",
-      render: (_, r) => (
-        <span style={{ color: r.status === 1 ? "green" : "gray" }}>
-          {r.status === 1 ? "上架中" : "已下架"}
+      dataIndex: "status",
+      render: (status) => (
+        <span style={{ color: status === 1 ? "green" : "gray" }}>
+          {status === 1 ? "已上架" : "未上架"}
         </span>
       ),
     },
@@ -235,24 +187,9 @@ export default function GoodsManage() {
           >
             编辑
           </Button>
-          {r.status === 0 ? (
-            <Button
-              type="text"
-              onClick={() => changeStatus(r.goodsId, 1)}
-            >
-              上架
-            </Button>
-          ) : (
-            <Button
-              type="text"
-              onClick={() => changeStatus(r.goodsId, 0)}
-            >
-              下架
-            </Button>
-          )}
           <Popconfirm
-            title="确定删除吗？"
-            onConfirm={() => deleteGoods(r.goodsId)}
+            title="确定删除？"
+            onConfirm={() => handleDelete(r.id)}
           >
             <Button
               type="text"
@@ -269,16 +206,15 @@ export default function GoodsManage() {
   return (
     <div style={{ padding: 20 }}>
       <Card title="商品管理">
-        {/* 查询区域 */}
         <Form
           form={searchForm}
           layout="inline"
           style={{ marginBottom: 20 }}
         >
-          <Form.Item name="keyword">
+          <Form.Item name="goodsName">
             <Input placeholder="商品名称" />
           </Form.Item>
-          <Form.Item name="id">
+          <Form.Item name="categoryId">
             <Select
               placeholder="选择分类"
               style={{ width: 180 }}
@@ -293,57 +229,42 @@ export default function GoodsManage() {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="status">
-            <Select
-              placeholder="状态"
-              style={{ width: 120 }}
-            >
-              <Select.Option value={1}>上架</Select.Option>
-              <Select.Option value={0}>下架</Select.Option>
-            </Select>
-          </Form.Item>
           <Button
             type="primary"
-            onClick={getGoodsList}
-            style={{ marginRight: 20 }}
+            onClick={fetchGoodsList}
           >
             查询
           </Button>
           <Button onClick={() => searchForm.resetFields()}>重置</Button>
         </Form>
 
-        {/* 新增按钮 */}
         <Button
           type="primary"
           icon={<PlusOutlined />}
-          onClick={handleAdd}
+          onClick={openAddModal}
           style={{ marginBottom: 20 }}
         >
           新增商品
         </Button>
 
-        {/* 商品表格 */}
         <Table
-          rowKey="goodsId"
+          rowKey="id"
           columns={columns}
           dataSource={goodsList}
           pagination={{
             current: pagination.current,
             pageSize: pagination.pageSize,
-            total: pagination.total,
             onChange: (page) => setPagination({ ...pagination, current: page }),
           }}
         />
       </Card>
 
-      {/* 新增/编辑弹窗 */}
       <Modal
         title={isEdit ? "编辑商品" : "新增商品"}
         open={modalVisible}
         onCancel={() => setModalVisible(false)}
         onOk={handleSubmit}
         width={600}
-        destroyOnClose
       >
         <Form
           form={form}
@@ -351,11 +272,12 @@ export default function GoodsManage() {
         >
           <Form.Item
             label="商品名称"
-            name="name"
-            rules={[{ required: true }]}
+            name="goodsName"
+            rules={[{ required: true, message: "请输入商品名称" }]}
           >
             <Input />
           </Form.Item>
+
           <Form.Item
             label="分类"
             name="categoryId"
@@ -372,6 +294,7 @@ export default function GoodsManage() {
               ))}
             </Select>
           </Form.Item>
+
           <Form.Item
             label="价格"
             name="price"
@@ -379,6 +302,7 @@ export default function GoodsManage() {
           >
             <Input type="number" />
           </Form.Item>
+
           <Form.Item
             label="库存"
             name="stock"
@@ -386,25 +310,28 @@ export default function GoodsManage() {
           >
             <Input type="number" />
           </Form.Item>
+
           <Form.Item
             label="封面图"
-            name="cover"
+            name="coverImg"
           >
             <Input placeholder="图片URL" />
           </Form.Item>
+
           <Form.Item
             label="商品描述"
             name="description"
           >
             <Input.TextArea rows={3} />
           </Form.Item>
+
           <Form.Item
             label="上架状态"
             name="status"
           >
             <Select>
-              <Select.Option value={1}>上架</Select.Option>
-              <Select.Option value={0}>下架</Select.Option>
+              <Select.Option value={1}>已上架</Select.Option>
+              <Select.Option value={0}>未上架</Select.Option>
             </Select>
           </Form.Item>
         </Form>
