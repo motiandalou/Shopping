@@ -24,9 +24,9 @@ export default function MainLayout() {
   // 菜单
   const menuItems = [
     {
-      key: "/dashboard",
+      key: "/",
       icon: <BarChartOutlined />,
-      label: <Link to="/dashboard">Dashboard</Link>,
+      label: <Link to="/">Dashboard</Link>,
     },
     {
       key: "/goods",

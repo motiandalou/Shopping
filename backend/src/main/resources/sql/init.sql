@@ -6,18 +6,20 @@ USE shopping_db;
 
 -- 创建用户表
 CREATE TABLE `t_user` (
-                          `id` int NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-                          `username` varchar(50) NOT NULL COMMENT '用户名',
-                          `password` varchar(100) NOT NULL COMMENT '加密密码',
-                          `role` int NOT NULL DEFAULT '0' COMMENT '角色：0普通用户 1管理员',
+                          `id` bigint NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+                          `user_name` varchar(50) NOT NULL COMMENT '用户名（登录账号）',
+                          `password` varchar(100) NOT NULL COMMENT '密码（BCrypt加密）',
+                          `phone` varchar(20) DEFAULT NULL COMMENT '手机号',
+                          `address` varchar(255) DEFAULT NULL COMMENT '收货地址',
+                          `role` tinyint NOT NULL DEFAULT '0' COMMENT '角色 0=普通用户 1=管理员',
                           `age` int DEFAULT NULL COMMENT '年龄',
+                          `status` tinyint NOT NULL DEFAULT '1' COMMENT '状态 0=禁用 1=正常',
+                          `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                          `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
                           PRIMARY KEY (`id`),
-                          UNIQUE KEY `uk_username` (`username`)
+                          UNIQUE KEY `uk_user_name` (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
--- 插入一个管理员账号（密码123456，BCrypt加密后，直接用）
-INSERT INTO `t_user` (`username`, `password`, `role`, `age`)
-VALUES ('admin', '$2a$10$eB9Y5Z7Z7Z7Z7Z7Z7Z7Z7uO8X7Z7Z7Z7Z7Z7Z7Z7Z7Z7Z7Z7Z7Z', 1, 30);
 
 -- 创建分类列表
 CREATE TABLE `t_category` (

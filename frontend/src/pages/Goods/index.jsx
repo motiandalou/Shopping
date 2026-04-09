@@ -112,13 +112,6 @@ export default function GoodsManage() {
     setModalVisible(true);
   };
 
-  // 打开新增
-  const openAddModal = () => {
-    setIsEdit(false);
-    form.resetFields();
-    setModalVisible(true);
-  };
-
   // 提交
   const handleSubmit = () => {
     form.validateFields().then((values) => {
@@ -237,15 +230,6 @@ export default function GoodsManage() {
           </Button>
           <Button onClick={() => searchForm.resetFields()}>重置</Button>
         </Form>
-
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={openAddModal}
-          style={{ marginBottom: 20 }}
-        >
-          新增商品
-        </Button>
 
         <Table
           rowKey="id"

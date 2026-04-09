@@ -4,8 +4,7 @@ import AuthRoute from "./AuthRoute";
 
 // 页面
 import Login from "../pages/Login";
-import Register from "../pages/Register";
-import Dashboard from "../pages/Dashboard";
+import ProductList from "../pages/ProductList";
 import Goods from "../pages/Goods";
 import Order from "../pages/Order";
 import User from "../pages/User";
@@ -14,7 +13,6 @@ import Category from "../pages/Category";
 const router = createBrowserRouter([
   // 登录注册（不需要守卫）
   { path: "/login", element: <Login /> },
-  { path: "/register", element: <Register /> },
 
   // 需要登录才能访问的页面
   {
@@ -25,8 +23,7 @@ const router = createBrowserRouter([
       </AuthRoute>
     ),
     children: [
-      { path: "/", element: <Dashboard /> },
-      { path: "dashboard", element: <Dashboard /> },
+      { path: "/", element: <ProductList /> },
       { path: "goods", element: <Goods /> },
       { path: "order", element: <Order /> },
       { path: "user", element: <User /> },

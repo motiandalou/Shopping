@@ -5,9 +5,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @MapperScan({
-        "com.example.shopping.module.auth.mapper",
         "com.example.shopping.module.category.mapper",
-        "com.example.shopping.module.goods.mapper"
+        "com.example.shopping.module.goods.mapper",
+        "com.example.shopping.module.user.mapper",
 })
 public class MapperConfig {
 

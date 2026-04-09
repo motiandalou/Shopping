@@ -25,7 +25,7 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // 只注入这个，解决循环依赖！
+    // 解决循环依赖！
     private final ApplicationContext ctx;
 
     public SecurityConfig(ApplicationContext ctx) {
@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/register", "/auth/login").permitAll()
+                        .requestMatchers("/user/register", "/user/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

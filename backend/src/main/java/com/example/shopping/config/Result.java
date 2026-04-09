@@ -14,10 +14,10 @@ public class Result<T> {
     // 数据
     private T data;
 
-    // ===================== 新增：是否成功（前端最需要） =====================
+    // 新增：是否成功
     private boolean success;
 
-    // ===================== 1. 成功返回（带数据） =====================
+    // 成功返回（带数据）
     public static <T> Result<T> success(T data) {
         Result<T> r = new Result<>();
         r.setCode(200);
@@ -27,7 +27,7 @@ public class Result<T> {
         return r;
     }
 
-    // ===================== 2. 成功返回（自定义消息 + 数据） =====================
+    // 成功返回（自定义消息 + 数据）
     public static <T> Result<T> success(String msg, T data) {
         Result<T> r = new Result<>();
         r.setCode(200);
@@ -37,12 +37,12 @@ public class Result<T> {
         return r;
     }
 
-    // ===================== 3. 成功返回（无数据） =====================
+    // 成功返回（无数据）
     public static <T> Result<T> success() {
         return success(null);
     }
 
-    // ===================== 4. 失败返回（自定义消息） =====================
+    // 失败返回（自定义消息）
     public static <T> Result<T> error(String msg) {
         Result<T> r = new Result<>();
         r.setCode(500);
@@ -52,7 +52,7 @@ public class Result<T> {
         return r;
     }
 
-    // ===================== 5. 失败返回（自定义code + 消息） =====================
+    // 失败返回（自定义code + 消息）
     public static <T> Result<T> error(int code, String msg) {
         Result<T> r = new Result<>();
         r.setCode(code);

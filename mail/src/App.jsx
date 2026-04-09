@@ -8,7 +8,6 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
 import ProductList from "./pages/ProductList";
 import Cart from "./pages/Cart";
 import Order from "./pages/Order";
@@ -42,7 +41,7 @@ function App() {
     </Menu>
   );
 
-  const noHeaderPages = ["/login", "/register"];
+  const noHeaderPages = ["/login"];
   const showHeader = !noHeaderPages.includes(location.pathname);
 
   const handleSearch = () => {
@@ -155,16 +154,12 @@ function App() {
       <Content className="jd-content">
         <Routes>
           <Route
-            path="/"
+            path="/productList"
             element={<ProductList />}
           />
           <Route
             path="/login"
             element={<Login setUser={setUser} />}
-          />
-          <Route
-            path="/register"
-            element={<Register />}
           />
           <Route
             path="/cart"

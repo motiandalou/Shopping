@@ -1,7 +1,6 @@
 // 存储 token
 export const setToken = (token) => {
   localStorage.setItem("token", token);
-  console.log("token", token);
 };
 
 // 获取 token
