@@ -13,6 +13,7 @@ spring:
     username: root
     password: Jw52629043826697  # 你的MySQL密码
 
+
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   # type-aliases-package: com.geng.demo.mybatis.entity  # 注释要加空格，且缩进对齐

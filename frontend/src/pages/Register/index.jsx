@@ -7,11 +7,16 @@ export default function Register() {
 
   const onFinish = async (values) => {
     try {
-      // 调用封装好的注册接口
-      const res = await registerApi(values);
+      const param = {
+        ...values,
+        id: null, // 后端会自动生成ID，前端传null即可
+        role: 1, // 1代表管理员 0代表普通用户
+        age: 18, // 后端需要一个年龄字段，暂时写死为18
+      };
+      const res = await registerApi(param);
 
       // 接口调用成功
-      message.success("注册成功！请登录");
+      message.success(res.message || "注册成功");
       navigate("/login");
     } catch (err) {
       // 统一错误处理（你的响应拦截器已经处理了错误）

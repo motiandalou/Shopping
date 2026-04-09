@@ -1,26 +1,39 @@
 import React from "react";
 import { Form, Input, Button, Card, message } from "antd";
 import { useNavigate } from "react-router-dom";
+import { loginApi } from "../../api/auth";
+import { setToken } from "../../utils/token";
 
 export default function Login({ setUser }) {
   const navigate = useNavigate();
   const [form] = Form.useForm();
 
-  const onFinish = (values) => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const target = users.find(
-      (u) => u.username === values.username && u.password === values.password,
-    );
+  const onFinish = async (values) => {
+    try {
+      // 调用后端登录接口
+      const res = await loginApi(values);
 
-    if (!target) {
-      message.error("账号或密码错误");
-      return;
+      // 保存 token
+      setToken(res.data.token);
+      // 保存用户信息
+      setUser({
+        username: res.data.username,
+        role: res.data.role,
+      });
+
+      message.success(res.msg || "登录成功");
+
+      // 根据角色跳转
+      if (res.data.role === 1) {
+        // 管理员 → 后台
+        navigate("/dashboard");
+      } else {
+        // 普通用户 → 前台下单页
+        navigate("/");
+      }
+    } catch (err) {
+      message.error(err.msg || "账号或密码错误");
     }
-
-    localStorage.setItem("user", JSON.stringify(target));
-    setUser(target);
-    message.success("登录成功");
-    navigate("/");
   };
 
   return (
@@ -34,16 +47,18 @@ export default function Login({ setUser }) {
       >
         <Form.Item
           name="username"
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: "请输入用户名" }]}
         >
           <Input placeholder="用户名" />
         </Form.Item>
+
         <Form.Item
           name="password"
-          rules={[{ required: true }]}
+          rules={[{ required: true, message: "请输入密码" }]}
         >
           <Input.Password placeholder="密码" />
         </Form.Item>
+
         <Form.Item>
           <Button
             type="primary"
@@ -53,6 +68,7 @@ export default function Login({ setUser }) {
             登录
           </Button>
         </Form.Item>
+
         <Button
           type="link"
           onClick={() => navigate("/register")}

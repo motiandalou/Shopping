@@ -6,5 +6,5 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface AuthMapper extends BaseMapper<Auth> {
-
+    // MyBatis-Plus 自动实现CRUD，无需手写SQL
 }

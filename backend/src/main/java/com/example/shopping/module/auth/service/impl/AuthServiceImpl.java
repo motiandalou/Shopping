@@ -1,22 +1,35 @@
 package com.example.shopping.module.auth.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.shopping.common.util.JwtUtil;
 import com.example.shopping.module.auth.entity.Auth;
 import com.example.shopping.module.auth.mapper.AuthMapper;
 import com.example.shopping.module.auth.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
+
+import java.util.Collections;
+import java.util.List;
 
 @Service
-public class AuthServiceImpl implements AuthService {
+@RequiredArgsConstructor
+public class AuthServiceImpl implements AuthService, UserDetailsService {
 
-    @Autowired
-    private AuthMapper authMapper;
+    private final AuthMapper authMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
+    /**
+     * 注册
+     */
     @Override
     public boolean register(Auth auth) {
-        // 1. 检查用户名是否已存在
         Auth existUser = authMapper.selectOne(
                 new LambdaQueryWrapper<Auth>()
                         .eq(Auth::getUsername, auth.getUsername())
@@ -25,32 +38,67 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("用户名已存在");
         }
 
-        // 2. 密码加密（MD5 示例，生产用 BCrypt）
-        String encryptedPwd = DigestUtils.md5DigestAsHex(auth.getPassword().getBytes());
+        String encryptedPwd = passwordEncoder.encode(auth.getPassword());
         auth.setPassword(encryptedPwd);
+        auth.setRole(auth.getRole());
 
-        // 3. 插入数据库
         return authMapper.insert(auth) > 0;
     }
 
+    /**
+     * 登录
+     */
     @Override
     public String login(Auth auth) {
-        // 1. 根据用户名查询用户
-        Auth existUser = authMapper.selectOne(
+        System.out.println("auth: " + auth);
+        // 查用户
+        Auth dbUser = authMapper.selectOne(
                 new LambdaQueryWrapper<Auth>()
                         .eq(Auth::getUsername, auth.getUsername())
         );
-        if (existUser == null) {
+
+        if (dbUser == null) {
             throw new RuntimeException("用户不存在");
         }
 
-        // 2. 校验密码（加密后对比）
-        String encryptedPwd = DigestUtils.md5DigestAsHex(auth.getPassword().getBytes());
-        if (!encryptedPwd.equals(existUser.getPassword())) {
+        // 校验密码
+        if (!passwordEncoder.matches(auth.getPassword(), dbUser.getPassword())) {
             throw new RuntimeException("密码错误");
         }
 
-        // 3. 返回登录 Token（后续可替换为 JWT）
-        return "LOGIN_SUCCESS_" + existUser.getId();
+        // 生成角色
+        String role = dbUser.getRole() == 1 ? "ROLE_ADMIN" : "ROLE_USER";
+
+        // 生成 JWT
+        String token = jwtUtil.generateToken(dbUser.getUsername(), role);
+
+        return token;
+    }
+
+    /**
+     * Spring Security 用：加载用户
+     */
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        LambdaQueryWrapper<Auth> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Auth::getUsername, username);
+        Auth auth = authMapper.selectOne(wrapper);
+
+        if (auth == null) {
+            throw new UsernameNotFoundException("用户不存在");
+        }
+
+        List<GrantedAuthority> authorities;
+        if (auth.getRole() == 1) {
+            authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        } else {
+            authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+
+        return new org.springframework.security.core.userdetails.User(
+                auth.getUsername(),
+                auth.getPassword(),
+                authorities
+        );
     }
 }

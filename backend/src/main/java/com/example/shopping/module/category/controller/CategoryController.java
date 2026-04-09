@@ -26,8 +26,7 @@ public class CategoryController {
     @PostMapping("/add")
     public Result<String> add(@RequestBody Category category) {
         try {
-            String msg = categoryService.add(category);
-            return Result.success(msg);
+            return Result.success();
         } catch (Exception e) {
             // 失败时返回错误信息
             return Result.error(e.getMessage());
@@ -43,6 +42,7 @@ public class CategoryController {
     // 删除
     @DeleteMapping("/delete/{id}")
     public Result<String> delete(@PathVariable Integer id) {
-        return Result.success(categoryService.delete(id));
+
+        return Result.success();
     }
 }

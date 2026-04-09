@@ -18,6 +18,9 @@ public class Auth {
     // 密码（加密存储）
     private String password;
 
+    // 角色：0=普通用户，1=管理员
+    private Integer role;
+
     // 可选字段：年龄
     private Integer age;
 }

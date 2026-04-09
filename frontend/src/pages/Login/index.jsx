@@ -1,23 +1,19 @@
 import { Form, Input, Button, Card, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { setToken } from "../../utils/token";
+import { loginApi } from "../../api/auth";
 
 export default function Login() {
   const navigate = useNavigate();
 
-  const onFinish = (values) => {
-    const { username, password } = values;
-
-    // 模拟登录：从本地取注册信息
-    const user = JSON.parse(localStorage.getItem("user"));
-    console.log(user, username, password);
-
-    if (user && user.username === username && user.password === password) {
-      setToken("login_success_" + Date.now());
-      message.success("登录成功");
+  const onFinish = async (values) => {
+    try {
+      const res = await loginApi(values);
+      setToken(res.data.token);
+      message.success(res.msg);
       navigate("/dashboard");
-    } else {
-      message.error("账号或密码错误");
+    } catch (err) {
+      message.error("登录失败");
     }
   };
 
@@ -56,6 +52,7 @@ export default function Login() {
             </Button>
           </Form.Item>
         </Form>
+
         <div style={{ textAlign: "center" }}>
           没有账号？<a onClick={() => navigate("/register")}>去注册</a>
         </div>

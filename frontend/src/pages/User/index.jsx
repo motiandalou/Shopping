@@ -34,7 +34,7 @@ export default function UserManage() {
   };
 
   const columns = [
-    { title: "ID", dataIndex: "userId" },
+    // { title: "ID", dataIndex: "userId" },
     { title: "用户名", dataIndex: "username" },
     { title: "手机号", dataIndex: "phone" },
     { title: "状态", render: (r) => (r.status === 1 ? "正常" : "禁用") },

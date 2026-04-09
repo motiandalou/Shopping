@@ -219,7 +219,7 @@ export default function GoodsManage() {
               placeholder="选择分类"
               style={{ width: 180 }}
             >
-              {categoryList.map((c) => (
+              {categoryList?.map((c) => (
                 <Select.Option
                   key={c.id}
                   value={c.id}
@@ -284,7 +284,7 @@ export default function GoodsManage() {
             rules={[{ required: true }]}
           >
             <Select>
-              {categoryList.map((c) => (
+              {categoryList?.map((c) => (
                 <Select.Option
                   key={c.id}
                   value={c.id}

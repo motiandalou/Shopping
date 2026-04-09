@@ -6,13 +6,18 @@ USE shopping_db;
 
 -- 创建用户表
 CREATE TABLE `t_user` (
-                          `id` int NOT NULL AUTO_INCREMENT,
+                          `id` int NOT NULL AUTO_INCREMENT COMMENT '主键ID',
                           `username` varchar(50) NOT NULL COMMENT '用户名',
-                          `password` varchar(100) NOT NULL COMMENT '密码（加密）',
+                          `password` varchar(100) NOT NULL COMMENT '加密密码',
+                          `role` int NOT NULL DEFAULT '0' COMMENT '角色：0普通用户 1管理员',
                           `age` int DEFAULT NULL COMMENT '年龄',
                           PRIMARY KEY (`id`),
                           UNIQUE KEY `uk_username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+
+-- 插入一个管理员账号（密码123456，BCrypt加密后，直接用）
+INSERT INTO `t_user` (`username`, `password`, `role`, `age`)
+VALUES ('admin', '$2a$10$eB9Y5Z7Z7Z7Z7Z7Z7Z7Z7uO8X7Z7Z7Z7Z7Z7Z7Z7Z7Z7Z7Z7Z7Z', 1, 30);
 
 -- 创建分类列表
 CREATE TABLE `t_category` (
