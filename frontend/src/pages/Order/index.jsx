@@ -1,62 +1,102 @@
 import { useState, useEffect } from "react";
 import { Table, Button, Select, Card, Space, message, Popconfirm } from "antd";
-import axios from "axios";
-
-const request = axios.create({
-  baseURL: "http://localhost:8080",
-  headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-});
+import { getOrdersList, updateOrders, deleteOrders } from "../../api/order";
 
 export default function OrderManage() {
   const [orderList, setOrderList] = useState([]);
   const [pagination, setPagination] = useState({
-    current: 1,
+    pageNum: 1,
     pageSize: 10,
-    total: 0,
   });
 
   useEffect(() => {
-    getOrderList();
-  }, [pagination.current]);
+    fetchOrderList();
+  }, [pagination.pageNum]);
 
-  const getOrderList = async () => {
-    const res = await request.get("/api/admin/order/list", {
-      params: pagination,
-    });
-    setOrderList(res.data.list);
+  const fetchOrderList = async () => {
+    const res = await getOrdersList(pagination);
+    setOrderList(res.data);
     setPagination({ ...pagination, total: res.data.total });
   };
 
   const handleDelivery = async (id) => {
-    await request.put(`/api/admin/order/delivery/${id}`);
-    message.success("发货成功");
-    getOrderList();
+    const res = await updateOrders(id);
+    message.success(res.msg);
+    fetchOrderList();
   };
 
   const columns = [
-    { title: "订单号", dataIndex: "orderNo" },
-    { title: "用户", dataIndex: "username" },
-    { title: "金额", dataIndex: "totalAmount", render: (t) => "¥" + t },
+    {
+      title: "订单号",
+      dataIndex: "orderNo",
+      key: "orderNo",
+    },
+    {
+      title: "用户",
+      dataIndex: "userName", // 注意：接口返回的是 userName，不是 username
+      key: "userName",
+    },
+    {
+      title: "手机号",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
+      title: "收货地址",
+      dataIndex: "address",
+      key: "address",
+    },
+    {
+      title: "商品信息",
+      dataIndex: "goodsInfo",
+      key: "goodsInfo",
+    },
+    {
+      title: "金额",
+      dataIndex: "totalAmount",
+      key: "totalAmount",
+      render: (amount) => `¥${amount}`,
+    },
     {
       title: "状态",
-      render: (r) => {
-        const map = { 0: "待付款", 1: "待发货", 2: "已完成", 3: "已取消" };
-        return map[r.status];
+      dataIndex: "status",
+      key: "status",
+      render: (status) => {
+        const statusMap = {
+          0: "待付款",
+          1: "待发货",
+          2: "已发货",
+          3: "已完成",
+          4: "已取消",
+        };
+        return statusMap[status] || "未知状态";
       },
     },
     {
+      title: "下单时间",
+      dataIndex: "createTime",
+      key: "createTime",
+    },
+    {
+      title: "支付时间",
+      dataIndex: "payTime",
+      key: "payTime",
+    },
+    {
       title: "操作",
-      render: (r) => (
-        <Space>
-          {r.status === 1 && (
+      key: "action",
+      render: (record) => (
+        <div>
+          {record.status === 1 && (
             <Button
-              type="text"
-              onClick={() => handleDelivery(r.orderId)}
+              type="primary"
+              size="small"
+              onClick={() => handleDelivery(record.id)}
             >
               发货
             </Button>
           )}
-        </Space>
+        </div>
       ),
     },
   ];
@@ -70,7 +110,7 @@ export default function OrderManage() {
           dataSource={orderList}
           pagination={{
             ...pagination,
-            onChange: (p) => setPagination({ ...pagination, current: p }),
+            onChange: (p) => setPagination({ ...pagination, pageNum: p }),
           }}
         />
       </Card>

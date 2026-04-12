@@ -1,0 +1,9 @@
+/* 隐藏 Ant Design Form 表单项的必填星号 */
+.ant-form-item-required {
+  &::before {
+    content: "" !important;
+    display: none !important;
+  }
+  /* 可选：保留 label 文字颜色为黑色，避免星号消失后文字变灰 */
+  color: #000 !important;
+}

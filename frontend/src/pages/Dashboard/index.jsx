@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { Card, Row, Col, Statistic, Table } from "antd";
-import axios from "axios";
+import { getOrdersList } from "../../api/order";
 
-const request = axios.create({
-  baseURL: "http://localhost:8080",
-  headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-});
+import {
+  UserOutlined,
+  ShoppingCartOutlined,
+  OrderedListOutlined,
+  MoneyCollectOutlined,
+} from "@ant-design/icons";
 
 export default function Dashboard() {
   const [stat, setStat] = useState({
@@ -15,50 +17,96 @@ export default function Dashboard() {
     salesCount: 0,
   });
   const [recentOrders, setRecentOrders] = useState([]);
+  const [pagination, setPagination] = useState({
+    pageNum: 1,
+    pageSize: 10,
+  });
 
   useEffect(() => {
-    getDashboardData();
-  }, []);
+    fetchDashboardData();
+  }, [pagination.pageNum]);
 
-  const getDashboardData = async () => {
+  // 获取统计数据
+  const fetchDashboardCount = async () => {
     try {
-      const res = await request.get("/api/admin/dashboard");
+      const res = await getOrdersList();
       setStat(res.data);
-      setRecentOrders(res.data.recentOrders || []);
-    } catch (e) {}
+    } catch (e) {
+      console.log("error", e);
+    }
+  };
+
+  // 获取最近订单
+  const fetchDashboardData = async () => {
+    try {
+      const res = await getOrdersList(pagination);
+      setStat(res.data);
+      setRecentOrders(res.data || []);
+    } catch (e) {
+      console.log("error", e);
+    }
   };
 
   const orderColumns = [
     { title: "订单号", dataIndex: "orderNo" },
-    { title: "用户", dataIndex: "username" },
-    { title: "金额", dataIndex: "totalAmount" },
+    { title: "用户", dataIndex: "userName" },
+    {
+      title: "金额",
+      dataIndex: "totalAmount",
+      render: (amount) => `¥${amount}`,
+    },
     {
       title: "状态",
       dataIndex: "status",
-      render: (s) => (s === 0 ? "待付款" : s === 1 ? "待发货" : "已完成"),
+      render: (status) => {
+        const statusMap = {
+          0: "待付款",
+          1: "待发货",
+          2: "已发货",
+          3: "已完成",
+          4: "已取消",
+        };
+        return statusMap[status] || "未知状态";
+      },
     },
   ];
 
   return (
     <div style={{ padding: 20 }}>
+      {/* <div style={{ fontSize: 32 }}>
+        <MotionNumber
+          value={9597000}
+          format={{
+            style: "decimal",
+            minimumFractionDigits: 0,
+            useGrouping: true,
+          }}
+          locales="zh-CN"
+          transition={{ duration: 2 }}
+        />
+        km²
+      </div> */}
       <Card title="数据概览">
         <Row gutter={16}>
           <Col span={6}>
             <Statistic
               title="总用户数"
               value={stat.userCount}
+              prefix={<UserOutlined />}
             />
           </Col>
           <Col span={6}>
             <Statistic
               title="总商品数"
               value={stat.goodsCount}
+              prefix={<ShoppingCartOutlined />}
             />
           </Col>
           <Col span={6}>
             <Statistic
               title="总订单数"
               value={stat.orderCount}
+              prefix={<OrderedListOutlined prefix={<MoneyCollectOutlined />} />}
             />
           </Col>
           <Col span={6}>
@@ -70,7 +118,6 @@ export default function Dashboard() {
           </Col>
         </Row>
       </Card>
-
       <Card
         title="最近订单"
         style={{ marginTop: 20 }}
@@ -79,7 +126,6 @@ export default function Dashboard() {
           columns={orderColumns}
           dataSource={recentOrders}
           rowKey="orderId"
-          pagination={false}
         />
       </Card>
     </div>

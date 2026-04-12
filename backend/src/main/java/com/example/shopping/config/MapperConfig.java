@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
         "com.example.shopping.module.category.mapper",
         "com.example.shopping.module.goods.mapper",
         "com.example.shopping.module.user.mapper",
+        "com.example.shopping.module.order.mapper",
 })
 public class MapperConfig {
 

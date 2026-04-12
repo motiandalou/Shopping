@@ -1,10 +1,10 @@
--- 创建数据库
+# 创建数据库
 CREATE DATABASE IF NOT EXISTS shopping_db DEFAULT CHARACTER SET utf8mb4;
 
--- 使用数据库
+# 使用数据库
 USE shopping_db;
 
--- 创建用户表
+# 创建用户表
 CREATE TABLE `t_user` (
                           `id` bigint NOT NULL AUTO_INCREMENT COMMENT '用户ID',
                           `user_name` varchar(50) NOT NULL COMMENT '用户名（登录账号）',
@@ -20,8 +20,20 @@ CREATE TABLE `t_user` (
                           UNIQUE KEY `uk_user_name` (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
+# 内置超级管理员
+# 账号：admin
+# 密码：123456
+INSERT INTO t_user (user_name, password, role, status, phone, address)
+VALUES (
+           'admin',
+           '$2a$10$gLazgxv4VJ7nHdBDWJxSCOc2pZx1Vv4lX2nHdBDWJ7nHdBDWJ7nHd',
+           2,
+           1,
+           '13800000000',
+           '系统内置超级管理员'
+       );
 
--- 创建分类列表
+# 创建分类列表
 CREATE TABLE `t_category` (
                               `id` int NOT NULL AUTO_INCREMENT COMMENT '主键ID',
                               `category_name` varchar(50) NOT NULL COMMENT '分类名称',
@@ -30,7 +42,7 @@ CREATE TABLE `t_category` (
                               UNIQUE KEY `uk_category_name` (`category_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分类表';
 
--- 创建分类、、商品列表
+# 创建分类、、商品列表
 CREATE TABLE `t_goods` (
                          `id` int NOT NULL AUTO_INCREMENT COMMENT '商品ID',
                          `goods_name` varchar(100) NOT NULL COMMENT '商品名称',
@@ -45,3 +57,22 @@ CREATE TABLE `t_goods` (
                          `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
                          PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品表';
+
+# 创建订单表
+CREATE TABLE `t_order`
+(
+    `id`            BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `order_no`      VARCHAR(32)  NOT NULL COMMENT '订单编号',
+    `user_id`       BIGINT       NOT NULL COMMENT '用户ID',
+    `user_name`     VARCHAR(64)  NOT NULL COMMENT '用户名',
+    `phone`         VARCHAR(11)  NULL COMMENT '联系电话',
+    `address`       VARCHAR(255) NOT NULL COMMENT '收货地址',
+    `goods_info`    TEXT         NOT NULL COMMENT '商品信息（名称+数量）',
+    `total_amount`  DECIMAL(10,2) NOT NULL COMMENT '订单总金额',
+    `status`        TINYINT      NOT NULL DEFAULT 0 COMMENT '订单状态：0-待支付 1-已支付 2-已发货 3-已完成 4-已取消',
+    `create_time`   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `pay_time`      DATETIME     NULL COMMENT '支付时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_order_no` (`order_no`),
+    KEY             `idx_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表';

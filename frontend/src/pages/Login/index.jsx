@@ -1,9 +1,18 @@
 import { useState } from "react";
-import { Form, Input, Button, message, Checkbox, Typography } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  message,
+  Checkbox,
+  Typography,
+  Modal,
+} from "antd"; // 只在这里加了 Modal
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { setToken } from "../../utils/token";
 import { loginApi, registerApi } from "../../api/user";
+import "./index.css";
 
 export default function Login() {
   const imgUrl =
@@ -11,9 +20,18 @@ export default function Login() {
 
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
-  const [remember, setRemember] = useState(true);
 
   const [form] = Form.useForm();
+
+  // 忘记密码弹窗
+  const showForgotModal = () => {
+    Modal.info({
+      title: "提示",
+      content: "请联系管理员！",
+      centered: true,
+      okText: "确定",
+    });
+  };
 
   // 登录
   const handleLogin = async (values) => {
@@ -143,6 +161,7 @@ export default function Login() {
               >
                 <Input
                   size="large"
+                  autoComplete="off"
                   style={{
                     border: "none",
                     borderBottom: "1px solid #e8e8e8",
@@ -188,13 +207,11 @@ export default function Login() {
                   margin: "12px 0 24px",
                 }}
               >
-                <Checkbox
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
+                {/* 只在这里加了 onClick */}
+                <Typography.Link
+                  style={{ fontSize: 14 }}
+                  onClick={showForgotModal}
                 >
-                  Remember me
-                </Checkbox>
-                <Typography.Link style={{ fontSize: 14 }}>
                   Forgot password?
                 </Typography.Link>
               </div>
@@ -253,6 +270,7 @@ export default function Login() {
               >
                 <Input
                   size="large"
+                  autoComplete="off"
                   style={{
                     border: "none",
                     borderBottom: "1px solid #e8e8e8",

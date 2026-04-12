@@ -1,0 +1,95 @@
+package com.example.shopping.module.order.controller;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.shopping.config.Result;
+import com.example.shopping.module.order.entity.Order;
+import com.example.shopping.module.order.service.OrderService;
+import jakarta.annotation.Resource;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/order")
+public class OrderController {
+
+    @Resource
+    private OrderService orderService;
+
+    // ============================ 【后台 - 管理员】 ============================
+    /**
+     * 后台查询所有订单（分页）
+     */
+    @GetMapping("/back/list")
+    public Result<List<Order>> backList(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ) {
+        Page<Order> page = orderService.backOrderList(pageNum, pageSize);
+        return Result.success(page.getRecords());
+    }
+
+    /**
+     * 后台修改订单状态（发货/完成/取消）
+     */
+    @PostMapping("/back/updateStatus")
+    public Result<?> backUpdateStatus(
+            @RequestParam Long orderId,
+            @RequestParam Integer status
+    ) {
+        orderService.backUpdateStatus(orderId, status);
+        return Result.success("修改成功");
+    }
+
+    /**
+     * 后台删除订单（硬删除）
+     */
+    @PostMapping("/back/delete")
+    public Result<?> backDelete(@RequestParam Long orderId) {
+        orderService.removeById(orderId);
+        return Result.success("删除成功");
+    }
+
+    // ============================ 【前台 - 用户】 ============================
+    /**
+     * 前台创建订单（用户下单）
+     */
+    @PostMapping("/front/add")
+    public Result<?> frontAdd(@RequestBody Order order) {
+        orderService.frontAddOrder(order);
+        return Result.success("下单成功");
+    }
+
+    /**
+     * 前台查询我的订单（分页）
+     */
+    @GetMapping("/front/my")
+    public Result<Page<Order>> frontMyOrder(
+            @RequestParam Long userId,
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ) {
+        return Result.success(orderService.frontMyOrder(userId, pageNum, pageSize));
+    }
+
+    /**
+     * 前台删除自己的订单
+     */
+    @PostMapping("/front/delete")
+    public Result<?> frontDelete(
+            @RequestParam Long orderId,
+            @RequestParam Long userId
+    ) {
+        orderService.frontDeleteOrder(orderId, userId);
+        return Result.success("删除成功");
+    }
+
+    /**
+     * 前台查看订单详情
+     */
+    @GetMapping("/front/detail")
+    public Result<Order> frontDetail(@RequestParam Long orderId) {
+        return Result.success(orderService.getById(orderId));
+    }
+}
