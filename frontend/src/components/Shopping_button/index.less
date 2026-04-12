@@ -1,0 +1,38 @@
+.custom-btn {
+  border-radius: 8px !important;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 4px 16px;
+  margin-right: 10px !important;
+
+  // 最后一个按钮取消边距
+  &:last-child {
+    margin-right: 0 !important;
+  }
+}
+
+// 主按钮样式
+.btn-primary {
+  background: #1677ff !important;
+  border-color: #1677ff !important;
+  color: #fff !important;
+
+  &.ant-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+}
+
+.btn-default {
+  background: #fff !important;
+  border-color: #d9d9d9 !important;
+  color: #333 !important;
+
+  &:hover {
+    background: #fafafa !important;
+    border-color: #1677ff !important;
+    color: #1677ff !important;
+  }
+}

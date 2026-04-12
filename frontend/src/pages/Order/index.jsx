@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import { Table, Button, Select, Card, Space, message, Popconfirm } from "antd";
+import { Table, Select, Card, Space, message, Popconfirm } from "antd";
 import { getOrdersList, updateOrders, deleteOrders } from "../../api/order";
+import ShoppingButton from "../../components/shopping_button";
+import ShoppingState from "../../components/Shopping_state";
 
 export default function OrderManage() {
   const [orderList, setOrderList] = useState([]);
@@ -33,7 +35,7 @@ export default function OrderManage() {
     },
     {
       title: "用户",
-      dataIndex: "userName", // 注意：接口返回的是 userName，不是 username
+      dataIndex: "userName",
       key: "userName",
     },
     {
@@ -61,16 +63,12 @@ export default function OrderManage() {
       title: "状态",
       dataIndex: "status",
       key: "status",
-      render: (status) => {
-        const statusMap = {
-          0: "待付款",
-          1: "待发货",
-          2: "已发货",
-          3: "已完成",
-          4: "已取消",
-        };
-        return statusMap[status] || "未知状态";
-      },
+      render: (status) => (
+        <ShoppingState
+          status={status}
+          type="order"
+        />
+      ),
     },
     {
       title: "下单时间",
@@ -88,13 +86,15 @@ export default function OrderManage() {
       render: (record) => (
         <div>
           {record.status === 1 && (
-            <Button
+            // 👇 只改了这里！
+            <ShoppingButton
               type="primary"
               size="small"
               onClick={() => handleDelivery(record.id)}
+              style={{ marginRight: 0 }} // 去掉多余间距
             >
               发货
-            </Button>
+            </ShoppingButton>
           )}
         </div>
       ),

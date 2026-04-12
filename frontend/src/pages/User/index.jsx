@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import {
   Table,
-  Button,
   Input,
   Select,
   Form,
@@ -13,6 +12,8 @@ import {
 import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 
 import { getUserList, updateUser, updateUserStatus } from "../../api/user";
+import ShoppingButton from "../../components/shopping_button";
+import ShoppingState from "../../components/Shopping_state";
 
 export default function UserManage() {
   const [form] = Form.useForm();
@@ -103,8 +104,6 @@ export default function UserManage() {
     }
   };
 
-  // 删除用户
-
   const columns = [
     {
       title: "用户名",
@@ -130,9 +129,10 @@ export default function UserManage() {
       title: "状态",
       dataIndex: "status",
       render: (status) => (
-        <span style={{ color: status === 1 ? "green" : "red" }}>
-          {status === 1 ? "正常" : "禁用"}
-        </span>
+        <ShoppingState
+          status={status}
+          type="user"
+        />
       ),
     },
     {
@@ -140,20 +140,21 @@ export default function UserManage() {
       render: (_, r) => (
         <Space>
           {/* 启用/禁用 */}
-          <Button
+          <ShoppingButton
             type="text"
             onClick={() => changeStatus(r.id, r.status === 1 ? 0 : 1)}
           >
             {r.role !== 2 && (r.status === 1 ? "禁用" : "启用")}
-          </Button>
+          </ShoppingButton>
+
           {r.role === 0 && (
-            <Button
+            <ShoppingButton
               type="text"
               icon={<EditOutlined />}
               onClick={() => handleEdit(r)}
             >
               编辑
-            </Button>
+            </ShoppingButton>
           )}
 
           <Popconfirm
@@ -182,13 +183,16 @@ export default function UserManage() {
             <Input placeholder="手机号" />
           </Form.Item>
 
-          <Button
+          <ShoppingButton
             type="primary"
             onClick={fetchUserList}
           >
             查询
-          </Button>
-          <Button onClick={() => searchForm.resetFields()}>重置</Button>
+          </ShoppingButton>
+
+          <ShoppingButton onClick={() => searchForm.resetFields()}>
+            重置
+          </ShoppingButton>
         </Form>
 
         {/* 表格（和商品风格完全一样） */}

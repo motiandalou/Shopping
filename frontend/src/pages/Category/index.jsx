@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import {
   Table,
-  Button,
   Card,
   Form,
   Input,
@@ -17,6 +16,7 @@ import {
   deleteCategory,
   update,
 } from "../../api/category";
+import ShoppingButton from "../../components/shopping_button";
 
 export default function CategoryManage() {
   const [form] = Form.useForm();
@@ -64,7 +64,7 @@ export default function CategoryManage() {
       title: "操作",
       render: (r) => (
         <Space>
-          <Button
+          <ShoppingButton
             icon={<EditOutlined />}
             type="text"
             onClick={() => {
@@ -75,18 +75,19 @@ export default function CategoryManage() {
             }}
           >
             编辑
-          </Button>
+          </ShoppingButton>
+
           <Popconfirm
             title="确定删除该分类吗？"
             onConfirm={() => handleDelete(r.id)}
           >
-            <Button
+            <ShoppingButton
               icon={<DeleteOutlined />}
               type="text"
               danger
             >
               删除
-            </Button>
+            </ShoppingButton>
           </Popconfirm>
         </Space>
       ),
@@ -96,7 +97,7 @@ export default function CategoryManage() {
   return (
     <div style={{ padding: 20 }}>
       <Card title="分类管理">
-        <Button
+        <ShoppingButton
           icon={<PlusOutlined />}
           type="primary"
           onClick={() => {
@@ -106,7 +107,7 @@ export default function CategoryManage() {
           }}
         >
           新增分类
-        </Button>
+        </ShoppingButton>
 
         <Table
           rowKey="id"

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Layout, Menu, Avatar, Dropdown, Space, Button, message } from "antd";
+import { Layout, Menu, Avatar, Dropdown, message } from "antd";
 import {
   BarChartOutlined,
   ShopOutlined,
@@ -12,6 +12,7 @@ import {
 } from "@ant-design/icons";
 import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
 import { removeToken } from "../utils/token";
+import ShoppingButton from "../components/shopping_button";
 
 const { Sider, Content, Header } = Layout;
 
@@ -157,15 +158,20 @@ export default function MainLayout() {
             menu={{ items: userMenuItems, onClick: handleUserMenuClick }}
             placement="bottomRight"
           >
-            <Button
+            <ShoppingButton
               type="text"
-              style={{ display: "flex", alignItems: "center", gap: 8 }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                marginRight: 0,
+              }}
             >
               <Avatar
                 size="large"
                 icon={<UserOutlined />}
               />
-            </Button>
+            </ShoppingButton>
           </Dropdown>
         </Header>
 

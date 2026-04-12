@@ -1,18 +1,11 @@
 import { useState } from "react";
-import {
-  Form,
-  Input,
-  Button,
-  message,
-  Checkbox,
-  Typography,
-  Modal,
-} from "antd"; // 只在这里加了 Modal
+import { Form, Input, message, Checkbox, Typography, Modal } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { setToken } from "../../utils/token";
 import { loginApi, registerApi } from "../../api/user";
-import "./index.css";
+import ShoppingButton from "../../components/shopping_button";
+import "./index.less";
 
 export default function Login() {
   const imgUrl =
@@ -55,7 +48,7 @@ export default function Login() {
       const res = await registerApi(param);
       message.success(res.msg);
       setIsLogin(true);
-      form.resetFields(); // 注册成功也清空
+      form.resetFields();
     } catch (err) {
       message.error("Registration failed: " + (err.message || "Unknown error"));
     }
@@ -153,10 +146,8 @@ export default function Login() {
             >
               <Form.Item
                 name="userName"
-                label="Username"
-                rules={[
-                  { required: true, message: "Please enter your userName" },
-                ]}
+                label="Name"
+                rules={[{ required: true, message: "Please enter your name" }]}
                 style={{ marginBottom: 4 }}
               >
                 <Input
@@ -207,7 +198,6 @@ export default function Login() {
                   margin: "12px 0 24px",
                 }}
               >
-                {/* 只在这里加了 onClick */}
                 <Typography.Link
                   style={{ fontSize: 14 }}
                   onClick={showForgotModal}
@@ -217,7 +207,7 @@ export default function Login() {
               </div>
 
               <Form.Item>
-                <Button
+                <ShoppingButton
                   type="primary"
                   htmlType="submit"
                   block
@@ -229,10 +219,11 @@ export default function Login() {
                     border: "none",
                     fontSize: 16,
                     fontWeight: 600,
+                    marginRight: 0,
                   }}
                 >
                   Login
-                </Button>
+                </ShoppingButton>
               </Form.Item>
 
               {/* Register Link */}
@@ -262,10 +253,8 @@ export default function Login() {
             >
               <Form.Item
                 name="userName"
-                label="Username"
-                rules={[
-                  { required: true, message: "Please enter your Username" },
-                ]}
+                label="Name"
+                rules={[{ required: true, message: "Please enter your name" }]}
                 style={{ marginBottom: 4 }}
               >
                 <Input
@@ -309,7 +298,7 @@ export default function Login() {
               </Form.Item>
 
               <Form.Item style={{ marginTop: 12 }}>
-                <Button
+                <ShoppingButton
                   type="primary"
                   htmlType="submit"
                   block
@@ -321,10 +310,11 @@ export default function Login() {
                     border: "none",
                     fontSize: 16,
                     fontWeight: 600,
+                    marginRight: 0,
                   }}
                 >
                   Register
-                </Button>
+                </ShoppingButton>
               </Form.Item>
 
               {/* Login Link */}

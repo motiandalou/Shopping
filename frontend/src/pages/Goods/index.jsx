@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import {
   Table,
-  Button,
   Input,
   Select,
   Form,
@@ -19,8 +18,9 @@ import {
   deleteGoods,
 } from "../../api/goods";
 
-// 导入分类接口
 import { getCategoryList } from "../../api/category";
+import ShoppingButton from "../../components/shopping_button";
+import ShoppingState from "../../components/Shopping_state";
 
 export default function GoodsManage() {
   const [form] = Form.useForm();
@@ -164,32 +164,34 @@ export default function GoodsManage() {
       title: "状态",
       dataIndex: "status",
       render: (status) => (
-        <span style={{ color: status === 1 ? "green" : "gray" }}>
-          {status === 1 ? "已上架" : "未上架"}
-        </span>
+        <ShoppingState
+          status={status}
+          type="goods"
+        />
       ),
     },
     {
       title: "操作",
       render: (_, r) => (
         <Space>
-          <Button
+          <ShoppingButton
             type="text"
             icon={<EditOutlined />}
             onClick={() => handleEdit(r)}
           >
             编辑
-          </Button>
+          </ShoppingButton>
+
           <Popconfirm
             title="确定删除？"
             onConfirm={() => handleDelete(r.id)}
           >
-            <Button
+            <ShoppingButton
               type="text"
               danger
             >
               删除
-            </Button>
+            </ShoppingButton>
           </Popconfirm>
         </Space>
       ),
@@ -222,13 +224,19 @@ export default function GoodsManage() {
               ))}
             </Select>
           </Form.Item>
-          <Button
+
+          {/* 查询 */}
+          <ShoppingButton
             type="primary"
             onClick={fetchGoodsList}
           >
             查询
-          </Button>
-          <Button onClick={() => searchForm.resetFields()}>重置</Button>
+          </ShoppingButton>
+
+          {/* 重置 */}
+          <ShoppingButton onClick={() => searchForm.resetFields()}>
+            重置
+          </ShoppingButton>
         </Form>
 
         <Table
