@@ -3,11 +3,15 @@ package com.example.shopping.module.category.controller;
 import com.example.shopping.config.Result;
 import com.example.shopping.module.category.entity.Category;
 import com.example.shopping.module.category.service.CategoryService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/category")
@@ -18,8 +22,20 @@ public class CategoryController {
 
     // 分类管理列表
     @GetMapping("/list")
-    public Result<List<Category>> list() {
-        return Result.success(categoryService.list(null));
+    public Result<Map<String, Object>> list(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Category> categoryList = categoryService.list(null);
+        PageInfo<Category> pageInfo = new PageInfo<>(categoryList);
+
+        Map<String, Object> map = new HashMap<>();
+        // 数据(默认前10条)
+        map.put("list", pageInfo.getList());
+        // 总数
+        map.put("total", pageInfo.getTotal());
+        return Result.success(map);
     }
 
     // 新增

@@ -9,6 +9,7 @@ import Goods from "../pages/Goods";
 import Order from "../pages/Order";
 import User from "../pages/User";
 import Category from "../pages/Category";
+import Staff from "../pages/Staff";
 
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
       { path: "order", element: <Order /> },
       { path: "user", element: <User /> },
       { path: "category", element: <Category /> },
+      { path: "staff", element: <Staff /> },
     ],
   },
 ]);

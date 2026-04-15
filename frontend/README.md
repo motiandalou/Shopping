@@ -61,7 +61,7 @@ src/
    订单详情页 订单基本信息、商品明细（名称 / 数量 / 单价）、收货地址、支付信息、物流信息
    筛选栏 按订单状态、时间区间、用户、订单号搜索
    🎨 原型参考图
-4. 用户管理
+4. 客户管理
    ✅ 核心功能
    用户列表查看
    用户信息编辑
@@ -185,7 +185,7 @@ src/
     修改密码 PUT /api/user/password 修改登录密码 oldPassword, newPassword code, msg
     管理员获取用户列表 GET /api/admin/user/list 后台用户管理列表 page, size, keyword, status code, msg, data: {total, list: [{userId, username, phone, status, createTime}]}
     管理员修改用户状态 PUT /api/admin/user/status/{userId} 禁用 / 启用用户 status (0 = 禁用，1 = 正常) code, msg
-    
+
     二、商品服务
     核心作用：商品 CRUD、上下架、分类关联、列表查询
     表格

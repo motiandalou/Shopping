@@ -168,7 +168,7 @@ export default function UserManage() {
 
   return (
     <div style={{ padding: 20 }}>
-      <Card title="用户管理">
+      <Card title="客户管理">
         {/* 查询表单（和商品一样） */}
         <Form
           form={searchForm}

@@ -76,3 +76,21 @@ CREATE TABLE `t_order`
     UNIQUE KEY `uk_order_no` (`order_no`),
     KEY             `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表';
+
+# 创建员工表
+CREATE TABLE `t_staff` (
+                           `id` bigint NOT NULL AUTO_INCREMENT COMMENT '员工ID',
+                           `user_name` varchar(50) NOT NULL COMMENT '登录账号',
+                           `password` varchar(100) NOT NULL COMMENT '密码',
+                           `real_name` varchar(50) DEFAULT NULL COMMENT '真实姓名',
+                           `role` tinyint NOT NULL DEFAULT 1 COMMENT '角色 0-老板 1-员工',
+                           `status` tinyint NOT NULL DEFAULT 1 COMMENT '状态 0-禁用 1-正常',
+                           `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+                           `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                           PRIMARY KEY (`id`),
+                           UNIQUE KEY `uk_user_name` (`user_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='店铺员工表';
+
+-- 初始化老板账号（你用这个登录）
+INSERT INTO `t_staff` (`user_name`, `password`, `real_name`, `role`)
+VALUES ('admin', '123456', '店铺管理员', 0);

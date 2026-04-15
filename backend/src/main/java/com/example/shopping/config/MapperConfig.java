@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
         "com.example.shopping.module.user.mapper",
         "com.example.shopping.module.order.mapper",
         "com.example.shopping.module.dashboard.mapper",
+        "com.example.shopping.module.staff.mapper",
 })
 public class MapperConfig {
 

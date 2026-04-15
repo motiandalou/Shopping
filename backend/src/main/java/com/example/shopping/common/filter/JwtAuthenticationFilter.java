@@ -23,7 +23,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // ✅ 关键：加 @Lazy 懒加载 → 循环依赖直接消失
     @Autowired
     @Lazy
     private UserDetailsService userDetailsService;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout, Menu, Avatar, Dropdown, message } from "antd";
 import {
   BarChartOutlined,
@@ -9,10 +9,13 @@ import {
   GlobalOutlined,
   SkinOutlined,
   LogoutOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
 import { removeToken } from "../utils/token";
 import ShoppingButton from "../components/shopping_button";
+import { getStaffInfo } from "../api/staff";
+import "./index.less";
 
 const { Sider, Content, Header } = Layout;
 
@@ -21,6 +24,22 @@ export default function MainLayout() {
   const [theme, setTheme] = useState("light");
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [userInfo, setUserInfo] = useState(null);
+
+  // 获取当前登录人信息
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const res = await getStaffInfo();
+        setUserInfo(res.data);
+        localStorage.setItem("userInfo", JSON.stringify(res.data));
+      } catch (err) {
+        console.log("获取用户信息失败:", err);
+      }
+    };
+    fetchUserInfo();
+  }, []);
 
   // 菜单
   const menuItems = [
@@ -42,12 +61,17 @@ export default function MainLayout() {
     {
       key: "/user",
       icon: <UserOutlined />,
-      label: <Link to="/user">用户管理</Link>,
+      label: <Link to="/user">客户管理</Link>,
     },
     {
       key: "/category",
       icon: <AppstoreOutlined />,
       label: <Link to="/category">分类管理</Link>,
+    },
+    userInfo?.role === 0 && {
+      key: "/staff",
+      icon: <TeamOutlined />,
+      label: <Link to="/staff">员工管理</Link>,
     },
   ];
 
@@ -101,42 +125,34 @@ export default function MainLayout() {
         collapsible
         collapsed={collapsed}
         onCollapse={setCollapsed}
-        style={{ background: "#001529" }}
+        // style={{ background: "#001529" }}
+        theme="light"
+        style={{ background: "#fff" }}
       >
         <div
           style={{
             height: 64,
             lineHeight: "64px",
             textAlign: "center",
-            color: "#fff",
-            fontSize: 16,
+            // color: "#fff",
+            fontSize: 20,
             fontWeight: "bold",
           }}
         >
-          {!collapsed && "管理后台"}
+          {!collapsed && "Shop Admin"}
+          {collapsed && "Shop"}
         </div>
 
         <Menu
           mode="inline"
           selectedKeys={[location.pathname]}
           items={menuItems}
+          theme="light"
           style={{
             height: "calc(100% - 64px)",
             borderRight: 0,
-            background: "transparent",
-          }}
-          // 去掉点击白色
-          styles={{
-            item: {
-              color: "rgba(255,255,255,0.7)",
-              "--ant-menu-item-color": "rgba(255,255,255,0.7)",
-              "--ant-menu-item-selected-bg": "#000c17",
-              "--ant-menu-item-selected-color": "#FFF",
-              "--ant-menu-item-hover-bg": "#001529",
-              "--ant-menu-item-hover-color": "#FFF",
-              outline: "none",
-              border: "none",
-            },
+            // background: "transparent",
+            background: "#fff",
           }}
         />
       </Sider>
@@ -182,7 +198,8 @@ export default function MainLayout() {
             padding: 24,
             background: "#fff",
             borderRadius: 6,
-            minHeight: "calc(100vh - 112px)",
+            height: "calc(100vh - 112px)",
+            overflow: "hidden",
           }}
         >
           <Outlet />

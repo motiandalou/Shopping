@@ -108,7 +108,7 @@ export default function ProductList() {
   return (
     <div>
       {/* 轮播Banner */}
-      <Carousel
+      {/* <Carousel
         autoplay
         className="jd-banner"
       >
@@ -120,12 +120,12 @@ export default function ProductList() {
             />
           </div>
         ))}
-      </Carousel>
+      </Carousel> */}
 
-      {/* 秒杀专区 */}
+      {/* 限时秒杀 */}
       <div className="jd-seckill">
         <div className="jd-seckill-title">
-          <FireOutlined /> 京东秒杀
+          <FireOutlined /> 限时秒杀
         </div>
         <Row gutter={[20, 20]}>
           {seckillProducts.map((item) => (
@@ -169,7 +169,7 @@ export default function ProductList() {
       </div>
 
       {/* 热门商品区 */}
-      <h2
+      {/* <h2
         style={{
           marginBottom: 20,
           fontSize: 24,
@@ -207,7 +207,7 @@ export default function ProductList() {
             </div>
           </Col>
         ))}
-      </Row>
+      </Row> */}
     </div>
   );
 }

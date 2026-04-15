@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Form, Input, message, Checkbox, Typography, Modal } from "antd";
+import { Form, Input, message, Typography, Modal } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { setToken } from "../../utils/token";
-import { loginApi, registerApi } from "../../api/user";
+import { loginApi } from "../../api/staff";
 import ShoppingButton from "../../components/shopping_button";
 import "./index.less";
 
@@ -12,8 +12,6 @@ export default function Login() {
     "https://images.unsplash.com/photo-1773332598414-44a45e364d85?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true);
-
   const [form] = Form.useForm();
 
   // 忘记密码弹窗
@@ -35,35 +33,6 @@ export default function Login() {
     } catch (err) {
       message.error("Login failed, please check your credentials");
     }
-  };
-
-  // 注册
-  const handleRegister = async (values) => {
-    try {
-      const param = {
-        ...values,
-        role: 1, // 管理员
-        age: 18,
-      };
-      const res = await registerApi(param);
-      message.success(res.msg);
-      setIsLogin(true);
-      form.resetFields();
-    } catch (err) {
-      message.error("Registration failed: " + (err.message || "Unknown error"));
-    }
-  };
-
-  // 切换到注册，并清空表单
-  const goToRegister = () => {
-    setIsLogin(false);
-    form.resetFields();
-  };
-
-  // 切换到登录，并清空表单
-  const goToLogin = () => {
-    setIsLogin(true);
-    form.resetFields();
   };
 
   return (
@@ -120,7 +89,7 @@ export default function Login() {
               textAlign: "left",
             }}
           >
-            {isLogin ? "WELCOME" : "REGISTER"}
+            WELCOME
           </Typography.Title>
 
           <Typography.Text
@@ -132,210 +101,97 @@ export default function Login() {
               textAlign: "left",
             }}
           >
-            {isLogin
-              ? "Please enter your details"
-              : "Please fill in the information"}
+            Please enter your details
           </Typography.Text>
 
           {/* Login Form */}
-          {isLogin ? (
-            <Form
-              onFinish={handleLogin}
-              layout="vertical"
-              form={form}
+          <Form
+            onFinish={handleLogin}
+            layout="vertical"
+            form={form}
+          >
+            <Form.Item
+              name="userName"
+              label="Name"
+              rules={[{ required: true, message: "Please enter your name" }]}
+              style={{ marginBottom: 4 }}
             >
-              <Form.Item
-                name="userName"
-                label="Name"
-                rules={[{ required: true, message: "Please enter your name" }]}
-                style={{ marginBottom: 4 }}
-              >
-                <Input
-                  size="large"
-                  autoComplete="off"
-                  style={{
-                    border: "none",
-                    borderBottom: "1px solid #e8e8e8",
-                    borderRadius: 0,
-                    padding: "12px 0",
-                    fontSize: 16,
-                    outline: "none",
-                    boxShadow: "none",
-                  }}
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="password"
-                label="Password"
-                rules={[
-                  { required: true, message: "Please enter your password" },
-                ]}
-                style={{ marginBottom: 4 }}
-              >
-                <Input.Password
-                  size="large"
-                  iconRender={(visible) =>
-                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                  }
-                  style={{
-                    border: "none",
-                    borderBottom: "1px solid #e8e8e8",
-                    borderRadius: 0,
-                    padding: "12px 0",
-                    fontSize: 16,
-                    outline: "none",
-                    boxShadow: "none",
-                  }}
-                />
-              </Form.Item>
-
-              <div
+              <Input
+                size="large"
+                autoComplete="off"
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  margin: "12px 0 24px",
+                  border: "none",
+                  borderBottom: "1px solid #e8e8e8",
+                  borderRadius: 0,
+                  padding: "12px 0",
+                  fontSize: 16,
+                  outline: "none",
+                  boxShadow: "none",
                 }}
-              >
-                <Typography.Link
-                  style={{ fontSize: 14 }}
-                  onClick={showForgotModal}
-                >
-                  Forgot password?
-                </Typography.Link>
-              </div>
+              />
+            </Form.Item>
 
-              <Form.Item>
-                <ShoppingButton
-                  type="primary"
-                  htmlType="submit"
-                  block
-                  size="large"
-                  style={{
-                    height: 48,
-                    borderRadius: 24,
-                    background: "#1a1a2e",
-                    border: "none",
-                    fontSize: 16,
-                    fontWeight: 600,
-                    marginRight: 0,
-                  }}
-                >
-                  Login
-                </ShoppingButton>
-              </Form.Item>
-
-              {/* Register Link */}
-              <div
-                style={{
-                  textAlign: "center",
-                  marginTop: 30,
-                  fontSize: 14,
-                  color: "#666",
-                }}
-              >
-                Don't have an account?
-                <Typography.Link
-                  onClick={goToRegister}
-                  style={{ fontWeight: 600, marginLeft: 4 }}
-                >
-                  Register now
-                </Typography.Link>
-              </div>
-            </Form>
-          ) : (
-            // Register Form
-            <Form
-              onFinish={handleRegister}
-              layout="vertical"
-              form={form}
+            <Form.Item
+              name="password"
+              label="Password"
+              rules={[
+                { required: true, message: "Please enter your password" },
+              ]}
+              style={{ marginBottom: 4 }}
             >
-              <Form.Item
-                name="userName"
-                label="Name"
-                rules={[{ required: true, message: "Please enter your name" }]}
-                style={{ marginBottom: 4 }}
-              >
-                <Input
-                  size="large"
-                  autoComplete="off"
-                  style={{
-                    border: "none",
-                    borderBottom: "1px solid #e8e8e8",
-                    borderRadius: 0,
-                    padding: "12px 0",
-                    fontSize: 16,
-                    outline: "none",
-                    boxShadow: "none",
-                  }}
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="password"
-                label="Password"
-                rules={[
-                  { required: true, message: "Please set your password" },
-                ]}
-                style={{ marginBottom: 4 }}
-              >
-                <Input.Password
-                  size="large"
-                  iconRender={(visible) =>
-                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                  }
-                  style={{
-                    border: "none",
-                    borderBottom: "1px solid #e8e8e8",
-                    borderRadius: 0,
-                    padding: "12px 0",
-                    fontSize: 16,
-                    outline: "none",
-                    boxShadow: "none",
-                  }}
-                />
-              </Form.Item>
-
-              <Form.Item style={{ marginTop: 12 }}>
-                <ShoppingButton
-                  type="primary"
-                  htmlType="submit"
-                  block
-                  size="large"
-                  style={{
-                    height: 48,
-                    borderRadius: 24,
-                    background: "#1a1a2e",
-                    border: "none",
-                    fontSize: 16,
-                    fontWeight: 600,
-                    marginRight: 0,
-                  }}
-                >
-                  Register
-                </ShoppingButton>
-              </Form.Item>
-
-              {/* Login Link */}
-              <div
+              <Input.Password
+                size="large"
+                iconRender={(visible) =>
+                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                }
                 style={{
-                  textAlign: "center",
-                  marginTop: 30,
-                  fontSize: 14,
-                  color: "#666",
+                  border: "none",
+                  borderBottom: "1px solid #e8e8e8",
+                  borderRadius: 0,
+                  padding: "12px 0",
+                  fontSize: 16,
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+              />
+            </Form.Item>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                margin: "12px 0 24px",
+              }}
+            >
+              <Typography.Link
+                style={{ fontSize: 14 }}
+                onClick={showForgotModal}
+              >
+                Forgot password?
+              </Typography.Link>
+            </div>
+
+            <Form.Item>
+              <ShoppingButton
+                type="primary"
+                htmlType="submit"
+                block
+                size="large"
+                style={{
+                  height: 48,
+                  borderRadius: 24,
+                  background: "#1a1a2e",
+                  border: "none",
+                  fontSize: 16,
+                  fontWeight: 600,
+                  marginRight: 0,
                 }}
               >
-                Already have an account?
-                <Typography.Link
-                  onClick={goToLogin}
-                  style={{ fontWeight: 600, marginLeft: 4 }}
-                >
-                  Login now
-                </Typography.Link>
-              </div>
-            </Form>
-          )}
+                Login
+              </ShoppingButton>
+            </Form.Item>
+          </Form>
         </div>
       </div>
     </div>

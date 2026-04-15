@@ -119,42 +119,13 @@ function App() {
               </div>
             </div>
           </Header>
-
-          {/* 京东分类导航栏 */}
-          <nav className="jd-category-nav">
-            <div className="jd-nav-container">
-              <ul>
-                <li>
-                  <a href="#">首页</a>
-                </li>
-                <li>
-                  <a href="#">手机数码</a>
-                </li>
-                <li>
-                  <a href="#">美妆个护</a>
-                </li>
-                <li>
-                  <a href="#">家用电器</a>
-                </li>
-                <li>
-                  <a href="#">服饰鞋包</a>
-                </li>
-                <li>
-                  <a href="#">食品生鲜</a>
-                </li>
-                <li>
-                  <a href="#">家居日用</a>
-                </li>
-              </ul>
-            </div>
-          </nav>
         </>
       )}
 
       <Content className="jd-content">
         <Routes>
           <Route
-            path="/productList"
+            path="/"
             element={<ProductList />}
           />
           <Route
