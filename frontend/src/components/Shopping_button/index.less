@@ -2,19 +2,21 @@
   border-radius: 8px !important;
   font-weight: 500;
   transition: all 0.2s ease;
-  padding: 4px 16px;
+
+  padding: 9px 21px !important;
   margin-right: 10px !important;
 
-  // 最后一个按钮取消边距
+  border-radius: 5px !important;
+
   &:last-child {
     margin-right: 0 !important;
   }
 }
 
-// 主按钮样式
+/* 主按钮：黑底白字 */
 .btn-primary {
-  background: #1677ff !important;
-  border-color: #1677ff !important;
+  background: #000 !important;
+  border-color: #000 !important;
   color: #fff !important;
 
   &.ant-btn-primary {
@@ -22,6 +24,12 @@
     align-items: center;
     justify-content: center;
     gap: 4px;
+  }
+
+  &:hover {
+    background: #333 !important;
+    border-color: #333 !important;
+    color: #fff !important;
   }
 }
 
@@ -32,7 +40,7 @@
 
   &:hover {
     background: #fafafa !important;
-    border-color: #1677ff !important;
-    color: #1677ff !important;
+    border-color: #000 !important;
+    color: #000 !important;
   }
 }

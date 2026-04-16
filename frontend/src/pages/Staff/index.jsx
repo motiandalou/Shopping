@@ -11,6 +11,7 @@ import {
 } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import ShoppingButton from "../../components/shopping_button";
+import { useTranslation } from "react-i18next";
 
 import {
   getStaffList,
@@ -18,22 +19,21 @@ import {
   deleteStaff,
   updateStaff,
 } from "../../api/staff";
-import { getStaffInfo } from "../../api/staff"; // 加这个
+import { getStaffInfo } from "../../api/staff";
 
 export default function StaffManage() {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [list, setList] = useState([]);
   const [visible, setVisible] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null); // 当前登录人
+  const [currentUser, setCurrentUser] = useState(null);
 
-  // 获取当前登录用户信息
   useEffect(() => {
     getLoginUserInfo();
     fetchStaffList();
   }, []);
 
-  // 获取当前登录人
   const getLoginUserInfo = async () => {
     try {
       const res = await getStaffInfo();
@@ -43,71 +43,65 @@ export default function StaffManage() {
     }
   };
 
-  // 获取员工列表
   const fetchStaffList = async () => {
     try {
       const res = await getStaffList({});
       setList(res.data || []);
     } catch (err) {
-      message.error("获取员工列表失败");
+      message.error(t("staff.getFail"));
     }
   };
 
-  // 新增员工
   const handleAdd = async (values) => {
     try {
-      // role(1): 默认是员工
       const params = { ...values, role: 1 };
-      console.log("params", params);
       const res = await addStaff(params);
       if (res.success) {
         setVisible(false);
         fetchStaffList();
+        message.success(t("staff.addSuccess"));
       } else {
         message.error(res.msg);
       }
     } catch (err) {
-      message.error(res.msg);
+      message.error(t("staff.addFail"));
     }
   };
 
-  // 修改员工
   const handleUpdate = async (values) => {
     try {
       await updateStaff(values);
-      message.success("修改成功");
+      message.success(t("staff.editSuccess"));
       setVisible(false);
       fetchStaffList();
     } catch (err) {
-      message.error("修改失败");
+      message.error(t("staff.editFail"));
     }
   };
 
-  // 删除员工
   const handleDelete = async (id) => {
     try {
       await deleteStaff(id);
-      message.success("删除成功");
+      message.success(t("staff.deleteSuccess"));
       fetchStaffList();
     } catch (err) {
-      message.error("删除失败");
+      message.error(t("staff.deleteFail"));
     }
   };
 
   const columns = [
-    { title: "员工账号", dataIndex: "userName" },
-    { title: "员工姓名", dataIndex: "realName" },
+    { title: t("staff.account"), dataIndex: "userName" },
+    { title: t("staff.name"), dataIndex: "realName" },
     {
-      title: "角色",
+      title: t("staff.role"),
       dataIndex: "role",
-      render: (role) => (role === 0 ? "老板" : "员工"),
+      render: (role) =>
+        role === 0 ? t("staff.role.admin") : t("staff.role.staff"),
     },
     {
-      title: "操作",
+      title: t("staff.operation"),
       render: (r) => {
-        // 如果是老板自己，不显示编辑/删除
         const isSelf = currentUser?.id === r.id;
-        // 只能操作员工，不能操作老板
         const canOperate = r.role === 1;
 
         if (isSelf || !canOperate) {
@@ -125,11 +119,11 @@ export default function StaffManage() {
                 setVisible(true);
               }}
             >
-              编辑
+              {t("btn.edit")}
             </ShoppingButton>
 
             <Popconfirm
-              title="确定删除该员工吗？"
+              title={t("staff.confirmDelete")}
               onConfirm={() => handleDelete(r.id)}
             >
               <ShoppingButton
@@ -137,7 +131,7 @@ export default function StaffManage() {
                 type="text"
                 danger
               >
-                删除
+                {t("btn.delete")}
               </ShoppingButton>
             </Popconfirm>
           </Space>
@@ -148,7 +142,7 @@ export default function StaffManage() {
 
   return (
     <div style={{ padding: 20 }}>
-      <Card title="员工管理">
+      <Card title={t("staff.management")}>
         <div style={{ marginBottom: 16 }}>
           <ShoppingButton
             icon={<PlusOutlined />}
@@ -159,7 +153,7 @@ export default function StaffManage() {
               setVisible(true);
             }}
           >
-            新增员工
+            {t("staff.add")}
           </ShoppingButton>
         </div>
 
@@ -179,7 +173,7 @@ export default function StaffManage() {
             .validateFields()
             .then((v) => (isEdit ? handleUpdate(v) : handleAdd(v)));
         }}
-        title={isEdit ? "编辑员工" : "新增员工"}
+        title={isEdit ? t("staff.edit") : t("staff.add")}
       >
         <Form
           form={form}
@@ -193,25 +187,27 @@ export default function StaffManage() {
           </Form.Item>
 
           <Form.Item
-            label="登录账号"
+            label={t("staff.account")}
             name="userName"
-            rules={[{ required: true, message: "请输入登录账号" }]}
+            rules={[{ required: true, message: t("staff.accountRequired") }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="登录密码"
+            label={t("staff.password")}
             name="password"
-            rules={[{ required: !isEdit, message: "请输入登录密码" }]}
+            rules={[
+              { required: !isEdit, message: t("staff.passwordRequired") },
+            ]}
           >
-            <Input.Password placeholder="新增时必填" />
+            <Input.Password placeholder={t("staff.passwordPlaceholder")} />
           </Form.Item>
 
           <Form.Item
-            label="员工姓名"
+            label={t("staff.name")}
             name="realName"
-            rules={[{ required: true, message: "请输入员工姓名" }]}
+            rules={[{ required: true, message: t("staff.nameRequired") }]}
           >
             <Input />
           </Form.Item>

@@ -6,8 +6,16 @@ export default function OrderList() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("orders") || "[]");
-    setOrders(data);
+    // 改成调用真实接口，而不是读取 localStorage
+    const fetchOrders = async () => {
+      try {
+        const res = await getOrdersList({ pageNum: 1, pageSize: 10 });
+        setOrders(res.data || []);
+      } catch (err) {
+        console.error("获取订单失败", err);
+      }
+    };
+    fetchOrders();
   }, []);
 
   return (
@@ -19,13 +27,18 @@ export default function OrderList() {
           dataSource={orders}
           renderItem={(o) => (
             <List.Item>
-              <div>订单号：{o.id}</div>
-              <div>时间：{o.time}</div>
-              <div>地址：{o.address}</div>
-              <div>
-                商品：{o.items.map((i) => `${i.name}×${i.num}`).join("，")}
+              {/* 订单号 */}
+              <div>订单号：{o.orderNo}</div>
+              {/* 下单时间 */}
+              <div>下单时间：{o.createTime}</div>
+              {/* 收货地址 */}
+              <div>收货地址：{o.address}</div>
+              {/* 商品信息 */}
+              <div>商品：{o.goodsInfo}</div>
+              {/* 实付金额 */}
+              <div style={{ color: "red", fontSize: 16 }}>
+                实付：¥{o.totalAmount}
               </div>
-              <div style={{ color: "red", fontSize: 16 }}>实付：¥{o.total}</div>
             </List.Item>
           )}
         />

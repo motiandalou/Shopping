@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, Row, Col, Statistic, Table } from "antd";
 import { getOrdersList } from "../../api/order";
 import { getStateList } from "../../api/dashboard";
+import { useTranslation } from "react-i18next";
 
 import {
   UserOutlined,
@@ -12,6 +13,8 @@ import {
 import ShoppingState from "../../components/Shopping_state";
 
 export default function Dashboard() {
+  const { t } = useTranslation();
+
   // 统计数据
   const [stat, setStat] = useState({
     totalUser: 0,
@@ -46,7 +49,7 @@ export default function Dashboard() {
       const res = await getStateList();
       setStat(res.data);
     } catch (e) {
-      console.log("获取统计数据失败", e);
+      console.log(t("dashboard.getStatFail"), e);
     }
   };
 
@@ -62,7 +65,7 @@ export default function Dashboard() {
       // ✅ 只给订单赋值，不污染统计
       setRecentOrders(res.data || []);
     } catch (e) {
-      console.log("获取订单失败", e);
+      console.log(t("dashboard.getOrderFail"), e);
     } finally {
       setLoading(false);
     }
@@ -78,15 +81,15 @@ export default function Dashboard() {
 
   // 表格列
   const orderColumns = [
-    { title: "订单号", dataIndex: "orderNo" },
-    { title: "用户", dataIndex: "userName" },
+    { title: t("dashboard.order_id"), dataIndex: "orderNo" },
+    { title: t("dashboard.user"), dataIndex: "userName" },
     {
-      title: "金额",
+      title: t("dashboard.amount"),
       dataIndex: "totalAmount",
       render: (amount) => `¥${amount}`,
     },
     {
-      title: "状态",
+      title: t("dashboard.status"),
       dataIndex: "status",
       render: (status) => (
         <ShoppingState
@@ -99,32 +102,32 @@ export default function Dashboard() {
 
   return (
     <div style={{ padding: 20 }}>
-      <Card title="数据概览">
+      <Card title={t("dashboard.overview")}>
         <Row gutter={16}>
           <Col span={6}>
             <Statistic
-              title="总用户数"
+              title={t("dashboard.total_users")}
               value={stat.totalUser}
               prefix={<UserOutlined />}
             />
           </Col>
           <Col span={6}>
             <Statistic
-              title="总商品数"
+              title={t("dashboard.total_goods")}
               value={stat.totalGoods}
               prefix={<ShoppingCartOutlined />}
             />
           </Col>
           <Col span={6}>
             <Statistic
-              title="总订单数"
+              title={t("dashboard.total_orders")}
               value={stat.totalOrder}
               prefix={<OrderedListOutlined />}
             />
           </Col>
           <Col span={6}>
             <Statistic
-              title="总销售额"
+              title={t("dashboard.total_sales")}
               value={stat.totalSales}
               prefix={<MoneyCollectOutlined />}
             />
@@ -133,7 +136,7 @@ export default function Dashboard() {
       </Card>
 
       <Card
-        title="最近订单"
+        title={t("dashboard.recent_orders")}
         style={{ marginTop: 20 }}
       >
         <Table

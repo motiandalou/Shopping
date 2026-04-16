@@ -3,8 +3,10 @@ import { Table, Select, Card, Space, message, Popconfirm } from "antd";
 import { getOrdersList, updateOrders, deleteOrders } from "../../api/order";
 import ShoppingButton from "../../components/shopping_button";
 import ShoppingState from "../../components/Shopping_state";
+import { useTranslation } from "react-i18next";
 
 export default function OrderManage() {
+  const { t } = useTranslation();
   const [orderList, setOrderList] = useState([]);
   const [pagination, setPagination] = useState({
     pageNum: 1,
@@ -29,38 +31,38 @@ export default function OrderManage() {
 
   const columns = [
     {
-      title: "订单号",
+      title: t("order.id"),
       dataIndex: "orderNo",
       key: "orderNo",
     },
     {
-      title: "用户",
+      title: t("order.user"),
       dataIndex: "userName",
       key: "userName",
     },
     {
-      title: "手机号",
+      title: t("order.phone"),
       dataIndex: "phone",
       key: "phone",
     },
     {
-      title: "收货地址",
+      title: t("order.address"),
       dataIndex: "address",
       key: "address",
     },
     {
-      title: "商品信息",
+      title: t("order.goods_info"),
       dataIndex: "goodsInfo",
       key: "goodsInfo",
     },
     {
-      title: "金额",
+      title: t("order.amount"),
       dataIndex: "totalAmount",
       key: "totalAmount",
       render: (amount) => `¥${amount}`,
     },
     {
-      title: "状态",
+      title: t("order.status"),
       dataIndex: "status",
       key: "status",
       render: (status) => (
@@ -71,29 +73,28 @@ export default function OrderManage() {
       ),
     },
     {
-      title: "下单时间",
+      title: t("order.create_time"),
       dataIndex: "createTime",
       key: "createTime",
     },
     {
-      title: "支付时间",
+      title: t("order.pay_time"),
       dataIndex: "payTime",
       key: "payTime",
     },
     {
-      title: "操作",
+      title: t("order.operation"),
       key: "action",
       render: (record) => (
         <div>
           {record.status === 1 && (
-            // 👇 只改了这里！
             <ShoppingButton
               type="primary"
               size="small"
               onClick={() => handleDelivery(record.id)}
-              style={{ marginRight: 0 }} // 去掉多余间距
+              style={{ marginRight: 0 }}
             >
-              发货
+              {t("btn.ship")}
             </ShoppingButton>
           )}
         </div>
@@ -103,7 +104,7 @@ export default function OrderManage() {
 
   return (
     <div style={{ padding: 20 }}>
-      <Card title="订单管理">
+      <Card title={t("order.management")}>
         <Table
           rowKey="orderId"
           columns={columns}

@@ -5,9 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { setToken } from "../../utils/token";
 import { loginApi } from "../../api/staff";
 import ShoppingButton from "../../components/shopping_button";
+import { useTranslation } from "react-i18next";
 import "./index.less";
 
 export default function Login() {
+  const { t } = useTranslation();
   const imgUrl =
     "https://images.unsplash.com/photo-1773332598414-44a45e364d85?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
@@ -17,10 +19,10 @@ export default function Login() {
   // 忘记密码弹窗
   const showForgotModal = () => {
     Modal.info({
-      title: "提示",
-      content: "请联系管理员！",
+      title: t("login.tip"),
+      content: t("login.contactAdmin"),
       centered: true,
-      okText: "确定",
+      okText: t("login.confirm"),
     });
   };
 
@@ -31,7 +33,7 @@ export default function Login() {
       setToken(res.data.token);
       navigate("/dashboard");
     } catch (err) {
-      message.error("Login failed, please check your credentials");
+      message.error(t("login.fail"));
     }
   };
 
@@ -89,7 +91,7 @@ export default function Login() {
               textAlign: "left",
             }}
           >
-            WELCOME
+            {t("login.welcome")}
           </Typography.Title>
 
           <Typography.Text
@@ -101,7 +103,7 @@ export default function Login() {
               textAlign: "left",
             }}
           >
-            Please enter your details
+            {t("login.enterDetails")}
           </Typography.Text>
 
           {/* Login Form */}
@@ -112,8 +114,8 @@ export default function Login() {
           >
             <Form.Item
               name="userName"
-              label="Name"
-              rules={[{ required: true, message: "Please enter your name" }]}
+              label={t("login.name")}
+              rules={[{ required: true, message: t("login.namePlaceholder") }]}
               style={{ marginBottom: 4 }}
             >
               <Input
@@ -133,9 +135,9 @@ export default function Login() {
 
             <Form.Item
               name="password"
-              label="Password"
+              label={t("login.password")}
               rules={[
-                { required: true, message: "Please enter your password" },
+                { required: true, message: t("login.passwordPlaceholder") },
               ]}
               style={{ marginBottom: 4 }}
             >
@@ -165,10 +167,10 @@ export default function Login() {
               }}
             >
               <Typography.Link
-                style={{ fontSize: 14 }}
+                style={{ fontSize: 14, color: "#000" }}
                 onClick={showForgotModal}
               >
-                Forgot password?
+                {t("login.forgot")}
               </Typography.Link>
             </div>
 
@@ -188,7 +190,7 @@ export default function Login() {
                   marginRight: 0,
                 }}
               >
-                Login
+                {t("login.btn")}
               </ShoppingButton>
             </Form.Item>
           </Form>

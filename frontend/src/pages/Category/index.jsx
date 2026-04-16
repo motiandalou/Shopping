@@ -18,24 +18,24 @@ import {
   update,
 } from "../../api/category";
 import ShoppingButton from "../../components/shopping_button";
+import { useTranslation } from "react-i18next";
 
 export default function CategoryManage() {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [list, setList] = useState([]);
   const [visible, setVisible] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
   // 分页状态
-  const [current, setCurrent] = useState(1); // 当前页
-  const [pageSize, setPageSize] = useState(10); // 每页条数
-  const [total, setTotal] = useState(0); // 总条数
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
 
-  // 切换页码/条数
   useEffect(() => {
     fetchCategoryList();
   }, [current, pageSize]);
 
-  // 带分页请求后端
   const fetchCategoryList = async () => {
     try {
       const res = await getCategoryList({
@@ -45,35 +45,47 @@ export default function CategoryManage() {
       setList(res.data.list || res.data);
       setTotal(res.data.total || 100);
     } catch (err) {
-      message.error(res.mas);
+      message.error(t("category.getFail"));
     }
   };
 
   const handleAdd = async (values) => {
-    const res = await addCategory(values);
-    message.success(res.msg);
-    setVisible(false);
-    fetchCategoryList();
+    try {
+      const res = await addCategory(values);
+      message.success(res.msg);
+      setVisible(false);
+      fetchCategoryList();
+    } catch (err) {
+      message.error(t("category.addFail"));
+    }
   };
 
   const handleUpdate = async (values) => {
-    const res = await update(values);
-    message.success(res.msg);
-    setVisible(false);
-    fetchCategoryList();
+    try {
+      const res = await update(values);
+      message.success(res.msg);
+      setVisible(false);
+      fetchCategoryList();
+    } catch (err) {
+      message.error(t("category.editFail"));
+    }
   };
 
   const handleDelete = async (id) => {
-    const res = await deleteCategory(id);
-    message.success(res.msg);
-    fetchCategoryList();
+    try {
+      const res = await deleteCategory(id);
+      message.success(res.msg);
+      fetchCategoryList();
+    } catch (err) {
+      message.error(t("category.deleteFail"));
+    }
   };
 
   const columns = [
-    { title: "分类名称", dataIndex: "categoryName" },
-    { title: "排序", dataIndex: "level" },
+    { title: t("category.name"), dataIndex: "categoryName" },
+    { title: t("category.sort"), dataIndex: "level" },
     {
-      title: "操作",
+      title: t("category.operation"),
       render: (r) => (
         <Space>
           <ShoppingButton
@@ -85,11 +97,11 @@ export default function CategoryManage() {
               setVisible(true);
             }}
           >
-            编辑
+            {t("btn.edit")}
           </ShoppingButton>
 
           <Popconfirm
-            title="确定删除该分类吗？"
+            title={t("category.confirmDelete")}
             onConfirm={() => handleDelete(r.id)}
           >
             <ShoppingButton
@@ -97,7 +109,7 @@ export default function CategoryManage() {
               type="text"
               danger
             >
-              删除
+              {t("btn.delete")}
             </ShoppingButton>
           </Popconfirm>
         </Space>
@@ -114,8 +126,7 @@ export default function CategoryManage() {
         height: "70vh",
       }}
     >
-      <Card title="分类管理">
-        {/* 新增按钮 + 分页 */}
+      <Card title={t("category.management")}>
         <div
           style={{
             display: "flex",
@@ -133,10 +144,9 @@ export default function CategoryManage() {
               setVisible(true);
             }}
           >
-            新增分类
+            {t("category.add")}
           </ShoppingButton>
 
-          {/* 完整分页 */}
           <Pagination
             current={current}
             pageSize={pageSize}
@@ -145,20 +155,19 @@ export default function CategoryManage() {
               setCurrent(page);
               setPageSize(size);
             }}
-            showSizeChanger // 开启条数切换
-            pageSizeOptions={["5", "10", "20"]} // 5 / 10 / 20 条
-            showLessItems // 显示简洁页码 1 2 3
-            showTotal={(total) => `共 ${total} 条`}
+            showSizeChanger
+            pageSizeOptions={["5", "10", "20"]}
+            showLessItems
+            showTotal={(total) => t("category.total").replace("{total}", total)}
           />
         </div>
 
-        {/* 表格：滚动时表头固定 */}
         <Table
           rowKey="id"
           columns={columns}
           dataSource={list}
           pagination={false}
-          scroll={{ y: "calc(70vh - 100px)" }} // 表头固定关键
+          scroll={{ y: "calc(70vh - 100px)" }}
           style={{ marginTop: 16 }}
         />
       </Card>
@@ -171,7 +180,7 @@ export default function CategoryManage() {
             .validateFields()
             .then((v) => (isEdit ? handleUpdate(v) : handleAdd(v)));
         }}
-        title={isEdit ? "编辑分类" : "新增分类"}
+        title={isEdit ? t("category.edit") : t("category.add")}
       >
         <Form
           form={form}
@@ -185,16 +194,16 @@ export default function CategoryManage() {
           </Form.Item>
 
           <Form.Item
-            label="分类名称"
+            label={t("category.name")}
             name="categoryName"
-            rules={[{ required: true, message: "请输入分类名称" }]}
+            rules={[{ required: true, message: t("category.nameRequired") }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="排序"
+            label={t("category.sort")}
             name="level"
-            rules={[{ required: true, message: "请输入排序值" }]}
+            rules={[{ required: true, message: t("category.sortRequired") }]}
           >
             <Input type="number" />
           </Form.Item>

@@ -10,12 +10,14 @@ import {
   Card,
 } from "antd";
 import { PlusOutlined, EditOutlined } from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
 
 import { getUserList, updateUser, updateUserStatus } from "../../api/user";
 import ShoppingButton from "../../components/shopping_button";
 import ShoppingState from "../../components/Shopping_state";
 
 export default function UserManage() {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [searchForm] = Form.useForm();
 
@@ -46,7 +48,7 @@ export default function UserManage() {
         total: res.data?.length || 0,
       });
     } catch (err) {
-      message.error("获取用户列表失败");
+      message.error(t("user.getListFail"));
     }
   };
 
@@ -54,11 +56,11 @@ export default function UserManage() {
   const handleUpdate = async (values) => {
     try {
       await updateUser({ ...values, id: currentUser.id });
-      message.success("修改成功");
+      message.success(t("user.updateSuccess"));
       setModalVisible(false);
       fetchUserList();
     } catch (err) {
-      message.error("修改失败");
+      message.error(t("user.updateFail"));
     }
   };
 
@@ -75,8 +77,6 @@ export default function UserManage() {
     form.validateFields().then((values) => {
       if (isEdit) {
         handleUpdate(values);
-      } else {
-        handleAdd(values);
       }
     });
   };
@@ -85,10 +85,10 @@ export default function UserManage() {
   const changeStatus = async (id, status) => {
     try {
       await updateUserStatus(id, status);
-      message.success("操作成功");
+      message.success(t("user.operateSuccess"));
       fetchUserList();
     } catch (err) {
-      message.error("操作失败");
+      message.error(t("user.operateFail"));
     }
   };
 
@@ -96,37 +96,37 @@ export default function UserManage() {
   const showDiffRole = (role) => {
     switch (role) {
       case 0:
-        return "普通用户";
+        return t("user.role.normal");
       case 1:
-        return "管理员";
+        return t("user.role.manager");
       case 2:
-        return "超级管理员";
+        return t("user.role.super");
     }
   };
 
   const columns = [
     {
-      title: "用户名",
+      title: t("user.username"),
       dataIndex: "userName",
       key: "userName",
     },
     {
-      title: "手机号",
+      title: t("user.phone"),
       dataIndex: "phone",
       key: "phone",
     },
     {
-      title: "收货地址",
+      title: t("user.address"),
       dataIndex: "address",
       key: "address",
     },
     {
-      title: "角色",
+      title: t("user.role"),
       dataIndex: "role",
       render: (role) => showDiffRole(role),
     },
     {
-      title: "状态",
+      title: t("user.status"),
       dataIndex: "status",
       render: (status) => (
         <ShoppingState
@@ -136,7 +136,7 @@ export default function UserManage() {
       ),
     },
     {
-      title: "操作",
+      title: t("user.operation"),
       render: (_, r) => (
         <Space>
           {/* 启用/禁用 */}
@@ -144,7 +144,8 @@ export default function UserManage() {
             type="text"
             onClick={() => changeStatus(r.id, r.status === 1 ? 0 : 1)}
           >
-            {r.role !== 2 && (r.status === 1 ? "禁用" : "启用")}
+            {r.role !== 2 &&
+              (r.status === 1 ? t("user.ban") : t("user.enable"))}
           </ShoppingButton>
 
           {r.role === 0 && (
@@ -153,12 +154,12 @@ export default function UserManage() {
               icon={<EditOutlined />}
               onClick={() => handleEdit(r)}
             >
-              编辑
+              {t("btn.edit")}
             </ShoppingButton>
           )}
 
           <Popconfirm
-            title="确定删除该用户吗？"
+            title={t("user.confirmDelete")}
             onConfirm={() => handleDelete(r.id)}
           ></Popconfirm>
         </Space>
@@ -168,7 +169,7 @@ export default function UserManage() {
 
   return (
     <div style={{ padding: 20 }}>
-      <Card title="客户管理">
+      <Card title={t("user.management")}>
         {/* 查询表单（和商品一样） */}
         <Form
           form={searchForm}
@@ -176,22 +177,22 @@ export default function UserManage() {
           style={{ marginBottom: 20 }}
         >
           <Form.Item name="userName">
-            <Input placeholder="用户名" />
+            <Input placeholder={t("user.username.placeholder")} />
           </Form.Item>
 
           <Form.Item name="phone">
-            <Input placeholder="手机号" />
+            <Input placeholder={t("user.phone.placeholder")} />
           </Form.Item>
 
           <ShoppingButton
             type="primary"
             onClick={fetchUserList}
           >
-            查询
+            {t("btn.search")}
           </ShoppingButton>
 
           <ShoppingButton onClick={() => searchForm.resetFields()}>
-            重置
+            {t("btn.reset")}
           </ShoppingButton>
         </Form>
 
@@ -207,70 +208,6 @@ export default function UserManage() {
           }}
         />
       </Card>
-
-      {/* 弹窗：新增/编辑用户 */}
-      {/* <Modal
-        title={isEdit ? "编辑用户" : "新增用户"}
-        open={modalVisible}
-        onCancel={() => setModalVisible(false)}
-        onOk={handleSubmit}
-        width={600}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-        >
-          <Form.Item
-            label="用户名"
-            name="userName"
-            rules={[{ required: true, message: "请输入用户名" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="密码"
-            name="password"
-            rules={[{ required: true, message: "请输入密码" }]}
-          >
-            <Input.Password />
-          </Form.Item>
-
-          <Form.Item
-            label="手机号"
-            name="phone"
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="收货地址"
-            name="address"
-          >
-            <Input.TextArea rows={3} />
-          </Form.Item>
-
-          <Form.Item
-            label="角色"
-            name="role"
-          >
-            <Select>
-              <Select.Option value={0}>普通用户</Select.Option>
-              <Select.Option value={1}>管理员</Select.Option>
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            label="状态"
-            name="status"
-          >
-            <Select>
-              <Select.Option value={1}>正常</Select.Option>
-              <Select.Option value={0}>禁用</Select.Option>
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal> */}
     </div>
   );
 }

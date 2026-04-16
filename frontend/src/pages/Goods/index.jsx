@@ -23,7 +23,11 @@ import { getCategoryList } from "../../api/category";
 import ShoppingButton from "../../components/shopping_button";
 import ShoppingState from "../../components/Shopping_state";
 
+// 引入国际化
+import { useTranslation } from "react-i18next";
+
 export default function GoodsManage() {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [searchForm] = Form.useForm();
 
@@ -73,7 +77,7 @@ export default function GoodsManage() {
         total: res.data.total || res.data?.length || 0,
       }));
     } catch (err) {
-      message.error("获取商品列表失败");
+      message.error(t("goods.getListFail"));
     }
   };
 
@@ -114,7 +118,7 @@ export default function GoodsManage() {
       const loadedCount = categoryList.length + list.length;
       setCategoryHasMore(loadedCount < total);
     } catch (err) {
-      message.error(res.msg);
+      message.error(t("goods.getCategoryFail"));
     } finally {
       // 解锁和分级隐藏loading
       setCategoryLoading(false);
@@ -139,11 +143,11 @@ export default function GoodsManage() {
   const handleAdd = async (values) => {
     try {
       await addGoods(values);
-      message.success("新增成功");
+      message.success(t("goods.addSuccess"));
       setModalVisible(false);
       fetchGoodsList();
     } catch (err) {
-      message.error("新增失败");
+      message.error(t("goods.addFail"));
     }
   };
 
@@ -151,11 +155,11 @@ export default function GoodsManage() {
   const handleUpdate = async (values) => {
     try {
       await updateGoods({ ...values, id: currentGoods.id });
-      message.success("修改成功");
+      message.success(t("goods.editSuccess"));
       setModalVisible(false);
       fetchGoodsList();
     } catch (err) {
-      message.error("修改失败");
+      message.error(t("goods.editFail"));
     }
   };
 
@@ -163,10 +167,10 @@ export default function GoodsManage() {
   const handleDelete = async (id) => {
     try {
       await deleteGoods(id);
-      message.success("删除成功");
+      message.success(t("goods.deleteSuccess"));
       fetchGoodsList();
     } catch (err) {
-      message.error("删除失败");
+      message.error(t("goods.deleteFail"));
     }
   };
 
@@ -192,28 +196,28 @@ export default function GoodsManage() {
   // 👇 补全：表格列配置（和你原来的完全一致）
   const columns = [
     {
-      title: "商品名称",
+      title: t("goods.name"),
       dataIndex: "goodsName",
       key: "goodsName",
     },
     {
-      title: "分类",
+      title: t("goods.category"),
       dataIndex: "categoryName",
       key: "categoryName",
     },
     {
-      title: "价格",
+      title: t("goods.price"),
       dataIndex: "price",
       key: "price",
       render: (t) => `¥${t}`,
     },
     {
-      title: "库存",
+      title: t("goods.stock"),
       dataIndex: "stock",
       key: "stock",
     },
     {
-      title: "封面图",
+      title: t("goods.cover"),
       dataIndex: "coverImg",
       key: "coverImg",
       render: (url) =>
@@ -224,11 +228,11 @@ export default function GoodsManage() {
             alt="cover"
           />
         ) : (
-          "无"
+          t("common.noData")
         ),
     },
     {
-      title: "状态",
+      title: t("goods.status"),
       dataIndex: "status",
       render: (status) => (
         <ShoppingState
@@ -238,7 +242,7 @@ export default function GoodsManage() {
       ),
     },
     {
-      title: "操作",
+      title: t("goods.operation"),
       render: (_, r) => (
         <Space>
           <ShoppingButton
@@ -246,18 +250,18 @@ export default function GoodsManage() {
             icon={<EditOutlined />}
             onClick={() => handleEdit(r)}
           >
-            编辑
+            {t("btn.edit")}
           </ShoppingButton>
 
           <Popconfirm
-            title="确定删除？"
+            title={t("goods.confirmDelete")}
             onConfirm={() => handleDelete(r.id)}
           >
             <ShoppingButton
               type="text"
               danger
             >
-              删除
+              {t("btn.delete")}
             </ShoppingButton>
           </Popconfirm>
         </Space>
@@ -265,26 +269,25 @@ export default function GoodsManage() {
     },
   ];
 
-  // 👇 补全：完整的return渲染（Modal部分补全）
   return (
     <div style={{ padding: 20 }}>
-      <Card title="商品管理">
+      <Card title={t("goods.management")}>
         <Form
           form={searchForm}
           layout="inline"
           style={{ marginBottom: 20 }}
         >
           <Form.Item name="goodsName">
-            <Input placeholder="商品名称" />
+            <Input placeholder={t("goods.name.placeholder")} />
           </Form.Item>
           <Form.Item name="categoryId">
             <Select
-              placeholder="选择分类"
+              placeholder={t("goods.category.select")}
               style={{ width: 180 }}
               onPopupScroll={handleCategoryScroll}
               loading={showLoading} // 显示全局 loading
               notFoundContent={
-                showLoading ? <Spin size="small" /> : "无更多分类"
+                showLoading ? <Spin size="small" /> : t("common.noMore")
               }
             >
               {categoryList.map((c) => (
@@ -301,10 +304,10 @@ export default function GoodsManage() {
             type="primary"
             onClick={fetchGoodsList}
           >
-            查询
+            {t("btn.search")}
           </ShoppingButton>
           <ShoppingButton onClick={() => searchForm.resetFields()}>
-            重置
+            {t("btn.reset")}
           </ShoppingButton>
         </Form>
 
@@ -326,7 +329,7 @@ export default function GoodsManage() {
 
       {/* 补全Modal完整内容 */}
       <Modal
-        title={isEdit ? "编辑商品" : "新增商品"}
+        title={isEdit ? t("goods.editGoods") : t("goods.addGoods")}
         open={modalVisible}
         onCancel={() => setModalVisible(false)}
         onOk={handleSubmit}
@@ -337,23 +340,23 @@ export default function GoodsManage() {
           layout="vertical"
         >
           <Form.Item
-            label="商品名称"
+            label={t("goods.name")}
             name="goodsName"
-            rules={[{ required: true, message: "请输入商品名称" }]}
+            rules={[{ required: true, message: t("goods.nameRequired") }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="分类"
+            label={t("goods.category")}
             name="categoryId"
-            rules={[{ required: true, message: "请选择分类" }]}
+            rules={[{ required: true, message: t("goods.categoryRequired") }]}
           >
             <Select
               onPopupScroll={handleCategoryScroll}
               loading={showLoading}
               notFoundContent={
-                showLoading ? <Spin size="small" /> : "无更多分类"
+                showLoading ? <Spin size="small" /> : t("common.noMore")
               }
             >
               {categoryList.map((c) => (
@@ -368,43 +371,43 @@ export default function GoodsManage() {
           </Form.Item>
 
           <Form.Item
-            label="价格"
+            label={t("goods.price")}
             name="price"
-            rules={[{ required: true, message: "请输入价格" }]}
+            rules={[{ required: true, message: t("goods.priceRequired") }]}
           >
             <Input type="number" />
           </Form.Item>
 
           <Form.Item
-            label="库存"
+            label={t("goods.stock")}
             name="stock"
-            rules={[{ required: true, message: "请输入库存" }]}
+            rules={[{ required: true, message: t("goods.stockRequired") }]}
           >
             <Input type="number" />
           </Form.Item>
 
           <Form.Item
-            label="封面图"
+            label={t("goods.cover")}
             name="coverImg"
           >
-            <Input placeholder="图片URL" />
+            <Input placeholder={t("goods.coverPlaceholder")} />
           </Form.Item>
 
           <Form.Item
-            label="商品描述"
+            label={t("goods.description")}
             name="description"
           >
             <Input.TextArea rows={3} />
           </Form.Item>
 
           <Form.Item
-            label="上架状态"
+            label={t("goods.status")}
             name="status"
-            rules={[{ required: true, message: "请选择上架状态" }]}
+            rules={[{ required: true, message: t("goods.statusRequired") }]}
           >
             <Select>
-              <Select.Option value={1}>已上架</Select.Option>
-              <Select.Option value={0}>未上架</Select.Option>
+              <Select.Option value={1}>{t("goods.onSale")}</Select.Option>
+              <Select.Option value={0}>{t("goods.offSale")}</Select.Option>
             </Select>
           </Form.Item>
         </Form>
