@@ -6,27 +6,26 @@ const ShoppingState = ({ status, type = "order" }) => {
   const { t } = useTranslation();
 
   const statusMap = {
-    goods_1: { text: t("status.goods.on"), color: "#52c41a" },
-    goods_0: { text: t("status.goods.off"), color: "#8c8c8c" },
+    goods_0: { text: t("status.goods.off"), color: "#616161" },
 
-    order_0: { text: t("status.order.pay"), color: "#faad14" },
-    order_1: { text: t("status.order.delivery"), color: "#1890ff" },
-    order_2: { text: t("status.order.shipped"), color: "#722ed1" },
-    order_3: { text: t("status.order.completed"), color: "#52c41a" },
-    order_4: { text: t("status.order.canceled"), color: "#f5222d" },
+    order_0: { text: t("status.order.pay"), color: "#ed6c02" },
+    order_1: { text: t("status.order.delivery"), color: "#0d47a1" },
+    order_2: { text: t("status.order.shipped"), color: "#4a148c" },
+    order_3: { text: t("status.order.completed"), color: "#2e7d32" },
+    order_4: { text: t("status.order.canceled"), color: "#c62828" },
 
-    user_1: { text: t("status.user.normal"), color: "#52c41a" },
-    user_0: { text: t("status.user.banned"), color: "#8c8c8c" },
+    user_1: { text: t("status.user.normal"), color: "#2e7d32" },
+    user_0: { text: t("status.user.banned"), color: "#616161" },
   };
 
   const key = `${type}_${status}`;
   const config = statusMap[key] || {
     text: t("status.unknown"),
-    color: "#8c8c8c",
+    color: "#616161",
   };
 
   const { text, color } = config;
-  const showPulse = color === "#52c41a";
+  const showPulse = color === "#2e7d32";
 
   return (
     <span

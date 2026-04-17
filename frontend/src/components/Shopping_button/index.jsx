@@ -22,11 +22,7 @@ const ShoppingButton = ({
   onClick, // 明确声明 onClick
   ...restProps
 }) => {
-  const btnClass = classNames("custom-btn", className, {
-    "btn-primary": type === "primary",
-    "btn-default": type === "default",
-    "btn-text": type === "text",
-  });
+  const btnClass = classNames("custom-btn", className);
 
   return (
     <Button

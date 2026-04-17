@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import lightTheme from "../theme/light";
+import darkTheme from "../theme/dark";
 
 export default function useTheme() {
   const getSystemTheme = () => {
@@ -11,7 +13,6 @@ export default function useTheme() {
     localStorage.getItem("theme") || getSystemTheme(),
   );
 
-  // 跟随系统
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
 
@@ -23,14 +24,17 @@ export default function useTheme() {
     return () => media.removeEventListener("change", handler);
   }, []);
 
-  // 持久化
   useEffect(() => {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
+    // window.location.reload(); // 强制页面刷新
   };
 
-  return { theme, toggleTheme };
+  const currentTheme = theme === "light" ? lightTheme : darkTheme;
+  const isDark = theme === "dark";
+
+  return { theme, toggleTheme, currentTheme, isDark };
 }

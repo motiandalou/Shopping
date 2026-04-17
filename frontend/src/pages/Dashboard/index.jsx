@@ -3,6 +3,7 @@ import { Card, Row, Col, Statistic, Table } from "antd";
 import { getOrdersList } from "../../api/order";
 import { getStateList } from "../../api/dashboard";
 import { useTranslation } from "react-i18next";
+import CountUp from "../../components/Shopping_countUp";
 
 import {
   UserOutlined,
@@ -15,7 +16,6 @@ import ShoppingState from "../../components/Shopping_state";
 export default function Dashboard() {
   const { t } = useTranslation();
 
-  // 统计数据
   const [stat, setStat] = useState({
     totalUser: 0,
     totalGoods: 0,
@@ -23,80 +23,58 @@ export default function Dashboard() {
     totalSales: 0,
   });
 
-  // 最近订单
   const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
 
-  // 分页
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-  });
-
-  // 页面加载只请求一次统计
   useEffect(() => {
     fetchDashboardCount();
   }, []);
 
-  // 分页变化时请求订单列表
   useEffect(() => {
     fetchDashboardData();
   }, [pagination.current]);
 
-  // 获取统计数据
   const fetchDashboardCount = async () => {
     try {
       const res = await getStateList();
-      setStat(res.data);
+      setStat(res.data || {});
     } catch (e) {
-      console.log(t("dashboard.getStatFail"), e);
+      console.log("获取统计失败", e);
     }
   };
 
-  // 获取最近订单
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      const params = {
+      const res = await getOrdersList({
         pageNum: pagination.current,
         pageSize: pagination.pageSize,
-      };
-      const res = await getOrdersList(params);
-      // ✅ 只给订单赋值，不污染统计
+      });
       setRecentOrders(res.data || []);
     } catch (e) {
-      console.log(t("dashboard.getOrderFail"), e);
+      console.log("获取订单失败", e);
     } finally {
       setLoading(false);
     }
   };
 
-  // 表格分页切换
   const handleTableChange = (newPagination) => {
-    setPagination({
-      ...pagination,
-      current: newPagination.current,
-    });
+    setPagination({ ...pagination, current: newPagination.current });
   };
 
-  // 表格列
   const orderColumns = [
     { title: t("dashboard.order_id"), dataIndex: "orderNo" },
     { title: t("dashboard.user"), dataIndex: "userName" },
     {
       title: t("dashboard.amount"),
       dataIndex: "totalAmount",
-      render: (amount) => `¥${amount}`,
+      render: (v) => `¥${v}`,
     },
     {
       title: t("dashboard.status"),
       dataIndex: "status",
-      render: (status) => (
-        <ShoppingState
-          status={status}
-          type="order"
-        />
-      ),
+      render: (s) => <ShoppingState status={s} />,
     },
   ];
 
@@ -107,29 +85,37 @@ export default function Dashboard() {
           <Col span={6}>
             <Statistic
               title={t("dashboard.total_users")}
-              value={stat.totalUser}
               prefix={<UserOutlined />}
+              valueRender={() => <CountUp end={stat.totalUser} />}
             />
           </Col>
+
           <Col span={6}>
             <Statistic
               title={t("dashboard.total_goods")}
-              value={stat.totalGoods}
               prefix={<ShoppingCartOutlined />}
+              valueRender={() => <CountUp end={stat.totalGoods} />}
             />
           </Col>
+
           <Col span={6}>
             <Statistic
               title={t("dashboard.total_orders")}
-              value={stat.totalOrder}
               prefix={<OrderedListOutlined />}
+              valueRender={() => <CountUp end={stat.totalOrder} />}
             />
           </Col>
+
           <Col span={6}>
             <Statistic
               title={t("dashboard.total_sales")}
-              value={stat.totalSales}
               prefix={<MoneyCollectOutlined />}
+              valueRender={() => (
+                <CountUp
+                  end={stat.totalSales}
+                  prefix="¥"
+                />
+              )}
             />
           </Col>
         </Row>
@@ -142,13 +128,9 @@ export default function Dashboard() {
         <Table
           columns={orderColumns}
           dataSource={recentOrders}
-          rowKey={() => Math.random().toString(36).slice(2)}
+          rowKey="orderNo"
           loading={loading}
-          pagination={{
-            current: pagination.current,
-            pageSize: pagination.pageSize,
-            showSizeChanger: false,
-          }}
+          pagination={pagination}
           onChange={handleTableChange}
         />
       </Card>

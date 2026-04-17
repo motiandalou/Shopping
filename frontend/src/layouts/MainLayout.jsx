@@ -1,22 +1,23 @@
 import { useState, useEffect } from "react";
-import { Layout, Menu, Avatar, Dropdown, message } from "antd";
+import { Layout, Menu, Avatar, message, Space } from "antd";
 import {
   BarChartOutlined,
   ShopOutlined,
   OrderedListOutlined,
   UserOutlined,
   AppstoreOutlined,
-  GlobalOutlined,
-  SkinOutlined,
   LogoutOutlined,
   TeamOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  GlobalOutlined,
+  SkinOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
 import { removeToken } from "../utils/token";
 import ShoppingButton from "../components/shopping_button";
 import { getStaffInfo } from "../api/staff";
 import "./index.less";
-
 import { useTranslation } from "react-i18next";
 import useTheme from "../hooks/useTheme";
 
@@ -26,30 +27,24 @@ export default function MainLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-
   const { t, i18n } = useTranslation();
   const { theme, toggleTheme } = useTheme();
-
   const [userInfo, setUserInfo] = useState(null);
 
-  // ✅ 关键：初始化语言，优先读取本地存储的语言设置
   useEffect(() => {
     const savedLang = localStorage.getItem("lang");
     if (savedLang && ["zh", "en"].includes(savedLang)) {
       i18n.changeLanguage(savedLang);
     } else {
-      // 没有设置过语言，默认英文
       i18n.changeLanguage("en");
     }
   }, [i18n]);
 
-  // 获取当前登录人信息
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
         const res = await getStaffInfo();
         setUserInfo(res.data);
-        localStorage.setItem("userInfo", JSON.stringify(res.data));
       } catch (err) {
         console.log("获取用户信息失败:", err);
       }
@@ -57,7 +52,6 @@ export default function MainLayout() {
     fetchUserInfo();
   }, []);
 
-  // ✅ 菜单（国际化）
   const menuItems = [
     {
       key: "/dashboard",
@@ -89,68 +83,32 @@ export default function MainLayout() {
       icon: <TeamOutlined />,
       label: <Link to="/staff">{t("menu.staff")}</Link>,
     },
-  ].filter(Boolean); // 防止 false
+  ].filter(Boolean);
 
-  // ✅ 右上角菜单（国际化）
-  const userMenuItems = [
-    {
-      key: "lang",
-      icon: <GlobalOutlined />,
-      label: t("language"),
-      children: [
-        { key: "zh", label: "中文" },
-        { key: "en", label: "English" },
-      ],
-    },
-    {
-      key: "theme",
-      icon: <SkinOutlined />,
-      label:
-        theme === "light"
-          ? t("theme_dark") || "切换深色"
-          : t("theme_light") || "切换浅色",
-    },
-    {
-      type: "divider",
-    },
-    {
-      key: "logout",
-      icon: <LogoutOutlined />,
-      label: t("logout"),
-    },
-  ];
+  const toggleLang = () => {
+    const nextLang = i18n.language === "zh" ? "en" : "zh";
+    i18n.changeLanguage(nextLang);
+    localStorage.setItem("lang", nextLang);
+  };
 
-  // ✅ 点击事件（真正切换）
-  const handleUserMenuClick = ({ key }) => {
-    if (key === "logout") {
-      removeToken();
-      message.success(t("logout") + "成功");
-      navigate("/login");
-    }
+  const handleLogout = () => {
+    removeToken();
+    navigate("/login");
+  };
 
-    // ✅ 切换主题（全局）
-    else if (key === "theme") {
-      toggleTheme();
-      message.success(theme === "light" ? "已切换深色模式" : "已切换浅色模式");
-    }
-
-    // ✅ 切换语言（真正生效）
-    else if (["zh", "en"].includes(key)) {
-      i18n.changeLanguage(key);
-      localStorage.setItem("lang", key);
-      message.success(key === "zh" ? "切换中文成功" : "Switched to English");
-    }
+  const getRoleText = () => {
+    if (!userInfo) return "";
+    return userInfo.role === 0 ? "Admin" : "Staff";
   };
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {/* 侧边栏 */}
       <Sider
         width={220}
         collapsible
         collapsed={collapsed}
-        onCollapse={setCollapsed}
-        theme={theme} // ✅ 跟随主题
+        trigger={null}
+        theme={theme}
       >
         <div
           style={{
@@ -159,53 +117,124 @@ export default function MainLayout() {
             textAlign: "center",
             fontSize: 20,
             fontWeight: "bold",
+            color: theme === "dark" ? "#fff" : "#000",
           }}
         >
-          {!collapsed && "Shop Admin"}
-          {collapsed && "Shop"}
+          {!collapsed ? "Shop Admin" : "Shop"}
         </div>
 
         <Menu
           mode="inline"
           selectedKeys={[location.pathname]}
           items={menuItems}
-          theme={theme} // ✅ 跟随主题
-          style={{
-            height: "calc(100% - 64px)",
-            borderRight: 0,
-          }}
+          theme={theme}
+          style={{ height: "calc(100% - 120px)", borderRight: 0 }}
         />
+
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            width: "100%",
+            borderTop: "1px solid rgba(255,255,255,0.1)",
+          }}
+        >
+          <Menu
+            theme={theme}
+            mode="inline"
+            selectedKeys={[]}
+            items={[
+              {
+                key: "logout",
+                icon: <LogoutOutlined />,
+                label: t("logout"),
+                onClick: handleLogout,
+              },
+            ]}
+          />
+        </div>
       </Sider>
 
-      {/* 右侧 */}
       <Layout>
-        {/* 顶部 */}
         <Header
           style={{
             padding: "0 20px",
             background: theme === "dark" ? "#141414" : "#fff",
             display: "flex",
-            justifyContent: "flex-end",
+            justifyContent: "space-between",
             alignItems: "center",
           }}
         >
-          <Dropdown
-            menu={{ items: userMenuItems, onClick: handleUserMenuClick }}
-            placement="bottomRight"
+          <ShoppingButton
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{ fontSize: 18, color: theme === "dark" ? "#fff" : "#000" }}
+          />
+
+          <Space
+            size="middle"
+            align="center"
           >
             <ShoppingButton
               type="text"
-              style={{ display: "flex", alignItems: "center" }}
+              icon={<GlobalOutlined style={{ fontSize: 18 }} />}
+              onClick={toggleLang}
+              style={{ color: theme === "dark" ? "#fff" : "#000" }}
+            />
+
+            <ShoppingButton
+              type="text"
+              icon={<SkinOutlined style={{ fontSize: 18 }} />}
+              onClick={toggleTheme}
+              style={{ color: theme === "dark" ? "#fff" : "#000" }}
+            />
+
+            <Space
+              size="small"
+              align="center"
             >
               <Avatar
                 size="large"
                 icon={<UserOutlined />}
+                style={{ borderRadius: 5 }}
               />
-            </ShoppingButton>
-          </Dropdown>
+              <div
+                style={{
+                  maxWidth: 120,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  height: 40,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: theme === "dark" ? "#fff" : "#000",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    lineHeight: "1.2",
+                  }}
+                >
+                  {userInfo?.realName || userInfo?.userName || "User"}
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 600,
+                    lineHeight: "1.2",
+                    marginTop: 5,
+                  }}
+                >
+                  {getRoleText()}
+                </div>
+              </div>
+            </Space>
+          </Space>
         </Header>
 
-        {/* 内容 */}
         <Content
           style={{
             margin: "24px 16px",
@@ -213,6 +242,7 @@ export default function MainLayout() {
             background: theme === "dark" ? "#141414" : "#fff",
             borderRadius: 6,
             height: "calc(100vh - 112px)",
+            overflow: "auto",
           }}
         >
           <Outlet />
