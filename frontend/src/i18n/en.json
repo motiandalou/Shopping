@@ -5,6 +5,8 @@
   "theme": "Theme",
   "language": "Language",
 
+  "common.description": "Description",
+
   "menu.dashboard": "Dashboard",
   "menu.user": "Customer",
   "menu.order": "Order",
@@ -64,6 +66,7 @@
   "category.operation": "Action",
   "category.add": "Add Category",
   "category.total": "Total {total}",
+  "category.confirmDelete": "Are you sure to delete this category?",
 
   "staff.management": "Staff Management",
   "staff.account": "Account",

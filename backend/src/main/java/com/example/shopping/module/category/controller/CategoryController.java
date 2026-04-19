@@ -58,7 +58,6 @@ public class CategoryController {
     // 删除
     @DeleteMapping("/delete/{id}")
     public Result<String> delete(@PathVariable Integer id) {
-
-        return Result.success();
+        return Result.success(categoryService.delete(id));
     }
 }

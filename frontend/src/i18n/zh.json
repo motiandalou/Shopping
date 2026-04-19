@@ -5,6 +5,8 @@
   "theme": "主题",
   "language": "语言",
 
+  "common.description": "描述",
+
   "menu.dashboard": "首页",
   "menu.user": "客户管理",
   "menu.order": "订单管理",
@@ -64,6 +66,7 @@
   "category.operation": "操作",
   "category.add": "新增分类",
   "category.total": "共{total}条",
+  "category.confirmDelete": "确定删除分类吗？",
 
   "staff.management": "员工管理",
   "staff.account": "员工账号",

@@ -153,7 +153,7 @@ export default function StaffManage() {
               setVisible(true);
             }}
           >
-            {t("staff.add")}
+            {t("btn.add")}
           </ShoppingButton>
         </div>
 
@@ -173,7 +173,7 @@ export default function StaffManage() {
             .validateFields()
             .then((v) => (isEdit ? handleUpdate(v) : handleAdd(v)));
         }}
-        title={isEdit ? t("staff.edit") : t("staff.add")}
+        title={isEdit ? t("btn.edit") : t("btn.add")}
       >
         <Form
           form={form}

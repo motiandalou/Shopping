@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 public class Goods {
 
     @TableId(type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     // 商品名称
     private String goodsName;

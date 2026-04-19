@@ -53,6 +53,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                // 只给前台用户设置userId，后台员工不处理
+                try {
+                    Long userId = jwtUtil.extractUserId(token);
+                    if (userId != null) {
+                        request.setAttribute("userId", userId);
+                        request.setAttribute("username", username);
+                    }
+                } catch (Exception ignored) {
+                    // 后台token没有userId，捕获异常不处理
+                }
             }
         }
         filterChain.doFilter(request, response);

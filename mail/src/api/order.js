@@ -1,4 +1,4 @@
-import request from "../../../frontend/src/api/request";
+import request from "./request";
 
 // 获取列表
 export const getOrdersList = (params) => {
@@ -6,6 +6,14 @@ export const getOrdersList = (params) => {
     url: "/order/back/list",
     method: "GET",
     params,
+  });
+};
+
+export const addOrder = (data) => {
+  return request({
+    url: "/order/front/add",
+    method: "POST",
+    data,
   });
 };
 

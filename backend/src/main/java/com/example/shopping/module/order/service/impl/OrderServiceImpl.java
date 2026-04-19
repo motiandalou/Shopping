@@ -42,7 +42,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public void frontAddOrder(Order order) {
         order.setCreateTime(LocalDateTime.now());
-        order.setStatus(0); // 0=待支付
+//        order.setStatus(0); // 0=待支付
         this.save(order);
     }
 

@@ -13,4 +13,6 @@ public interface UserService {
     List list(User user);
     // 修改状态
     String updateStatus(Long id, Integer status);
+    // 用户信息
+    User getById(Long id);
 }

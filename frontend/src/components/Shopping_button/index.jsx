@@ -31,7 +31,7 @@ const ShoppingButton = ({
       icon={icon}
       loading={loading}
       onClick={onClick}
-      {...restProps} // 其他属性（如 disabled、size）全部透传
+      {...restProps} // 全部透传
     >
       {children}
     </Button>

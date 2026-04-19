@@ -19,7 +19,7 @@ const lightTheme = {
   components: {
     Button: {
       colorPrimary: "#000000",
-      colorText: "#ffffff", // 按钮文字：白色
+      colorText: "#000000", // 按钮文字：白色
       colorPrimaryHover: "#333333", // hover 深灰
       colorPrimaryActive: "#555555",
     },

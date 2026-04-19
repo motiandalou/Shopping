@@ -7,6 +7,7 @@ const ShoppingState = ({ status, type = "order" }) => {
 
   const statusMap = {
     goods_0: { text: t("status.goods.off"), color: "#616161" },
+    goods_1: { text: t("status.goods.on"), color: "#2e7d32" },
 
     order_0: { text: t("status.order.pay"), color: "#ed6c02" },
     order_1: { text: t("status.order.delivery"), color: "#0d47a1" },

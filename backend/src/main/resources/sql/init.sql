@@ -44,7 +44,7 @@ CREATE TABLE `t_category` (
 
 # 创建分类、、商品列表
 CREATE TABLE `t_goods` (
-                         `id` int NOT NULL AUTO_INCREMENT COMMENT '商品ID',
+                         `id` bigint NOT NULL AUTO_INCREMENT COMMENT '商品ID',
                          `goods_name` varchar(100) NOT NULL COMMENT '商品名称',
                          `category_id` int NOT NULL COMMENT '分类ID',
                          `category_name` varchar(50) DEFAULT NULL COMMENT '分类名称',
@@ -94,3 +94,17 @@ CREATE TABLE `t_staff` (
 -- 初始化老板账号（你用这个登录）
 INSERT INTO `t_staff` (`user_name`, `password`, `real_name`, `role`)
 VALUES ('admin', '123456', '店铺管理员', 0);
+
+CREATE TABLE `t_cart` (
+                          `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+                          `user_id` bigint NOT NULL COMMENT '用户ID',
+                          `goods_id` bigint NOT NULL COMMENT '商品ID',
+                          `quantity` int NOT NULL DEFAULT 1 COMMENT '购买数量',
+                          `selected` tinyint NOT NULL DEFAULT 1 COMMENT '是否选中（1=选中，0=未选中）',
+                          `price` decimal(10,2) NOT NULL COMMENT '加入购物车时的商品单价（防止后续改价影响）',
+                          `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                          `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                          PRIMARY KEY (`id`),
+                          UNIQUE KEY `uk_user_goods` (`user_id`, `goods_id`) COMMENT '同一个用户同一个商品只能加一条',
+                          KEY `idx_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='购物车表';

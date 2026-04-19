@@ -2,8 +2,10 @@ import { useState, useEffect, useRef } from "react";
 
 const CountUp = ({ end = 0, prefix = "", suffix = "" }) => {
   const [display, setDisplay] = useState(0);
-  const startRef = useRef(0);
   const rafId = useRef(null);
+
+  // 固定 2 秒跑完！不管 end 是 1 还是 100万 还是 1亿
+  const FIXED_DURATION = 2000;
 
   useEffect(() => {
     if (end === 0 || end === undefined || end === null) {
@@ -11,22 +13,18 @@ const CountUp = ({ end = 0, prefix = "", suffix = "" }) => {
       return;
     }
 
-    const start = startRef.current;
-    const diff = end - start;
-    const durationPer100 = 800; // 每100个数字用时 800ms
-    const totalDuration = Math.max(
-      300,
-      (Math.abs(diff) / 100) * durationPer100,
-    ); // 最小300ms
-
     const startTime = performance.now();
 
     const animate = (now) => {
       const elapsed = now - startTime;
-      const progress = Math.min(elapsed / totalDuration, 1);
+      // 核心：只算时间进度，不看数字大小
+      const progress = Math.min(elapsed / FIXED_DURATION, 1);
+      // 缓动动画
       const easeProgress = 1 - Math.pow(1 - progress, 3);
 
-      const current = start + diff * easeProgress;
+      // 直接按进度计算当前数字
+      const current = end * easeProgress;
+
       setDisplay(
         Number.isInteger(end) ? Math.floor(current) : current.toFixed(2),
       );

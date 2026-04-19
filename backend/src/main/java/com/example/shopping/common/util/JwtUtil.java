@@ -21,10 +21,19 @@ public class JwtUtil {
     // 生成安全密钥
     private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
-    // 生成token（带角色信息）
+    // 生成token
+    // ====================== 【后台员工】2个参数 ======================
     public String generateToken(String username, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
+        return createToken(claims, username);
+    }
+
+    // ====================== 【前台用户】3个参数 ======================
+    public String generateToken(String username, String role, Long userId) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
+        claims.put("userId", userId);
         return createToken(claims, username);
     }
 
@@ -47,6 +56,11 @@ public class JwtUtil {
     // 从token中提取角色
     public String extractRole(String token) {
         return (String) extractAllClaims(token).get("role");
+    }
+
+    // 从token中提取userId(用户ID)
+    public Long extractUserId(String token) {
+        return extractAllClaims(token).get("userId", Long.class);
     }
 
     // 校验token是否过期

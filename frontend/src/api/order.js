@@ -1,4 +1,4 @@
-import request from "../../../frontend/src/api/request";
+import request from "./request";
 
 // 获取列表
 export const getOrdersList = (params) => {

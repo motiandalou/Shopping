@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { Layout, Button, Dropdown, Menu, message, Input } from "antd";
+import { Layout, Button, Dropdown, Menu, message, Input, Badge } from "antd";
 import {
   UserOutlined,
   ShoppingCartOutlined,
@@ -12,24 +12,52 @@ import ProductList from "./pages/ProductList";
 import Cart from "./pages/Cart";
 import Order from "./pages/Order";
 import OrderList from "./pages/OrderList";
+import { getCartList } from "./api/cart"; 
 import "./App.css";
 
 const { Header, Content, Footer } = Layout;
 
 function App() {
   const [user, setUser] = useState(null);
+  const [cartCount, setCartCount] = useState(0); // 购物车数量
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
+  // ==============================
+  // 修复：路由变化时重新获取用户信息
+  // ==============================
   useEffect(() => {
-    const u = localStorage.getItem("user");
-    if (u) setUser(JSON.parse(u));
-  }, []);
+    const u = localStorage.getItem("userInfo");
+    if (u) {
+      setUser(JSON.parse(u));
+    } else {
+      setUser(null);
+    }
+  }, [location.pathname]); // 路由变化就刷新
+
+  // ==============================
+  // 加：获取购物车数量
+  // ==============================
+  useEffect(() => {
+    if (user) {
+      getCartList()
+        .then((res) => {
+          setCartCount(res.data?.length || 0);
+        })
+        .catch(() => {
+          setCartCount(0);
+        });
+    } else {
+      setCartCount(0);
+    }
+  }, [user, location.pathname]);
 
   const logout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("userInfo");
     setUser(null);
+    setCartCount(0);
     message.success("退出成功");
     navigate("/");
   };
@@ -46,7 +74,8 @@ function App() {
 
   const handleSearch = () => {
     if (!searchValue.trim()) return;
-    message.info(`搜索：${searchValue}`);
+    // 跳转到商品列表并带搜索参数
+    navigate(`/?search=${searchValue}`);
   };
 
   return (
@@ -90,7 +119,7 @@ function App() {
                       icon={<UserOutlined />}
                       className="jd-user-btn"
                     >
-                      {user.username}
+                      {user.userName}
                     </Button>
                   </Dropdown>
                 ) : (
@@ -102,13 +131,24 @@ function App() {
                     请登录
                   </Button>
                 )}
-                <Button
-                  icon={<ShoppingCartOutlined />}
-                  onClick={() => navigate("/cart")}
-                  className="jd-cart-btn"
+
+                {/* ============================== */}
+                {/* 购物车 + 右上角数字（只改这里） */}
+                {/* ============================== */}
+                <Badge
+                  count={cartCount}
+                  color="#ff3300"
+                  size="small"
                 >
-                  购物车
-                </Button>
+                  <Button
+                    icon={<ShoppingCartOutlined />}
+                    onClick={() => navigate("/cart")}
+                    className="jd-cart-btn"
+                  >
+                    购物车
+                  </Button>
+                </Badge>
+
                 <Button
                   icon={<OrderedListOutlined />}
                   onClick={() => navigate("/orders")}

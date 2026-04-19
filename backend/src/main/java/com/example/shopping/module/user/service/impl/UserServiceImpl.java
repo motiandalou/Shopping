@@ -30,8 +30,6 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public boolean register(User auth) {
-        System.out.println("register: " + auth);
-
         User existUser = userMapper.selectOne(
                 new LambdaQueryWrapper<User>()
                         .eq(User::getUserName, auth.getUserName())
@@ -73,7 +71,11 @@ public class UserServiceImpl implements UserService {
         String role = dbUser.getRole() == 1 ? "ROLE_ADMIN" : "ROLE_USER";
 
         // 生成 JWT
-        String token = jwtUtil.generateToken(dbUser.getUserName(), role);
+        String token = jwtUtil.generateToken(
+                dbUser.getUserName(),
+                role,
+                dbUser.getId()
+        );
 
         return token;
     }
@@ -111,5 +113,10 @@ public class UserServiceImpl implements UserService {
 
         int rows = userMapper.updateById(updateUser);
         return rows > 0 ? "状态修改成功" : "状态修改失败";
+    }
+
+    @Override
+    public User getById(Long id) {
+        return userMapper.selectById(id);
     }
 }

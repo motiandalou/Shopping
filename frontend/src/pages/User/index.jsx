@@ -135,36 +135,36 @@ export default function UserManage() {
         />
       ),
     },
-    {
-      title: t("user.operation"),
-      render: (_, r) => (
-        <Space>
-          {/* 启用/禁用 */}
-          <ShoppingButton
-            type="text"
-            onClick={() => changeStatus(r.id, r.status === 1 ? 0 : 1)}
-          >
-            {r.role !== 2 &&
-              (r.status === 1 ? t("user.ban") : t("user.enable"))}
-          </ShoppingButton>
+    // {
+    //   title: t("user.operation"),
+    //   render: (_, r) => (
+    //     <Space>
+    //       {/* 启用/禁用 */}
+    //       <ShoppingButton
+    //         type="text"
+    //         onClick={() => changeStatus(r.id, r.status === 1 ? 0 : 1)}
+    //       >
+    //         {r.role !== 2 &&
+    //           (r.status === 1 ? t("user.ban") : t("user.enable"))}
+    //       </ShoppingButton>
 
-          {r.role === 0 && (
-            <ShoppingButton
-              type="text"
-              icon={<EditOutlined />}
-              onClick={() => handleEdit(r)}
-            >
-              {t("btn.edit")}
-            </ShoppingButton>
-          )}
+    //       {r.role === 0 && (
+    //         <ShoppingButton
+    //           type="text"
+    //           icon={<EditOutlined />}
+    //           onClick={() => handleEdit(r)}
+    //         >
+    //           {t("btn.edit")}
+    //         </ShoppingButton>
+    //       )}
 
-          <Popconfirm
-            title={t("user.confirmDelete")}
-            onConfirm={() => handleDelete(r.id)}
-          ></Popconfirm>
-        </Space>
-      ),
-    },
+    //       <Popconfirm
+    //         title={t("user.confirmDelete")}
+    //         onConfirm={() => handleDelete(r.id)}
+    //       ></Popconfirm>
+    //     </Space>
+    //   ),
+    // },
   ];
 
   return (

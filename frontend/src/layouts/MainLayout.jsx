@@ -147,7 +147,7 @@ export default function MainLayout() {
               {
                 key: "logout",
                 icon: <LogoutOutlined />,
-                label: t("logout"),
+                label: t("log out"),
                 onClick: handleLogout,
               },
             ]}

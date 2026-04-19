@@ -44,3 +44,10 @@ export const updateUserStatus = (data) => {
     data,
   });
 };
+
+export function getUserInfo() {
+  return request({
+    url: "/user/getCurrentUser",
+    method: "GET",
+  });
+}

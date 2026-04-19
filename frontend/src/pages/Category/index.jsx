@@ -144,7 +144,7 @@ export default function CategoryManage() {
               setVisible(true);
             }}
           >
-            {t("category.add")}
+            {t("btn.add")}
           </ShoppingButton>
 
           <Pagination

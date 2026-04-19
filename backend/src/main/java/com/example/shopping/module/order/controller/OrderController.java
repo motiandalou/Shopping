@@ -5,6 +5,7 @@ import com.example.shopping.config.Result;
 import com.example.shopping.module.order.entity.Order;
 import com.example.shopping.module.order.service.OrderService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -56,8 +57,16 @@ public class OrderController {
      * 前台创建订单（用户下单）
      */
     @PostMapping("/front/add")
-    public Result<?> frontAdd(@RequestBody Order order) {
+    public Result<?> frontAdd(@RequestBody Order order, HttpServletRequest request) {
+        // 从 Token 自动获取当前登录用户 ID
+        Long userId = (Long) request.getAttribute("userId");
+        String userName = (String) request.getAttribute("username");
+        // 用户id 和 用户名 赋值给订单
+        order.setUserId(userId);
+        order.setUserName(userName);
+        // 保存订单
         orderService.frontAddOrder(order);
+
         return Result.success("下单成功");
     }
 

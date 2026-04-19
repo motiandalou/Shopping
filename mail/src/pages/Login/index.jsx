@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { setToken } from "../../utils/token";
-import { loginApi, registerApi } from "../../api/user";
+import { loginApi, registerApi, getUserInfo } from "../../api/user";
 
 export default function Login() {
   const imgUrl =
@@ -24,6 +24,11 @@ export default function Login() {
     try {
       const res = await loginApi(values);
       setToken(res.data.token);
+      // 拿token查询完整用户信息
+      const { data: userInfo } = await getUserInfo();
+      // 保存完整信息（包含用户名、电话、地址等）
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
+
       navigate("/");
     } catch (err) {
       message.error("Login failed, please check your credentials");

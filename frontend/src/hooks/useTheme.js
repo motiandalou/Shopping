@@ -30,7 +30,6 @@ export default function useTheme() {
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
-    // window.location.reload(); // 强制页面刷新
   };
 
   const currentTheme = theme === "light" ? lightTheme : darkTheme;

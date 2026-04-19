@@ -6,6 +6,7 @@ import com.example.shopping.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,17 @@ public class UserController {
         } catch (RuntimeException e) {
             return Result.error(e.getMessage());
         }
+    }
+
+    /// 获取当前登录用户信息
+    @GetMapping("/getCurrentUser")
+    public Result<User> getCurrentUser(HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        User user = userService.getById(userId);
+        if (user != null) {
+            user.setPassword(null);
+        }
+        return Result.success(user);
     }
 
     // 用户管理列表
