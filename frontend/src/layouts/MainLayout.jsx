@@ -1,5 +1,15 @@
 import { useState, useEffect } from "react";
-import { Layout, Menu, Avatar, message, Space } from "antd";
+import {
+  Layout,
+  Menu,
+  Avatar,
+  message,
+  Space,
+  Badge,
+  Drawer,
+  List,
+  Typography,
+} from "antd";
 import {
   BarChartOutlined,
   ShopOutlined,
@@ -12,6 +22,7 @@ import {
   MenuUnfoldOutlined,
   GlobalOutlined,
   SkinOutlined,
+  BellOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
 import { removeToken } from "../utils/token";
@@ -20,6 +31,7 @@ import { getStaffInfo } from "../api/staff";
 import "./index.less";
 import { useTranslation } from "react-i18next";
 import useTheme from "../hooks/useTheme";
+import websocket from "@/utils/websocket";
 
 const { Sider, Content, Header } = Layout;
 
@@ -30,6 +42,48 @@ export default function MainLayout() {
   const { t, i18n } = useTranslation();
   const { theme, toggleTheme } = useTheme();
   const [userInfo, setUserInfo] = useState(null);
+
+  const [noticeOpen, setNoticeOpen] = useState(false);
+  const [unreadOrderCount, setUnreadOrderCount] = useState(0);
+  const [orderNoticeList, setOrderNoticeList] = useState([]);
+
+  useEffect(() => {
+    websocket.connect();
+
+    const handleMessage = (data) => {
+      if (data.type === "NEW_ORDER") {
+        const order = data.order;
+
+        const newNotice = {
+          id: Date.now(),
+          type: "NEW_ORDER",
+          order: order,
+          content: `新订单 #${order.orderNo}`,
+          time: "刚刚",
+        };
+
+        setOrderNoticeList((prev) => [newNotice, ...prev]);
+        setUnreadOrderCount((prev) => prev + 1);
+      }
+    };
+
+    websocket.onMessage(handleMessage);
+
+    return () => {};
+  }, []);
+
+  // 点击通知项跳转
+  const handleNoticeClick = (item) => {
+    if (item.type === "NEW_ORDER") {
+      setNoticeOpen(false);
+      navigate("/order");
+    }
+  };
+
+  const showNoticeDrawer = () => {
+    setNoticeOpen(true);
+    setUnreadOrderCount(0);
+  };
 
   useEffect(() => {
     const savedLang = localStorage.getItem("lang");
@@ -147,7 +201,7 @@ export default function MainLayout() {
               {
                 key: "logout",
                 icon: <LogoutOutlined />,
-                label: t("log out"),
+                label: t("Log out"),
                 onClick: handleLogout,
               },
             ]}
@@ -173,9 +227,23 @@ export default function MainLayout() {
           />
 
           <Space
-            size="middle"
+            size={4}
             align="center"
           >
+            <ShoppingButton
+              type="text"
+              style={{ color: theme === "dark" ? "#fff" : "#000" }}
+              onClick={showNoticeDrawer}
+            >
+              <Badge
+                count={unreadOrderCount}
+                offset={[5, -5]}
+                color="#ff4d4f"
+              >
+                <BellOutlined style={{ fontSize: 18 }} />
+              </Badge>
+            </ShoppingButton>
+
             <ShoppingButton
               type="text"
               icon={<GlobalOutlined style={{ fontSize: 18 }} />}
@@ -248,6 +316,77 @@ export default function MainLayout() {
           <Outlet />
         </Content>
       </Layout>
+
+      <Drawer
+        title="消息通知"
+        placement="right"
+        width={380}
+        open={noticeOpen}
+        onClose={() => setNoticeOpen(false)}
+        closable={false}
+        styles={{
+          header: { padding: "16px 20px", borderBottom: "1px solid #f0f0f0" },
+          body: { padding: "12px 16px" },
+        }}
+      >
+        {orderNoticeList.length === 0 ? (
+          <div
+            style={{ textAlign: "center", padding: "60px 0", color: "#999" }}
+          >
+            暂无通知消息
+          </div>
+        ) : (
+          <List
+            dataSource={orderNoticeList}
+            renderItem={(item) => (
+              <List.Item
+                key={item.id}
+                onClick={() => handleNoticeClick(item)}
+                style={{
+                  marginBottom: 8,
+                  padding: "12px 16px",
+                  borderRadius: 8,
+                  background: "#f9f9f9",
+                  border: "1px solid #eee",
+                  cursor: "pointer",
+                }}
+              >
+                <div
+                  style={{ display: "flex", gap: 10, alignItems: "flex-start" }}
+                >
+                  <div
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 6,
+                      background: "#e6f7ff",
+                      color: "#1890ff",
+                      display: "grid",
+                      placeItems: "center",
+                    }}
+                  >
+                    📦
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <Typography.Text strong>{item.content}</Typography.Text>
+                    <br />
+                    <Typography.Text style={{ fontSize: 12, color: "#666" }}>
+                      {item.order.goodsInfo} | ￥{item.order.totalAmount}
+                    </Typography.Text>
+                    <br />
+                    <Typography.Text
+                      type="secondary"
+                      style={{ fontSize: 12 }}
+                    >
+                      {item.time}
+                    </Typography.Text>
+                  </div>
+                </div>
+              </List.Item>
+            )}
+          />
+        )}
+      </Drawer>
     </Layout>
   );
 }

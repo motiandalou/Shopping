@@ -4,12 +4,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.shopping.config.Result;
 import com.example.shopping.module.order.entity.Order;
 import com.example.shopping.module.order.service.OrderService;
+import com.example.shopping.websocket.WebSocketServer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/order")
@@ -66,6 +70,23 @@ public class OrderController {
         order.setUserName(userName);
         // 保存订单
         orderService.frontAddOrder(order);
+
+        // 1. 构造通用消息，type 用来区分业务
+        Map<String, Object> msg = new HashMap<>();
+        msg.put("type", "NEW_ORDER");
+        // 2. 把整个订单对象放进去
+        msg.put("order", order);
+
+        try {
+            // ====================== 修复日期序列化问题 ======================
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+
+            String json = objectMapper.writeValueAsString(msg);
+            WebSocketServer.broadcast(json);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return Result.success("下单成功");
     }

@@ -8,15 +8,14 @@ import {
 import { useNavigate } from "react-router-dom";
 import { setToken } from "../../utils/token";
 import { loginApi, registerApi, getUserInfo } from "../../api/user";
+import "./index.less";
 
 export default function Login() {
   const imgUrl =
-    "https://images.unsplash.com/photo-1773332598414-44a45e364d85?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+    "https://images.unsplash.com/photo-1475998893297-4da48a6e037d?q=80&w=1288&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
-  const [remember, setRemember] = useState(true);
-
   const [form] = Form.useForm();
 
   // 登录
@@ -129,11 +128,7 @@ export default function Login() {
               marginBottom: 32,
               textAlign: "left",
             }}
-          >
-            {isLogin
-              ? "Please enter your details"
-              : "Please fill in the information"}
-          </Typography.Text>
+          ></Typography.Text>
 
           {/* Login Form */}
           {isLogin ? (
@@ -192,17 +187,11 @@ export default function Login() {
               <div
                 style={{
                   display: "flex",
-                  justifyContent: "space-between",
+                  justifyContent: "right",
                   alignItems: "center",
                   margin: "12px 0 24px",
                 }}
               >
-                <Checkbox
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
-                >
-                  Remember me
-                </Checkbox>
                 <Typography.Link style={{ fontSize: 14 }}>
                   Forgot password?
                 </Typography.Link>
