@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -22,7 +24,7 @@ public class OrderController {
     @Resource
     private OrderService orderService;
 
-    // ============================ 【后台 - 管理员】 ============================
+    // ============================ 【后台 - 管理员：全部去掉缓存】 ============================
     /**
      * 后台查询所有订单（分页）
      */
@@ -56,11 +58,12 @@ public class OrderController {
         return Result.success("删除成功");
     }
 
-    // ============================ 【前台 - 用户】 ============================
+    // ============================ 【前台 - 用户：只加合理缓存】 ============================
     /**
      * 前台创建订单（用户下单）
      */
     @PostMapping("/front/add")
+    @CacheEvict(value = {"orderFrontMy", "orderDetail"}, allEntries = true)
     public Result<?> frontAdd(@RequestBody Order order, HttpServletRequest request) {
         // 从 Token 自动获取当前登录用户 ID
         Long userId = (Long) request.getAttribute("userId");
@@ -95,6 +98,7 @@ public class OrderController {
      * 前台查询我的订单（分页）
      */
     @GetMapping("/front/my")
+    @Cacheable(value = "orderFrontMy", key = "#userId + '-' + #pageNum + '-' + #pageSize")
     public Result<Page<Order>> frontMyOrder(
             @RequestParam Long userId,
             @RequestParam(defaultValue = "1") Integer pageNum,
@@ -107,6 +111,7 @@ public class OrderController {
      * 前台删除自己的订单
      */
     @PostMapping("/front/delete")
+    @CacheEvict(value = {"orderFrontMy", "orderDetail"}, allEntries = true)
     public Result<?> frontDelete(
             @RequestParam Long orderId,
             @RequestParam Long userId
@@ -119,6 +124,7 @@ public class OrderController {
      * 前台查看订单详情
      */
     @GetMapping("/front/detail")
+    @Cacheable(value = "orderDetail", key = "#orderId")
     public Result<Order> frontDetail(@RequestParam Long orderId) {
         return Result.success(orderService.getById(orderId));
     }
