@@ -5,11 +5,15 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
 @TableName("t_goods") // 对应数据库表名
-public class Goods {
+public class Goods implements Serializable {
+
+    // 加一个序列化ID（固定不变）
+    private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.AUTO)
     private Long id;

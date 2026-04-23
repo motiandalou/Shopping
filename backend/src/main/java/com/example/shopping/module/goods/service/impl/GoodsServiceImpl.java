@@ -7,6 +7,7 @@ import com.example.shopping.module.goods.entity.Goods;
 import com.example.shopping.module.goods.mapper.GoodsMapper;
 import com.example.shopping.module.goods.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@CacheConfig(cacheNames = "goods")
 public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
@@ -22,8 +24,11 @@ public class GoodsServiceImpl implements GoodsService {
     @Autowired
     private CategoryMapper categoryMapper;
 
-    // 查询列表
+    // ================= 查询 =================
+
+    // ✅ 商品列表缓存
     @Override
+    @Cacheable(value = "goods", key = "'list'")
     public List<Goods> list(Goods goods) {
         LambdaQueryWrapper<Goods> wrapper = new LambdaQueryWrapper<>();
 
@@ -34,15 +39,14 @@ public class GoodsServiceImpl implements GoodsService {
             wrapper.eq(Goods::getCategoryId, goods.getCategoryId());
         }
 
-        // 1. 查询商品列表
         List<Goods> goodsList = goodsMapper.selectList(wrapper);
 
-        // 2. 查询所有分类，转成 Map<id, 分类名称>
-        List<Category> categoryList = categoryMapper.selectList(null);
+        // ✅ 分类缓存（走缓存方法）
+        List<Category> categoryList = getAllCategory();
+
         Map<Integer, String> categoryMap = categoryList.stream()
                 .collect(Collectors.toMap(Category::getId, Category::getCategoryName));
 
-        // 3. 给每个商品设置分类名称
         goodsList.forEach(goodsItem -> {
             Integer cid = goodsItem.getCategoryId();
             if (cid != null) {
@@ -53,10 +57,18 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsList;
     }
 
-    // 新增商品
+    // ================= 分类缓存 =================
+
+    @Cacheable(cacheNames = "category", key = "'all'", unless = "#result == null || #result.isEmpty()")
+    public List<Category> getAllCategory() {
+        return categoryMapper.selectList(null);
+    }
+
+    // ================= 写操作（清缓存） =================
+
     @Override
+    @CacheEvict(cacheNames = "goods", allEntries = true)
     public String add(Goods goods) {
-        // 商品名称不能重复（合理业务规则）
         Goods exist = goodsMapper.selectOne(
                 new LambdaQueryWrapper<Goods>()
                         .eq(Goods::getGoodsName, goods.getGoodsName())
@@ -70,14 +82,14 @@ public class GoodsServiceImpl implements GoodsService {
         return rows > 0 ? "新增成功" : "新增失败";
     }
 
-    // 修改商品
     @Override
+    @CacheEvict(cacheNames = "goods", allEntries = true)
     public String update(Goods goods) {
+
         if (goods.getId() == null) {
             throw new RuntimeException("商品ID不能为空");
         }
 
-        // 商品名称重复校验（排除自己）
         Goods exist = goodsMapper.selectOne(
                 new LambdaQueryWrapper<Goods>()
                         .eq(Goods::getGoodsName, goods.getGoodsName())
@@ -92,10 +104,11 @@ public class GoodsServiceImpl implements GoodsService {
         return rows > 0 ? "修改成功" : "修改失败";
     }
 
-    // 删除商品
     @Override
+    @CacheEvict(cacheNames = "goods", allEntries = true)
     public String delete(Integer id) {
         int rows = goodsMapper.deleteById(id);
+
         if (rows > 0) {
             return "删除成功";
         } else {

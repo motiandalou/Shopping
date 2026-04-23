@@ -67,7 +67,7 @@ export default function GoodsManage() {
       setGoodsList(res.data.list || res.data);
       setTotal(res.data.total || 0);
     } catch (err) {
-      message.error(t("goods.getListFail"));
+      console.error("Failed to fetch goods list:", err);
     }
   };
 

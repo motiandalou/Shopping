@@ -4,9 +4,6 @@ import com.example.shopping.config.Result;
 import com.example.shopping.module.user.entity.User;
 import com.example.shopping.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,13 +18,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // 注册接口 —— 无缓存
+    // 注册接口
     @PostMapping("/register")
     public Result<Boolean> register(@RequestBody User user) {
         return Result.success(userService.register(user));
     }
 
-    // 登录接口 —— 无缓存
+    // 登录接口
     @PostMapping("/login")
     public Result<Map<String, String>> login(@RequestBody User user) {
         try {
@@ -40,10 +37,10 @@ public class UserController {
         }
     }
 
-    // 获取当前登录用户信息 —— 正确加缓存
+    /// 获取当前登录用户信息
     @GetMapping("/getCurrentUser")
-    @Cacheable(value = "user", key = "#userId")
-    public Result<User> getCurrentUser(@RequestAttribute("userId") Long userId) {
+    public Result<User> getCurrentUser(HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
         User user = userService.getById(userId);
         if (user != null) {
             user.setPassword(null);
@@ -51,20 +48,14 @@ public class UserController {
         return Result.success(user);
     }
 
-    // 用户管理列表 —— 加缓存，消除unchecked警告
+    // 用户管理列表
     @PostMapping("/list")
-    @Cacheable(value = "userList", key = "#user")
     public Result<List<User>> list(@RequestBody User user) {
-        List<User> userList = userService.list(user);
-        return Result.success(userList);
+        return Result.success(userService.list(user));
     }
 
-    // 修改状态 —— 用@Caching包裹多个@CacheEvict
+    // 修改状态
     @PutMapping("/status/{id}")
-    @Caching(evict = {
-            @CacheEvict(value = "user", key = "#id"),
-            @CacheEvict(value = "userList", allEntries = true)
-    })
     public Result<String> updateStatus(@PathVariable Long id, @RequestParam Integer status) {
         return Result.success(userService.updateStatus(id, status));
     }

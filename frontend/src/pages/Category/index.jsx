@@ -45,7 +45,7 @@ export default function CategoryManage() {
       setList(res.data.list || res.data);
       setTotal(res.data.total || 100);
     } catch (err) {
-      message.error(t("category.getFail"));
+      console.error("Failed to fetch goods list:", err);
     }
   };
 
