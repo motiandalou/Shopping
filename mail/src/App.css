@@ -146,16 +146,6 @@
   width: 100%;
 }
 
-/* 页脚 */
-.jd-footer {
-  background: #fff;
-  border-top: 1px solid var(--jd-border);
-  margin-top: 50px;
-  padding: 20px 0;
-  text-align: center;
-  color: var(--jd-text-light);
-}
-
 /* 商品卡片样式 */
 .jd-product-card {
   background: #fff;

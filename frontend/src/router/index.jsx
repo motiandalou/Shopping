@@ -1,8 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import AuthRoute from "./AuthRoute";
-
-// 页面
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import Goods from "../pages/Goods";
@@ -10,6 +8,7 @@ import Order from "../pages/Order";
 import User from "../pages/User";
 import Category from "../pages/Category";
 import Staff from "../pages/Staff";
+import Service from "../pages/Service";
 
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -29,6 +28,7 @@ const router = createBrowserRouter([
       { path: "order", element: <Order /> },
       { path: "user", element: <User /> },
       { path: "category", element: <Category /> },
+      { path: "service", element: <Service /> },
       { path: "staff", element: <Staff /> },
     ],
   },

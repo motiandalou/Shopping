@@ -8,11 +8,14 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import Login from "./pages/Login";
-import ProductList from "./pages/ProductList";
+import Goods from "./pages/goods";
 import Cart from "./pages/Cart";
 import Order from "./pages/Order";
 import OrderList from "./pages/OrderList";
+import GoodsDetail from "./pages/goods/detail";
 import { getCartList } from "./api/cart";
+import ChatPage from "./pages/Chat";
+
 import "./App.css";
 
 const { Header, Content, Footer } = Layout;
@@ -164,7 +167,7 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={<ProductList />}
+            element={<Goods />}
           />
           <Route
             path="/cart"
@@ -178,14 +181,16 @@ function App() {
             path="/orders"
             element={<OrderList />}
           />
+          <Route
+            path="/goods/detail/:id"
+            element={<GoodsDetail />}
+          />
+          <Route
+            path="/chat"
+            element={<ChatPage />}
+          />
         </Routes>
       </Content>
-
-      <Footer className="jd-footer">
-        <div className="jd-footer-container">
-          <p>© 2026 Mail</p>
-        </div>
-      </Footer>
     </Layout>
   );
 }

@@ -26,7 +26,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     // ================= 查询 =================
 
-    // ✅ 商品列表缓存
+    // 商品列表缓存
     @Override
     @Cacheable(value = "goods", key = "'list'")
     public List<Goods> list(Goods goods) {
@@ -57,8 +57,22 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsList;
     }
 
-    // ================= 分类缓存 =================
+    // 商品详情缓存
+    @Override
+    @Cacheable(value = "goods", key = "'detail:' + #id")
+    public Goods getDetailById(Integer id) {
+        Goods goods = goodsMapper.selectById(id);
 
+        if (goods != null && goods.getCategoryId() != null) {
+            Category category = categoryMapper.selectById(goods.getCategoryId());
+            if (category != null) {
+                goods.setCategoryName(category.getCategoryName());
+            }
+        }
+        return goods;
+    }
+
+    // ================= 分类缓存 =================
     @Cacheable(cacheNames = "category", key = "'all'", unless = "#result == null || #result.isEmpty()")
     public List<Category> getAllCategory() {
         return categoryMapper.selectList(null);

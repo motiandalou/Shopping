@@ -23,6 +23,7 @@ import {
   GlobalOutlined,
   SkinOutlined,
   BellOutlined,
+  CustomerServiceOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
 import { removeToken } from "../utils/token";
@@ -31,7 +32,7 @@ import { getStaffInfo } from "../api/staff";
 import "./index.less";
 import { useTranslation } from "react-i18next";
 import useTheme from "../hooks/useTheme";
-import websocket from "@/utils/websocket";
+import { subscribe, unsubscribe } from "@/utils/websocket";
 
 const { Sider, Content, Header } = Layout;
 
@@ -48,11 +49,10 @@ export default function MainLayout() {
   const [orderNoticeList, setOrderNoticeList] = useState([]);
 
   useEffect(() => {
-    websocket.connect();
-
-    const handleMessage = (data) => {
+    subscribe("order_all", (data) => {
+      console.log("收到订单消息:", data);
       if (data.type === "NEW_ORDER") {
-        const order = data.order;
+        const order = data.orderInfo;
 
         const newNotice = {
           id: Date.now(),
@@ -65,11 +65,8 @@ export default function MainLayout() {
         setOrderNoticeList((prev) => [newNotice, ...prev]);
         setUnreadOrderCount((prev) => prev + 1);
       }
-    };
-
-    websocket.onMessage(handleMessage);
-
-    return () => {};
+    });
+    return () => unsubscribe("order_all");
   }, []);
 
   // 点击通知项跳转
@@ -131,6 +128,11 @@ export default function MainLayout() {
       key: "/category",
       icon: <AppstoreOutlined />,
       label: <Link to="/category">{t("menu.category")}</Link>,
+    },
+    {
+      key: "service",
+      icon: <CustomerServiceOutlined />,
+      label: <Link to="/service">{t("menu.service")}</Link>,
     },
     userInfo?.role === 0 && {
       key: "/staff",
@@ -310,7 +312,7 @@ export default function MainLayout() {
             background: theme === "dark" ? "#141414" : "#fff",
             borderRadius: 6,
             height: "calc(100vh - 112px)",
-            overflow: "auto",
+            overflow: "hidden",
           }}
         >
           <Outlet />

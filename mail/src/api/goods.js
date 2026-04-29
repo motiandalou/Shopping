@@ -9,6 +9,14 @@ export const getGoodsList = (data) => {
   });
 };
 
+// 获取详情
+export const getGoodsDetail = (id) => {
+  return request({
+    url: `/goods/detail/${id}`,
+    method: "GET",
+  });
+};
+
 // 新增
 export const addGoods = (data) => {
   return request({

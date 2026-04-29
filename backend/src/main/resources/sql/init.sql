@@ -108,3 +108,32 @@ CREATE TABLE `t_cart` (
                           UNIQUE KEY `uk_user_goods` (`user_id`, `goods_id`) COMMENT '同一个用户同一个商品只能加一条',
                           KEY `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='购物车表';
+
+-- 会话表
+CREATE TABLE `chat_session` (
+                                `id` bigint NOT NULL AUTO_INCREMENT COMMENT '会话ID',
+                                `shop_id` bigint NOT NULL COMMENT '店铺ID',
+                                `user_id` bigint NOT NULL COMMENT '用户ID（买家）',
+                                `unread_count` int NOT NULL DEFAULT '0' COMMENT '商家未读消息数',
+                                `last_message` varchar(500) DEFAULT NULL COMMENT '最新一条消息内容',
+                                `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+                                PRIMARY KEY (`id`),
+                                KEY `idx_shop_id` (`shop_id`),
+                                KEY `idx_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='聊天会话表';
+
+-- 消息表
+CREATE TABLE `chat_message` (
+                                `id` bigint NOT NULL AUTO_INCREMENT COMMENT '消息ID',
+                                `session_id` bigint NOT NULL COMMENT '会话ID',
+                                `from_user_id` bigint NOT NULL COMMENT '发送者ID（用户ID / 客服ID）',
+                                `sender_type` varchar(20) NOT NULL COMMENT '发送者类型：USER-买家，SHOP_ADMIN-店铺客服',
+                                `content` varchar(1000) NOT NULL COMMENT '消息内容',
+                                `topic` varchar(100) DEFAULT NULL COMMENT 'WebSocket主题',
+                                `is_read` tinyint NOT NULL DEFAULT '0' COMMENT '是否已读：0未读，1已读',
+                                `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                PRIMARY KEY (`id`),
+                                KEY `idx_session_id` (`session_id`),
+                                KEY `idx_is_read` (`is_read`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='聊天消息表';

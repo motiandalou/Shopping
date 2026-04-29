@@ -9,6 +9,9 @@ public interface GoodsService {
     // 列表
     List list(Goods goods);
 
+    // 详情
+    Goods getDetailById(Integer id);
+
     // 新增
     String add(Goods goods);
 

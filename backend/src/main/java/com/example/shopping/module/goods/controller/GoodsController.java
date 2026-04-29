@@ -21,6 +21,13 @@ public class GoodsController {
         return Result.success(goodsService.list(goods));
     }
 
+    // ===================== 新增【商品详情接口】=====================
+    @GetMapping("/detail/{id}")
+    public Result<Goods> getGoodsDetail(@PathVariable Integer id) {
+        Goods goods = goodsService.getDetailById(id);
+        return Result.success(goods);
+    }
+
     // 新增
     @PostMapping("/add")
     public Result<String> add(@RequestBody Goods goods) {

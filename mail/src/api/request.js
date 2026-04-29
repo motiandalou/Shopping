@@ -25,7 +25,7 @@ service.interceptors.response.use(
       (err.response.status === 401 || err.response.status === 403)
     ) {
       localStorage.removeItem("token"); // 清除无效token
-      window.location.href = "/login"; // 跳回登录页
+      // window.location.href = "/login"; // 跳回登录页
     }
     return Promise.reject(err);
   },
