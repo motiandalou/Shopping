@@ -41,7 +41,6 @@ public class ChatServiceImpl implements ChatService {
         return session;
     }
 
-    // ===================== ✅ 修复：增加 senderType 参数 =====================
     @Override
     public void saveMessage(Long sessionId, Long fromUserId, String content, String topic, String senderType) {
         ChatMessage message = new ChatMessage();
@@ -50,7 +49,7 @@ public class ChatServiceImpl implements ChatService {
         message.setContent(content);
         message.setTopic(topic);
         message.setIsRead(0);
-        message.setSenderType(senderType); // ✅ 正确赋值
+        message.setSenderType(senderType);
         message.setCreatedAt(LocalDateTime.now());
         messageMapper.insert(message);
 

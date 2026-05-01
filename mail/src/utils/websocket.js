@@ -15,27 +15,28 @@ class WebSocketClient {
 
     if (this.socket) this.socket.close(1000, "replace");
 
-    console.log("【WebSocket】正在连接 →", this.url);
     this.socket = new WebSocket(this.url);
 
     this.socket.onopen = () => {
-      console.log("【WebSocket】✅ 连接成功");
       this.isConnected = true;
       this.isConnecting = false;
       clearTimeout(this.reconnectTimer);
 
-      // ✅ 关键：连接成功后，把所有已订阅的 topic 重新发一遍
       Object.keys(this.subscriptions).forEach((topic) => {
-        this.send({ topic, type: "SUBSCRIBE" });
-        console.log("【WebSocket】自动注册 topic →", topic);
+        // 这里！！！只发 topic，不要 type
+        this.send({ topic });
       });
     };
 
     this.socket.onmessage = (event) => {
       try {
-        const data = JSON.parse(event.data);
-        const topic = data.topic;
+        // 二次解析
+        let data = event.data;
+        while (typeof data === "string") {
+          data = JSON.parse(data);
+        }
 
+        const topic = data.topic;
         if (topic && this.subscriptions[topic]) {
           this.subscriptions[topic].forEach((cb) => cb(data));
         }
@@ -45,7 +46,6 @@ class WebSocketClient {
     };
 
     this.socket.onclose = (event) => {
-      console.log("【WebSocket】断开 code:", event.code);
       this.isConnected = false;
       this.isConnecting = false;
       if (event.code !== 1000) this.reconnect();
@@ -73,28 +73,26 @@ class WebSocketClient {
   }
 
   close() {
-    console.log("【WebSocket】手动关闭");
     if (this.socket) this.socket.close(1000, "manual");
     clearTimeout(this.reconnectTimer);
     this.isConnected = false;
   }
 
   subscribe(topic, callback) {
-    console.log("【WebSocket】📌 订阅 topic →", topic);
+    console.log("订阅 topic →", topic);
     if (!this.subscriptions[topic]) {
       this.subscriptions[topic] = [];
     }
     this.subscriptions[topic].push(callback);
 
-    // 如果已经连上，直接发注册消息；没连上就等 onopen 里自动发
     if (this.isConnected) {
-      this.send({ topic, type: "SUBSCRIBE" });
+      this.send({ topic }); 
     }
     this.connect();
   }
 
   unsubscribe(topic, callback) {
-    console.log("【WebSocket】📤 取消订阅 topic →", topic);
+    console.log("取消订阅 topic →", topic);
     if (!this.subscriptions[topic]) return;
     if (callback) {
       this.subscriptions[topic] = this.subscriptions[topic].filter(

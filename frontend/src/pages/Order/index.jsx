@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Table, Select, Card, Space, message, Popconfirm } from "antd";
 import { getOrdersList, updateOrders, deleteOrders } from "../../api/order";
-import ShoppingButton from "../../components/shopping_button";
+import ShoppingButton from "@/components/shopping_button";
 import ShoppingState from "../../components/Shopping_state";
 import { useTranslation } from "react-i18next";
 

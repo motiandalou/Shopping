@@ -24,6 +24,13 @@ import {
   SkinOutlined,
   BellOutlined,
   CustomerServiceOutlined,
+  SettingOutlined,
+  UserSwitchOutlined,
+  ShopTwoTone,
+  UnorderedListOutlined,
+  WarningOutlined,
+  FileTextOutlined,
+  MessageOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
 import { removeToken } from "../utils/token";
@@ -31,7 +38,7 @@ import ShoppingButton from "../components/shopping_button";
 import { getStaffInfo } from "../api/staff";
 import "./index.less";
 import { useTranslation } from "react-i18next";
-import useTheme from "../hooks/useTheme";
+import useTheme from "@/hooks/useTheme";
 import { subscribe, unsubscribe } from "@/utils/websocket";
 
 const { Sider, Content, Header } = Layout;
@@ -48,9 +55,9 @@ export default function MainLayout() {
   const [unreadOrderCount, setUnreadOrderCount] = useState(0);
   const [orderNoticeList, setOrderNoticeList] = useState([]);
 
+  // 订阅--新订单消息通知
   useEffect(() => {
     subscribe("order_all", (data) => {
-      console.log("收到订单消息:", data);
       if (data.type === "NEW_ORDER") {
         const order = data.orderInfo;
 
@@ -58,8 +65,8 @@ export default function MainLayout() {
           id: Date.now(),
           type: "NEW_ORDER",
           order: order,
-          content: `新订单 #${order.orderNo}`,
-          time: "刚刚",
+          content: data.content,
+          time: data.orderCreateTime,
         };
 
         setOrderNoticeList((prev) => [newNotice, ...prev]);
@@ -131,13 +138,73 @@ export default function MainLayout() {
     },
     {
       key: "service",
-      icon: <CustomerServiceOutlined />,
-      label: <Link to="/service">{t("menu.service")}</Link>,
+      label: "人工客服",
+      icon: <MessageOutlined />,
+      children: [
+        {
+          key: "/service/chat",
+          label: <Link to="/service/chat">{t("menu.service")}</Link>,
+        },
+        {
+          key: "/service/ticket",
+          label: <Link to="/service/ticket">售后工单列表</Link>,
+        },
+        {
+          key: "/service/audit",
+          label: <Link to="/service/audit">售后审核处理</Link>,
+        },
+        {
+          key: "/service/refund",
+          label: <Link to="/service/refund">退款记录</Link>,
+        },
+        {
+          key: "/service/trace",
+          label: <Link to="/service/trace">工单日志追溯</Link>,
+        },
+      ],
     },
-    userInfo?.role === 0 && {
-      key: "/staff",
-      icon: <TeamOutlined />,
-      label: <Link to="/staff">{t("menu.staff")}</Link>,
+    // 系统设置：老板、员工都可见
+    {
+      key: "system",
+      icon: <SettingOutlined />,
+      label: "系统设置",
+      // 动态判断二级菜单
+      children:
+        userInfo?.role === 0
+          ? [
+              // 老板：全部菜单
+              {
+                key: "/system/profile",
+                label: <Link to="/system/profile">个人中心</Link>,
+              },
+              {
+                key: "/system/staff",
+                label: <Link to="/system/staff">{t("menu.staff")}</Link>,
+              },
+              {
+                key: "/system/shop",
+                label: <Link to="/system/shop">店铺配置</Link>,
+              },
+              {
+                key: "/system/order-rule",
+                label: <Link to="/system/order-rule">订单/售后规则</Link>,
+              },
+              {
+                key: "/system/stock",
+                label: <Link to="/system/stock">库存预警</Link>,
+              },
+              {
+                key: "/system/log",
+                label: <Link to="/system/log">操作日志</Link>,
+              },
+            ]
+          : [
+              // 员工：只显示 个人中心
+              {
+                key: "/system/profile",
+                label: <Link to="/system/profile">个人中心</Link>,
+              },
+            ],
     },
   ].filter(Boolean);
 
@@ -322,7 +389,7 @@ export default function MainLayout() {
       <Drawer
         title="消息通知"
         placement="right"
-        width={380}
+        // width={380}
         open={noticeOpen}
         onClose={() => setNoticeOpen(false)}
         closable={false}

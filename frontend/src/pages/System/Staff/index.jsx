@@ -10,16 +10,11 @@ import {
   Popconfirm,
 } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import ShoppingButton from "../../components/shopping_button";
+import ShoppingButton from "@/components/shopping_button";
 import { useTranslation } from "react-i18next";
 
-import {
-  getStaffList,
-  addStaff,
-  deleteStaff,
-  updateStaff,
-} from "../../api/staff";
-import { getStaffInfo } from "../../api/staff";
+import { getStaffList, addStaff, deleteStaff, updateStaff } from "@/api/staff";
+import { getStaffInfo } from "@/api/staff";
 
 export default function StaffManage() {
   const { t } = useTranslation();

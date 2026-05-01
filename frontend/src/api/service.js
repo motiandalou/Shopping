@@ -3,7 +3,7 @@ import request from "./request";
 // 获取客服会话列表
 export const getChatSessions = (params) => {
   return request({
-    url: "/chat/sessions",
+    url: `/chat/sessions`,
     method: "GET",
     params,
   });

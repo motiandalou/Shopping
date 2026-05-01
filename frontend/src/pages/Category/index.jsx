@@ -17,7 +17,7 @@ import {
   deleteCategory,
   update,
 } from "../../api/category";
-import ShoppingButton from "../../components/shopping_button";
+import ShoppingButton from "@/components/shopping_button";
 import { useTranslation } from "react-i18next";
 
 export default function CategoryManage() {

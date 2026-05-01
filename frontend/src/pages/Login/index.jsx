@@ -3,8 +3,8 @@ import { Form, Input, message, Typography, Modal } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { setToken } from "../../utils/token";
-import { loginApi } from "../../api/staff";
-import ShoppingButton from "../../components/shopping_button";
+import { loginApi } from "@/api/staff";
+import ShoppingButton from "@/components/shopping_button";
 import { useTranslation } from "react-i18next";
 import "./index.less";
 

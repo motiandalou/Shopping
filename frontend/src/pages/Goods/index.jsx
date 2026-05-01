@@ -20,7 +20,7 @@ import {
   deleteGoods,
 } from "../../api/goods";
 import { getCategoryList } from "../../api/category";
-import ShoppingButton from "../../components/shopping_button";
+import ShoppingButton from "@/components/shopping_button";
 import ShoppingState from "../../components/Shopping_state";
 import { useTranslation } from "react-i18next";
 

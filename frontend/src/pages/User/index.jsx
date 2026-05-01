@@ -13,7 +13,7 @@ import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 
 import { getUserList, updateUser, updateUserStatus } from "../../api/user";
-import ShoppingButton from "../../components/shopping_button";
+import ShoppingButton from "@/components/shopping_button";
 import ShoppingState from "../../components/Shopping_state";
 
 export default function UserManage() {

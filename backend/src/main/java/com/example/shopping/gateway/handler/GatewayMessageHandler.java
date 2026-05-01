@@ -4,6 +4,7 @@ import com.example.shopping.gateway.dto.GatewayMessageDTO;
 import com.example.shopping.module.chat.entity.ChatSession;
 import com.example.shopping.module.chat.service.ChatService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -24,7 +25,7 @@ public class GatewayMessageHandler extends SimpleChannelInboundHandler<TextWebSo
     private static final Map<Long, Channel> userChannelMap = new ConcurrentHashMap<>();
     private static final Map<String, Set<Channel>> topicChannelMap = new ConcurrentHashMap<>();
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     private static ChatService chatService;
 
     public static void setChatService(ChatService service) {
@@ -52,13 +53,11 @@ public class GatewayMessageHandler extends SimpleChannelInboundHandler<TextWebSo
             // 绑定用户
             if (fromUserId != null) {
                 userChannelMap.put(fromUserId, ctx.channel());
-                System.out.println("👤 绑定用户 ID = " + fromUserId);
             }
 
             // 绑定 topic
             if (topic != null && !topic.isBlank()) {
                 topicChannelMap.computeIfAbsent(topic, k -> ConcurrentHashMap.newKeySet()).add(ctx.channel());
-                System.out.println("✅ 后端注册 topic → " + topic);
                 System.out.println("当前已注册 topic: " + topicChannelMap.keySet());
             }
 
@@ -84,13 +83,16 @@ public class GatewayMessageHandler extends SimpleChannelInboundHandler<TextWebSo
                 if (targetUserId != null) {
                     ChatSession session = chatService.getOrCreateSession(shopId, targetUserId);
 
+//                    String userName = (String) request.getAttribute("username");
+//                    order.setUserName(userName);
+
 
                     chatService.saveMessage(
                             session.getId(),
                             fromUserId,
                             content,
                             topic,
-                            dto.getSenderType()  // 新增
+                            dto.getSenderType()
                     );
 
                     System.out.println("✅ 消息已入库：" + content);
@@ -122,7 +124,7 @@ public class GatewayMessageHandler extends SimpleChannelInboundHandler<TextWebSo
                 System.out.println("❌ 用户不在线：" + userId);
                 return;
             }
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
             String json = mapper.writeValueAsString(msg);
             channel.writeAndFlush(new TextWebSocketFrame(json));
             System.out.println("✅ 推送给用户成功：" + userId);
@@ -140,7 +142,7 @@ public class GatewayMessageHandler extends SimpleChannelInboundHandler<TextWebSo
                 return;
             }
 
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
             String json = mapper.writeValueAsString(msg);
 
             for (Channel channel : channels) {
@@ -156,7 +158,7 @@ public class GatewayMessageHandler extends SimpleChannelInboundHandler<TextWebSo
 
     public static void broadcast(Object msg) {
         try {
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
             String json = mapper.writeValueAsString(msg);
             channelGroup.writeAndFlush(new TextWebSocketFrame(json));
             System.out.println("✅ 全局广播成功");

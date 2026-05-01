@@ -3,9 +3,10 @@ import { Input, Button, Avatar, Spin } from "antd";
 import { SendOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { subscribe, unsubscribe } from "@/utils/websocket";
-import { getChatSessions, getChatMessages } from "@/api/service"; // 导入接口
+import { getChatSessions, getChatMessages } from "@/api/service";
 import "./index.less";
 
+// TODO目前是单店铺
 const SHOP_ID = 1;
 
 const ChatPage = () => {
@@ -31,9 +32,9 @@ const ChatPage = () => {
       }),
     },
   ]);
-  const [loading, setLoading] = useState(true); // 加载状态
+  const [loading, setLoading] = useState(true);
 
-  // -------------------- 1. 刷新页面加载历史消息 --------------------
+  // 加载历史消息
   useEffect(() => {
     if (!userId) return;
 
@@ -50,10 +51,11 @@ const ChatPage = () => {
 
           // 3. 转换消息格式，渲染到页面
           const historyList = messages.map((msg) => {
-            const isFromSelf = msg.fromUserId === userId;
+            // 是否是店铺客服发的消息
+            const isFromSelf = msg.senderType === "SHOP_ADMIN";
             return {
-              type: isFromSelf ? "user" : "shop",
-              name: isFromSelf ? "我" : "客服",
+              type: isFromSelf ? "shop" : "user",
+              name: isFromSelf ? "客服" : "我",
               avatar: isFromSelf
                 ? "https://picsum.photos/40/40?random=user"
                 : "https://picsum.photos/40/40",
@@ -92,17 +94,19 @@ const ChatPage = () => {
     loadHistory();
   }, [userId]);
 
-  // -------------------- 2. 订阅实时消息 --------------------
+  // 订阅实时消息
   useEffect(() => {
     if (!userId) return;
 
     const topic = `chat_${userId}`;
 
     const handleMessage = (data) => {
-      console.log("用户收到消息：", data);
       if (data.type !== "CHAT") return;
+      // 如果这条消息是我自己发的，直接 return，不渲染
+      if (data.senderType === "USER") return;
 
-      const isFromSelf = data.fromUserId === userId;
+      // 是否是店铺客服发的消息
+      const isFromSelf = data.senderType === "USER";
       const newMsg = {
         type: isFromSelf ? "user" : "shop",
         name: isFromSelf ? "我" : "客服",
@@ -126,7 +130,7 @@ const ChatPage = () => {
     };
   }, [userId]);
 
-  // -------------------- 3. 发送消息 --------------------
+  // 3. 发送消息
   const send = () => {
     if (!msg.trim() || !userId) return;
 
@@ -158,13 +162,14 @@ const ChatPage = () => {
     window.ws.send(message);
   };
 
-  // -------------------- 4. 自动滚动到底部 --------------------
+  // 4. 自动滚动到底部
   useEffect(() => {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
   }, [list]);
 
+  // loading
   if (loading) {
     return (
       <div

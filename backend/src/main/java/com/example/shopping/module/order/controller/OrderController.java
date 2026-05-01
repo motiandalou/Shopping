@@ -10,6 +10,8 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/order")
 public class OrderController {
@@ -50,16 +52,15 @@ public class OrderController {
         order.setUserId(userId);
         order.setUserName(userName);
         orderService.frontAddOrder(order);
-
-        GatewayMessageDTO adminMsg = new GatewayMessageDTO();
-        adminMsg.setTopic("order_all");
-        adminMsg.setType("NEW_ORDER");
-        adminMsg.setContent("您有新订单！");
-        adminMsg.setOrderInfo(order);
-        adminMsg.setFromUserId(0L);
-
+        // 创建新订单时间
+        LocalDateTime createTime = order.getCreateTime();
+        // 新订单推送
+        GatewayMessageDTO adminMsg = new GatewayMessageDTO( "order_all",
+                "NEW_ORDER",
+                "您有新订单！",
+                order,
+                createTime);
         GatewayMessageHandler.sendToTopic("order_all", adminMsg);
-
         return Result.success("下单成功");
     }
 

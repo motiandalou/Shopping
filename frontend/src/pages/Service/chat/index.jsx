@@ -8,14 +8,18 @@ import emptyImg from "@/assets/image/empty.png";
 
 const { Sider, Content } = Layout;
 
+// TODO 店铺ID应该是动态的，目前是单店铺,这里先写死
 const SHOP_ID = 1;
 
-const Service = () => {
+const ServiceChat = () => {
+  // 切换用户的ID
   const [selectedUser, setSelectedUser] = useState(null);
+  // 发送消息的人(不是客户,是哪个用户发的)
+  const [selectedFromUserId, setSelectedFromUserId] = useState(null);
   const [userList, setUserList] = useState({});
   const [inputValue, setInputValue] = useState("");
   const chatRef = useRef(null);
-
+  // 用户信息
   const userStr = localStorage.getItem("userInfo");
   const userInfo = userStr ? JSON.parse(userStr) : {};
   const userId = userInfo.id;
@@ -32,6 +36,7 @@ const Service = () => {
           map[session.userId] = {
             info: {
               userId: session.userId,
+              // TODO 需要显示真名(用户注册的名字)这里先简单展示
               userName: `用户 ${session.userId}`,
               sessionId: session.id,
             },
@@ -52,26 +57,25 @@ const Service = () => {
 
   // 订阅
   useEffect(() => {
-    const topic = `chat_${selectedUser?.userId || 0}`;
+    if (!selectedUser?.userId) return;
+
+    const topic = `chat_${selectedUser.userId}`;
+    // 订阅
     subscribe(topic, (data) => {
-      console.log("客服收到消息：", data);
-
       if (data.type !== "CHAT") return;
-
+      // 如果这条消息是我自己发的，直接 return，不渲染
+      if (data.senderType === "SHOP_ADMIN") return;
+      // 哪个用户发的
       const fromUserId = data.fromUserId;
-      if (!fromUserId) return;
-
-      // 构造消息
       const newMsg = {
         content: data.content,
-        sender: "user",
+        sender: data.senderType === "SHOP_ADMIN" ? "admin" : "user",
         time: new Date().toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
         }),
       };
 
-      // 更新消息
       setUserList((prev) => {
         const user = prev[fromUserId] || {
           info: { userId: fromUserId, userName: `用户 ${fromUserId}` },
@@ -90,58 +94,11 @@ const Service = () => {
       });
     });
 
+    // 取消订阅
     return () => {
-      unsubscribe(`chat_${2}`);
+      unsubscribe(topic);
     };
   }, [selectedUser]);
-
-  // useEffect(() => {
-  //   if (!selectedUser?.userId) return;
-
-  //   const topic = `chat_${selectedUser.userId}`;
-  //   console.log("客服开始监听：", topic);
-
-  //   // 订阅
-  //   subscribe(topic, (data) => {
-  //     console.log("客服收到消息：", data);
-
-  //     if (data.type !== "CHAT") return;
-
-  //     const fromUserId = data.fromUserId;
-  //     if (!fromUserId) return;
-
-  //     const newMsg = {
-  //       content: data.content,
-  //       sender: "user",
-  //       time: new Date().toLocaleTimeString([], {
-  //         hour: "2-digit",
-  //         minute: "2-digit",
-  //       }),
-  //     };
-
-  //     setUserList((prev) => {
-  //       const user = prev[fromUserId] || {
-  //         info: { userId: fromUserId, userName: `用户 ${fromUserId}` },
-  //         messages: [],
-  //         unread: 0,
-  //       };
-
-  //       return {
-  //         ...prev,
-  //         [fromUserId]: {
-  //           ...user,
-  //           messages: [...user.messages, newMsg],
-  //           unread: selectedUser?.userId !== fromUserId ? user.unread + 1 : 0,
-  //         },
-  //       };
-  //     });
-  //   });
-
-  //   // 取消订阅
-  //   return () => {
-  //     unsubscribe(topic);
-  //   };
-  // }, [selectedUser]);
 
   // 切换用户
   const handleSelectUser = async (user) => {
@@ -155,10 +112,12 @@ const Service = () => {
     try {
       const res = await getChatMessages({ sessionId: user.sessionId });
       const list = res.data || [];
+      // 谁发送的消息(用户)
+      setSelectedFromUserId(list[0]?.fromUserId);
 
       const messages = list.map((msg) => ({
         content: msg.content,
-        sender: msg.fromUserId === null ? "admin" : "user",
+        sender: msg.senderType === "SHOP_ADMIN" ? "admin" : "user",
         time: new Date(msg.createdAt).toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
@@ -184,7 +143,7 @@ const Service = () => {
     const sendData = {
       topic: topic,
       type: "CHAT",
-      fromUserId: userId,
+      fromUserId: selectedFromUserId,
       shopId: SHOP_ID,
       senderType: "SHOP_ADMIN",
       content: inputValue,
@@ -238,7 +197,13 @@ const Service = () => {
               onClick={() => handleSelectUser(user.info)}
             >
               <List.Item.Meta
-                avatar={<Avatar icon={<UserOutlined />} />}
+                avatar={
+                  <Avatar
+                    icon={<UserOutlined />}
+                    src={`https://picsum.photos/40/40?random=${user.info.userId}`}
+                    style={{ width: 50, height: 50 }}
+                  />
+                }
                 title={user.info.userName}
                 description={`咨询ID: ${user.info.userId}`}
               />
@@ -303,4 +268,4 @@ const Service = () => {
   );
 };
 
-export default Service;
+export default ServiceChat;
