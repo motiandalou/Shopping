@@ -65,7 +65,8 @@
           align-items: flex-end;
 
           .message-content {
-            background: #dcebff;
+            background: #000;
+            color: #fff;
           }
         }
 
@@ -89,5 +90,22 @@
       justify-content: center;
       height: 90%;
     }
+  }
+}
+
+// 覆盖 Ant List 的选中态
+.ant-list-item.user-item {
+  border-radius: 8px;
+  margin: 4px 8px;
+  background-color: transparent;
+  padding: 12px 10px;
+
+  &:hover {
+    background-color: #f5f7fa !important;
+  }
+
+  &.active {
+    background-color: #f5f7fa !important;
+    border-left: 3px solid #000;
   }
 }

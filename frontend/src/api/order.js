@@ -9,11 +9,25 @@ export const getOrdersList = (params) => {
   });
 };
 
-// 修改
-export const updateOrders = (id) => {
+// 确认发货
+export const updateOrders = (id, data) => {
   return request({
-    url: `/order/back/updateStatus${id}`,
-    method: "PUT",
+    url: `/order/back/updateStatus`,
+    method: "post",
+    params: {
+      orderId: id,
+      status: data.status,
+      expressCompany: data.expressCompany,
+      expressNo: data.expressNo,
+    },
+  });
+};
+
+// 查询物流
+export const getLogistics = (id) => {
+  return request({
+    url: `/order/front/getLogistics/${id}`,
+    method: "GET",
   });
 };
 

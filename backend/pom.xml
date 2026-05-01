@@ -102,6 +102,13 @@
             <version>5.4.0</version>
         </dependency>
 
+        <!-- fastjson2 解析JSON用 -->
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>2.0.32</version>
+        </dependency>
+
         <!-- Netty 核心依赖 -->
         <dependency>
             <groupId>io.netty</groupId>
