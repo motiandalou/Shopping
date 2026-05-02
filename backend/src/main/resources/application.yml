@@ -17,6 +17,7 @@ spring:
   redis:
     host: localhost
     port: 6379
+    # 生产必须加
     password:
     database: 0
     connect-timeout: 10s
@@ -31,3 +32,11 @@ spring:
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   # type-aliases-package: com.geng.demo.mybatis.entity  # 注释要加空格，且缩进对齐
+
+# 快递鸟(查询物流信息)
+kdniao:
+  business-id: 1919821
+  api-key: 55a03972-8387-44b8-8f68-f4333d445e75
+  url: https://api.kdniao.com/api/dist
+  connect-timeout: 5000
+  read-timeout: 5000

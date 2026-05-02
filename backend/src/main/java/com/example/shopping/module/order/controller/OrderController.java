@@ -1,30 +1,27 @@
 package com.example.shopping.module.order.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.shopping.common.util.KdniaoUtil;
 import com.example.shopping.config.Result;
 import com.example.shopping.gateway.dto.GatewayMessageDTO;
 import com.example.shopping.gateway.handler.GatewayMessageHandler;
 import com.example.shopping.module.order.entity.Order;
-import com.example.shopping.module.order.entity.LogisticsTrace;
 import com.example.shopping.module.order.service.OrderService;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import com.example.shopping.common.util.KdniaoUtil;
+import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
+@Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/order")
 public class OrderController {
 
-    @Resource
-    private OrderService orderService;
+    private final OrderService orderService;
+    private final KdniaoUtil kdniaoUtil;
 
     // 【后台 - 管理员】
     @GetMapping("/back/list")
@@ -36,49 +33,6 @@ public class OrderController {
         return Result.success(page.getRecords());
     }
 
-//    @PostMapping("/back/updateStatus")
-//    public Result<?> backUpdateStatus(
-//            @RequestParam Long orderId,
-//            @RequestParam Integer status,
-//            @RequestParam(required = false) String expressCompany,
-//            @RequestParam(required = false) String expressNo
-//    ) {
-//        // 1. 普通状态更新
-//        orderService.backUpdateStatus(orderId, status);
-//
-//        // 2. 如果是【发货操作】，调用快递鸟查询物流
-//        // 2 = 已发货
-//        if (status == 2) {
-//            try {
-//                // 构造快递鸟请求参数
-//                String requestData = String.format(
-//                        "{\"ShipperCode\":\"%s\",\"LogisticCode\":\"%s\"}",
-//                        expressCompany,
-//                        expressNo
-//                );
-//
-//                // 调用快递鸟沙箱接口(TODO 正式接口的话需要修改)
-//                String logisticsResult = KdniaoUtil.request(
-//                        KdniaoUtil.ApiType.R8001.getCode(),
-//                        requestData,
-//                        // TODO true=沙箱(测试环境)，false=正式(生产环境)
-//                        true
-//                );
-//
-//                // 根据id查询订单，设置物流轨迹并更新入库
-//                Order order = orderService.getById(orderId);
-//                order.setLogisticsTrace(logisticsResult);
-//                orderService.updateById(order);
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                return Result.error("发货失败，物流接口异常");
-//            }
-//        }
-//
-//        return Result.success("发货成功");
-//    }
-
     @PostMapping("/back/updateStatus")
     public Result<?> backUpdateStatus(
             @RequestParam Long orderId,
@@ -86,66 +40,28 @@ public class OrderController {
             @RequestParam(required = false) String expressCompany,
             @RequestParam(required = false) String expressNo
     ) {
-        orderService.backUpdateStatus(orderId, status);
+        // 1. 更新订单状态 + 快递信息
+        Order order = new Order();
+        order.setId(orderId);
+        order.setStatus(status);
+        order.setShipperCode(expressCompany);
+        order.setLogisticCode(expressNo);
+        orderService.updateById(order);
 
+        // 2. 已发货 → 调用你封装好的工具类，存真实物流
         if (status == 2) {
             try {
-                // 官方格式：原始JSON，不加密！！！
-                String requestData = String.format(
-                        "{\"ShipperCode\":\"%s\",\"LogisticCode\":\"%s\"}",
-                        expressCompany,
-                        expressNo
-                );
+                // 请求快递鸟接口(写入操作,不走缓存)
+                String realLogistics = kdniaoUtil.trackQuery(expressCompany, expressNo);
 
-                // ===================== 沙箱测试（推荐先用这个） =====================
-//                String logisticsResult = KdniaoUtil.request(
-//                        KdniaoUtil.ApiType.R8001.getCode(),
-//                        requestData,
-//                        true  // true=沙箱，false=正式
-//                );
-                String mockTrace = "{\n" +
-                        "  \"EBusinessID\": \"1693946\",\n" +
-                        "  \"ShipperCode\": \"STO\",\n" +
-                        "  \"LogisticCode\": \"773367326370601\",\n" +
-                        "  \"Location\": \"哈尔滨市\",\n" +
-                        "  \"State\": \"2\",\n" +
-                        "  \"StateEx\": \"2\",\n" +
-                        "  \"Traces\": [\n" +
-                        "    {\n" +
-                        "      \"Action\": \"1\",\n" +
-                        "      \"AcceptStation\": \"【哈尔滨市】黑龙江五常市公司(045187844033)的数据扫描账号(19845019287) 已揽收\",\n" +
-                        "      \"AcceptTime\": \"2025-07-19 10:50:37\",\n" +
-                        "      \"Location\": \"哈尔滨市\"\n" +
-                        "    },\n" +
-                        "    {\n" +
-                        "      \"Action\": \"2\",\n" +
-                        "      \"AcceptStation\": \"【哈尔滨市】快件已发往 黑龙江哈尔滨转运中心\",\n" +
-                        "      \"AcceptTime\": \"2025-07-19 12:40:01\",\n" +
-                        "      \"Location\": \"哈尔滨市\"\n" +
-                        "    },\n" +
-                        "    {\n" +
-                        "      \"Action\": \"204\",\n" +
-                        "      \"AcceptStation\": \"【哈尔滨市】快件已到达 黑龙江哈尔滨转运中心 \",\n" +
-                        "      \"AcceptTime\": \"2025-07-20 01:12:11\",\n" +
-                        "      \"Location\": \"哈尔滨市\"\n" +
-                        "    },\n" +
-                        "    {\n" +
-                        "      \"Action\": \"2\",\n" +
-                        "      \"AcceptStation\": \"【哈尔滨市】快件已发往 广东中山转运中心\",\n" +
-                        "      \"AcceptTime\": \"2025-07-20 01:29:04\",\n" +
-                        "      \"Location\": \"哈尔滨市\"\n" +
-                        "    }\n" +
-                        "  ],\n" +
-                        "  \"Success\": true\n" +
-                        "}";
-
-                Order order = orderService.getById(orderId);
-                order.setLogisticsTrace(mockTrace);
-                orderService.updateById(order);
+                // 快递鸟接口返回的数据,存进数据库
+                Order updateOrder = orderService.getById(orderId);
+                updateOrder.setLogisticsTrace(realLogistics);
+                orderService.updateById(updateOrder);
 
             } catch (Exception e) {
-                e.printStackTrace();
-                return Result.error("物流接口异常");
+                log.error("发货物流异常", e);
+                return Result.error("物流查询失败");
             }
         }
 
@@ -190,33 +106,33 @@ public class OrderController {
     /**
      * 获取订单物流轨迹
      */
-    @GetMapping("/front/getLogistics/{orderId}")
-    public Result<List<LogisticsTrace>> getLogistics(@PathVariable Long orderId) {
-        Order order = orderService.getById(orderId);
-        if (order == null) {
-            return Result.error("订单不存在");
-        }
-
-        String traceJson = order.getLogisticsTrace();
-        if (traceJson == null || traceJson.isEmpty()) {
-            // 这里不报错，返回空数组
-            return Result.success(new ArrayList<>());
-        }
-
-        try {
-            // 直接解析整个JSON
-            JSONObject jsonObject = JSON.parseObject(traceJson);
-
-            // 直接拿 Traces 数组 → 这是最关键的一句
-            List<LogisticsTrace> nodeList =
-                    jsonObject.getJSONArray("Traces").toJavaList(LogisticsTrace.class);
-
-            return Result.success(nodeList);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.success(new ArrayList<>());
-        }
-    }
+//    @GetMapping("/front/getLogistics/{orderId}")
+//    public Result<List<LogisticsTrace>> getLogistics(@PathVariable Long orderId) {
+//        Order order = orderService.getById(orderId);
+//        if (order == null) {
+//            return Result.error("订单不存在");
+//        }
+//
+//        String traceJson = order.getLogisticsTrace();
+//        if (traceJson == null || traceJson.isEmpty()) {
+//            // 这里不报错，返回空数组
+//            return Result.success(new ArrayList<>());
+//        }
+//
+//        try {
+//            // 直接解析整个JSON
+//            JSONObject jsonObject = JSON.parseObject(traceJson);
+//
+//            // 直接拿 Traces 数组
+//            List<LogisticsTrace> nodeList =
+//                    jsonObject.getJSONArray("Traces").toJavaList(LogisticsTrace.class);
+//
+//            return Result.success(nodeList);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return Result.success(new ArrayList<>());
+//        }
+//    }
 
     @PostMapping("/front/delete")
     public Result<?> frontDelete(

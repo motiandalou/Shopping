@@ -24,9 +24,9 @@ export const updateOrders = (id, data) => {
 };
 
 // 查询物流
-export const getLogistics = (id) => {
+export const getLogistics = (shipperCode, logisticCode) => {
   return request({
-    url: `/order/front/getLogistics/${id}`,
+    url: `/logistics/track/${shipperCode}/${logisticCode}`,
     method: "GET",
   });
 };

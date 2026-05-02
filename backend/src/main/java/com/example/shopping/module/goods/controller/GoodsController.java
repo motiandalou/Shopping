@@ -3,17 +3,18 @@ package com.example.shopping.module.goods.controller;
 import com.example.shopping.config.Result;
 import com.example.shopping.module.goods.entity.Goods;
 import com.example.shopping.module.goods.service.GoodsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/goods")
 public class GoodsController {
 
-    @Autowired
-    private GoodsService goodsService;
+    private final GoodsService goodsService;
 
     // 商品管理列表
     @PostMapping("/list")

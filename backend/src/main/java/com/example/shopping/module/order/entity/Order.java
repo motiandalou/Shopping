@@ -4,12 +4,18 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("t_order")
+// autoResultMap: 最终返回前端给json
+@TableName(value = "t_order", autoResultMap = true)
+// 字段为空,不返回给前端
+@JsonInclude(JsonInclude.Include.NON_NULL)
+
 public class Order {
     @TableId(type = IdType.AUTO)
     private Long id;
@@ -34,6 +40,11 @@ public class Order {
     private LocalDateTime createTime;
     // 支付时间
     private LocalDateTime payTime;
+    // 快递公司编码（如 SF 顺丰、STO 申通）
+    private String shipperCode;
+    // 快递单号
+    private String logisticCode;
     // 物流轨迹JSON
-    private String logisticsTrace;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    private Object logisticsTrace;
 }

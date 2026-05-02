@@ -33,13 +33,11 @@ export default function OrderManage() {
   const [logisticsList, setLogisticsList] = useState([]);
 
   // 打开物流弹窗
-  const openLogisticsModal = async (orderId) => {
-    const res = await getLogistics(orderId);
-    if (res.code === 200) {
-      setLogisticsList(res.data);
-      console.log("物流信息：", res.data, logisticsList);
-      setLogisticsVisible(true);
-    }
+  const openLogisticsModal = async (shipperCode, logisticCode) => {
+    // shipperCode:快递公司 logisticCode:快递单号
+    const res = await getLogistics(shipperCode, logisticCode);
+    setLogisticsList(res.data);
+    setLogisticsVisible(true);
   };
 
   // 发货弹窗
@@ -172,7 +170,9 @@ export default function OrderManage() {
             <ShoppingButton
               size="small"
               style={{ marginLeft: 8 }}
-              onClick={() => openLogisticsModal(record.id)}
+              onClick={() =>
+                openLogisticsModal(record.shipperCode, record.logisticCode)
+              }
             >
               查看物流
             </ShoppingButton>
@@ -300,10 +300,10 @@ export default function OrderManage() {
                         fontSize: 14,
                       }}
                     >
-                      {item.acceptStation}
+                      {item.AcceptStation}
                     </div>
                     <div style={{ color: "#999", fontSize: 12, marginTop: 4 }}>
-                      {item.acceptTime}
+                      {item.AcceptTime}
                     </div>
                   </div>
                 </div>
