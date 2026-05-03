@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 
 @Data
 // autoResultMap: 最终返回前端给json
@@ -37,8 +39,10 @@ public class Order {
     // 订单状态：0-待支付 1-已支付 2-已发货 3-已完成 4-已取消
     private Integer status;
     // 创建时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
     // 支付时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime payTime;
     // 快递公司编码（如 SF 顺丰、STO 申通）
     private String shipperCode;
@@ -47,4 +51,18 @@ public class Order {
     // 物流轨迹JSON
     @TableField(typeHandler = JacksonTypeHandler.class)
     private Object logisticsTrace;
+    // 退款类型 0=无 1=仅退款 2=退货退款
+    private Integer refundType;
+    // 退款状态 0=无 1=待审核 2=审核通过 3=已退款 4=已拒绝
+    private Integer refundStatus;
+    // 退款原因
+    private String refundReason;
+    // 退款申请时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime refundApplyTime;
+    // 退款金额
+    private BigDecimal refundAmount;
+    // 售后工单号
+    private String refundOrderNo;
+
 }

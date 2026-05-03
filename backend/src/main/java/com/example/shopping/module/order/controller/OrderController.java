@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 
 @Slf4j
@@ -33,6 +34,7 @@ public class OrderController {
         return Result.success(page.getRecords());
     }
 
+    // 发货
     @PostMapping("/back/updateStatus")
     public Result<?> backUpdateStatus(
             @RequestParam Long orderId,
@@ -68,6 +70,7 @@ public class OrderController {
         return Result.success("操作成功");
     }
 
+    // 删除
     @PostMapping("/back/delete")
     public Result<?> backDelete(@RequestParam Long orderId) {
         orderService.removeById(orderId);
@@ -94,6 +97,7 @@ public class OrderController {
         return Result.success("下单成功");
     }
 
+    // 列表
     @GetMapping("/front/my")
     public Result<Page<Order>> frontMyOrder(
             @RequestParam Long userId,
@@ -103,37 +107,7 @@ public class OrderController {
         return Result.success(orderService.frontMyOrder(userId, pageNum, pageSize));
     }
 
-    /**
-     * 获取订单物流轨迹
-     */
-//    @GetMapping("/front/getLogistics/{orderId}")
-//    public Result<List<LogisticsTrace>> getLogistics(@PathVariable Long orderId) {
-//        Order order = orderService.getById(orderId);
-//        if (order == null) {
-//            return Result.error("订单不存在");
-//        }
-//
-//        String traceJson = order.getLogisticsTrace();
-//        if (traceJson == null || traceJson.isEmpty()) {
-//            // 这里不报错，返回空数组
-//            return Result.success(new ArrayList<>());
-//        }
-//
-//        try {
-//            // 直接解析整个JSON
-//            JSONObject jsonObject = JSON.parseObject(traceJson);
-//
-//            // 直接拿 Traces 数组
-//            List<LogisticsTrace> nodeList =
-//                    jsonObject.getJSONArray("Traces").toJavaList(LogisticsTrace.class);
-//
-//            return Result.success(nodeList);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return Result.success(new ArrayList<>());
-//        }
-//    }
-
+    // 删除
     @PostMapping("/front/delete")
     public Result<?> frontDelete(
             @RequestParam Long orderId,
@@ -143,8 +117,65 @@ public class OrderController {
         return Result.success("删除成功");
     }
 
-    @GetMapping("/front/detail")
-    public Result<Order> frontDetail(@RequestParam Long orderId) {
-        return Result.success(orderService.getById(orderId));
+    // 订单详情
+    @GetMapping("/front/detail/{orderId}/{userId}")
+    public Result<Order> frontDetail(
+            @PathVariable Long orderId,
+            @PathVariable Long userId
+    ) {
+        return Result.success(orderService.frontDetail(orderId, userId));
     }
+
+    /**
+     * 【前台 - 用户】申请退款 / 退货退款
+     */
+    @PostMapping("/front/applyRefund")
+    public Result<?> applyRefund(
+            @RequestBody Map<String, Object> params,
+            HttpServletRequest request
+    ) {
+        // 1. 必传字段
+        Long orderId = Long.parseLong(params.get("orderId").toString());
+        // 1=仅退款 2=退货退款
+        Integer refundType = Integer.parseInt(params.get("refundType").toString());
+        String refundReason = params.get("refundReason") == null ? "用户申请退款" : params.get("refundReason").toString();
+
+        // 2. 当前登录用户
+        Long userId = (Long) request.getAttribute("userId");
+
+        // 3. 业务层处理退款
+        orderService.applyRefund(orderId, userId, refundType, refundReason);
+
+        return Result.success("退款申请已提交，等待客服审核");
+    }
+
+    // ========================= 【售后工单管理 - 后台接口】 =========================
+    // 1. 售后工单列表（所有退款/退货申请）
+    @GetMapping("/back/refund/list")
+    public Result<?> refundOrderList(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @RequestParam(required = false, name = "refundStatus[]") Integer[] refundStatus
+    ) {
+        return Result.success(orderService.getRefundOrderList(pageNum, pageSize, refundStatus));
+    }
+
+    // 2. 售后工单详情
+    @GetMapping("/back/refund/detail")
+    public Result<?> refundDetail(@RequestParam Long orderId) {
+        return Result.success(orderService.getRefundDetail(orderId));
+    }
+
+    // 3. 审核退款（同意 / 拒绝）
+    @PostMapping("/back/refund/audit")
+    public Result<?> auditRefund(
+            @RequestParam Long orderId,
+            @RequestParam Integer refundStatus, // 2=通过 4=拒绝
+            @RequestParam(required = false) String refundRemark
+    ) {
+        orderService.auditRefund(orderId, refundStatus, refundRemark);
+        return Result.success("审核成功");
+    }
+
+
 }

@@ -90,13 +90,13 @@
   "dashboard.amount": "金额",
   "dashboard.status": "状态",
 
-  "login.welcome": "WELCOME",
-  "login.enterDetails": "Please enter your details",
-  "login.name": "Name",
-  "login.password": "Password",
-  "login.namePlaceholder": "Please enter your name",
-  "login.passwordPlaceholder": "Please enter your password",
-  "login.forgot": "Forgot password?",
+  "login.welcome": "欢迎",
+  "login.enterDetails": "请输入您的登录信息",
+  "login.name": "姓名",
+  "login.password": "密码",
+  "login.namePlaceholder": "请输入姓名",
+  "login.passwordPlaceholder": "请输入密码",
+  "login.forgot": "忘记密码？",
   "login.contactAdmin": "请联系管理员！",
   "login.tip": "提示",
   "login.confirm": "确定",
@@ -112,5 +112,9 @@
   "status.order.completed": "已完成",
   "status.order.canceled": "已取消",
   "status.user.normal": "正常",
-  "status.user.banned": "禁用"
+  "status.user.banned": "禁用",
+  "status.refund.pending": "售后处理中",
+  "status.refund.approved": "售后通过",
+  "status.refund.finished": "已退款",
+  "status.refund.rejected": "售后拒绝"
 }

@@ -7,14 +7,15 @@ import {
   OrderedListOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import Login from "./pages/Login";
-import Goods from "./pages/goods";
-import Cart from "./pages/Cart";
-import Order from "./pages/Order";
-import OrderList from "./pages/OrderList";
-import GoodsDetail from "./pages/goods/detail";
-import { getCartList } from "./api/cart";
-import ChatPage from "./pages/Chat";
+import Login from "@/pages/Login";
+import Goods from "@/pages/goods";
+import Cart from "@/pages/Cart";
+import Order from "@/pages/Order";
+import OrderList from "@/pages/OrderList";
+import GoodsDetail from "@/pages/Goods/detail";
+import OrderDetail from "@/pages/OrderList/detail";
+import { getCartList } from "@/api/cart";
+import ChatPage from "@/pages/Chat";
 
 import "./App.css";
 
@@ -180,6 +181,10 @@ function App() {
           <Route
             path="/orders"
             element={<OrderList />}
+          />
+          <Route
+            path="/order/detail/:id"
+            element={<OrderDetail />}
           />
           <Route
             path="/goods/detail/:id"

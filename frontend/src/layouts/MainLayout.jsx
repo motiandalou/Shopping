@@ -136,6 +136,21 @@ export default function MainLayout() {
       icon: <AppstoreOutlined />,
       label: <Link to="/category">{t("menu.category")}</Link>,
     },
+    // {
+    //   key: "finance",
+    //   label: "财务管理",
+    //   icon: <MessageOutlined />,
+    //   children: [
+    //     {
+    //       key: "/finance/review",
+    //       label: <Link to="/service/review">退款审核</Link>,
+    //     },
+    //     {
+    //       key: "/finance/audit",
+    //       label: <Link to="/service/audit">退款记录</Link>,
+    //     },
+    //   ],
+    // },
     {
       key: "service",
       label: "人工客服",
@@ -146,20 +161,16 @@ export default function MainLayout() {
           label: <Link to="/service/chat">{t("menu.service")}</Link>,
         },
         {
-          key: "/service/ticket",
-          label: <Link to="/service/ticket">售后工单列表</Link>,
-        },
-        {
           key: "/service/audit",
-          label: <Link to="/service/audit">售后审核处理</Link>,
+          label: <Link to="/service/audit">售后审核</Link>,
         },
         {
-          key: "/service/refund",
-          label: <Link to="/service/refund">退款记录</Link>,
+          key: "/service/ticket",
+          label: <Link to="/service/ticket">售后工单</Link>,
         },
         {
           key: "/service/trace",
-          label: <Link to="/service/trace">工单日志追溯</Link>,
+          label: <Link to="/service/trace">工单日志</Link>,
         },
       ],
     },

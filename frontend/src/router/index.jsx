@@ -17,7 +17,6 @@ import OperationLog from "@/pages/System/OperationLog";
 import ServiceChat from "@/pages/Service/chat";
 import ServiceTicket from "@/pages/Service/ticket";
 import ServiceAudit from "@/pages/Service/audit";
-import ServiceRefund from "@/pages/Service/refund";
 import ServiceTrace from "@/pages/Service/trace";
 
 import NotFound from "@/pages/404";
@@ -39,6 +38,14 @@ const router = createBrowserRouter([
       { path: "order", element: <Order /> },
       { path: "user", element: <User /> },
       { path: "category", element: <Category /> },
+      // {
+      //   path: "/finance",
+      //   element: <Outlet />,
+      //   children: [
+      //     { path: "review", element: <ServiceChat /> },
+      //     { path: "audit", element: <ServiceAudit /> },
+      //   ],
+      // },
       {
         path: "/service",
         element: <Outlet />,
@@ -46,7 +53,6 @@ const router = createBrowserRouter([
           { path: "chat", element: <ServiceChat /> },
           { path: "ticket", element: <ServiceTicket /> },
           { path: "audit", element: <ServiceAudit /> },
-          { path: "refund", element: <ServiceRefund /> },
           { path: "trace", element: <ServiceTrace /> },
         ],
       },

@@ -112,5 +112,9 @@
   "status.order.completed": "Completed",
   "status.order.canceled": "Canceled",
   "status.user.normal": "Normal",
-  "status.user.banned": "Banned"
+  "status.user.banned": "Banned",
+  "status.refund.pending": "After-sales Pending",
+  "status.refund.approved": "After-sales Approved",
+  "status.refund.finished": "Refunded",
+  "status.refund.rejected": "After-sales Rejected"
 }

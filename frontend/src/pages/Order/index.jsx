@@ -114,11 +114,6 @@ export default function OrderManage() {
       key: "phone",
     },
     {
-      title: t("order.address"),
-      dataIndex: "address",
-      key: "address",
-    },
-    {
       title: t("order.goods_info"),
       dataIndex: "goodsInfo",
       key: "goodsInfo",
@@ -133,9 +128,10 @@ export default function OrderManage() {
       title: t("order.status"),
       dataIndex: "status",
       key: "status",
-      render: (status) => (
+      render: (_, record) => (
         <ShoppingState
-          status={status}
+          status={record.status}
+          refundStatus={record.refundStatus}
           type="order"
         />
       ),
@@ -150,6 +146,11 @@ export default function OrderManage() {
       dataIndex: "payTime",
       key: "payTime",
       render: (payTime) => payTime || "-",
+    },
+    {
+      title: t("order.address"),
+      dataIndex: "address",
+      key: "address",
     },
     {
       title: t("order.operation"),

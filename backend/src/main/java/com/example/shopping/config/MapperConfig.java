@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
         "com.example.shopping.module.staff.mapper",
         "com.example.shopping.module.cart.mapper",
         "com.example.shopping.module.chat.mapper",
+        "com.example.shopping.module.orderLog.mapper",
 })
 public class MapperConfig {
 

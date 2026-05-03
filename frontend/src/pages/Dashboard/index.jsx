@@ -74,7 +74,13 @@ export default function Dashboard() {
     {
       title: t("dashboard.status"),
       dataIndex: "status",
-      render: (s) => <ShoppingState status={s} />,
+      render: (_, record) => (
+        <ShoppingState
+          status={record.status}
+          refundStatus={record.refundStatus}
+          type="order"
+        />
+      ),
     },
   ];
 

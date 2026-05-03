@@ -9,6 +9,7 @@ export const getOrdersList = (params) => {
   });
 };
 
+// 新增
 export const addOrder = (data) => {
   return request({
     url: "/order/front/add",
@@ -30,5 +31,22 @@ export const deleteOrders = (id) => {
   return request({
     url: `/order/delete/${id}`,
     method: "DELETE",
+  });
+};
+
+// 退款申请（仅退款 / 退货退款）
+export const applyRefund = (data) => {
+  return request({
+    url: "/order/front/applyRefund",
+    method: "POST",
+    data,
+  });
+};
+
+// 订单详情
+export const getOrderDetail = (orderId, userId) => {
+  return request({
+    url: `/order/front/detail/${orderId}/${userId}`,
+    method: "GET",
   });
 };
