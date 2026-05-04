@@ -14,6 +14,17 @@
   "menu.category": "Category",
   "menu.service": "Service",
   "menu.staff": "Staff",
+  "menu.chat": "Chatting",
+  "menu.setting": "Setting",
+
+  "menu.afterSalesAudit": "ASales Audit",
+  "menu.afterSalesOrder": "ASales Tickets",
+  "menu.orderLog": "Ticket Logs",
+  "menu.profile": "Profile",
+  "menu.shopConfig": "Shop Settings",
+  "menu.ruleConfig": "ASales Rules",
+  "menu.stockAlert": "Stock Alerts",
+  "menu.operationLog": "Operation Logs",
 
   "btn.add": "Add",
   "btn.edit": "Edit",

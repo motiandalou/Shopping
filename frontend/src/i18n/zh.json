@@ -14,6 +14,17 @@
   "menu.category": "分类管理",
   "menu.service": "人工客服",
   "menu.staff": "员工管理",
+  "menu.chat": "客服聊天",
+  "menu.setting": "设置",
+
+  "menu.afterSalesAudit": "售后审核",
+  "menu.afterSalesOrder": "售后工单",
+  "menu.orderLog": "工单日志",
+  "menu.profile": "个人中心",
+  "menu.shopConfig": "店铺配置",
+  "menu.ruleConfig": "售后规则",
+  "menu.stockAlert": "库存预警",
+  "menu.operationLog": "操作日志",
 
   "btn.add": "新增",
   "btn.edit": "编辑",

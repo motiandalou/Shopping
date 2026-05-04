@@ -142,7 +142,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return this.getById(orderId);
     }
 
-    // 3. 审核退款
+    // 3. 工单审核
     @Override
     @Transactional
     public void auditRefund(Long orderId, Integer refundStatus, String refundRemark) {
@@ -161,8 +161,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 orderId,                // 订单ID
                 order.getRefundOrderNo(),// 工单号
                 "管理员",               // TODO 操作人
-                operateContent,         // 操作内容
-                ""                      // TODO IP（可空）
+                operateContent         // 操作内容
+
         );
 
         // 更新订单状态

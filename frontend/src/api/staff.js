@@ -1,3 +1,4 @@
+// 后台管理系统登录人的相关接口
 import request from "./request";
 
 // 获取员工列表
@@ -26,15 +27,6 @@ export const updateStaff = (data) => {
     data,
   });
 };
-
-// 修改密码
-// export const updatePassword = (data) => {
-//   return request({
-//     url: "/staff/updatePassword",
-//     method: "POST",
-//     data,
-//   });
-// };
 
 // 删除员工
 export const deleteStaff = (id) => {

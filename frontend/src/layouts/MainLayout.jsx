@@ -153,32 +153,32 @@ export default function MainLayout() {
     // },
     {
       key: "service",
-      label: "人工客服",
+      label: t("menu.service"),
       icon: <MessageOutlined />,
       children: [
         {
           key: "/service/chat",
-          label: <Link to="/service/chat">{t("menu.service")}</Link>,
+          label: <Link to="/service/chat">{t("menu.chat")}</Link>,
         },
         {
           key: "/service/audit",
-          label: <Link to="/service/audit">售后审核</Link>,
+          label: <Link to="/service/audit">{t("menu.afterSalesAudit")}</Link>,
         },
         {
           key: "/service/ticket",
-          label: <Link to="/service/ticket">售后工单</Link>,
+          label: <Link to="/service/ticket">{t("menu.afterSalesOrder")}</Link>,
         },
         {
           key: "/service/trace",
-          label: <Link to="/service/trace">工单日志</Link>,
+          label: <Link to="/service/trace">{t("menu.orderLog")}</Link>,
         },
       ],
     },
-    // 系统设置：老板、员工都可见
+    // 设置：老板、员工都可见
     {
       key: "system",
       icon: <SettingOutlined />,
-      label: "系统设置",
+      label: t("menu.setting"),
       // 动态判断二级菜单
       children:
         userInfo?.role === 0
@@ -186,7 +186,7 @@ export default function MainLayout() {
               // 老板：全部菜单
               {
                 key: "/system/profile",
-                label: <Link to="/system/profile">个人中心</Link>,
+                label: <Link to="/system/profile">{t("menu.profile")}</Link>,
               },
               {
                 key: "/system/staff",
@@ -194,26 +194,28 @@ export default function MainLayout() {
               },
               {
                 key: "/system/shop",
-                label: <Link to="/system/shop">店铺配置</Link>,
+                label: <Link to="/system/shop">{t("menu.shopConfig")}</Link>,
               },
               {
                 key: "/system/order-rule",
-                label: <Link to="/system/order-rule">订单/售后规则</Link>,
+                label: (
+                  <Link to="/system/order-rule">{t("menu.ruleConfig")}</Link>
+                ),
               },
               {
                 key: "/system/stock",
-                label: <Link to="/system/stock">库存预警</Link>,
+                label: <Link to="/system/stock">{t("menu.stockAlert")}</Link>,
               },
               {
                 key: "/system/log",
-                label: <Link to="/system/log">操作日志</Link>,
+                label: <Link to="/system/log">{t("menu.operationLog")}</Link>,
               },
             ]
           : [
               // 员工：只显示 个人中心
               {
                 key: "/system/profile",
-                label: <Link to="/system/profile">个人中心</Link>,
+                label: <Link to="/system/profile">{t("menu.profile")}</Link>,
               },
             ],
     },

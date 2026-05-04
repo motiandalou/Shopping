@@ -33,6 +33,9 @@ public class Goods implements Serializable {
     // 库存
     private Integer stock;
 
+    // 预警阈值
+    private Integer warningNum;
+
     // 封面图片
     private String coverImg;
 
@@ -41,4 +44,6 @@ public class Goods implements Serializable {
 
     // 上架状态 0-未上架 1-已上架
     private Integer status;
+
+
 }

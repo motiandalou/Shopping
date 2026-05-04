@@ -156,6 +156,15 @@ export default function GoodsManage() {
       title: t("goods.stock"),
       dataIndex: "stock",
       width: 60,
+      render: (v, record) => (
+        <span
+          style={{
+            color: record.stock < record.warningNum ? "red" : "inherit",
+          }}
+        >
+          {v}
+        </span>
+      ),
     },
     {
       title: t("goods.cover"),

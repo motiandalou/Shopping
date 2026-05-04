@@ -27,13 +27,12 @@ public class OrderLogServiceImpl extends ServiceImpl<OrderLogMapper, OrderLog> i
     }
 
     @Override
-    public void addLog(Long orderId, String refundOrderNo, String operatorName, String content, String ip) {
+    public void addLog(Long orderId, String refundOrderNo, String operatorName, String content) {
         OrderLog log = new OrderLog();
         log.setOrderId(orderId);
         log.setRefundOrderNo(refundOrderNo);
         log.setOperatorName(operatorName);
         log.setOperateContent(content);
-        log.setIpAddress(ip);
         log.setCreateTime(LocalDateTime.now());
         save(log);
     }

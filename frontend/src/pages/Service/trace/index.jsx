@@ -33,7 +33,6 @@ const ServiceTrace = () => {
       dataIndex: "createTime",
       render: (t) => dayjs(t).format("YYYY-MM-DD HH:mm:ss"),
     },
-    { title: "IP地址", dataIndex: "ipAddress", key: "ipAddress" },
   ];
 
   return (

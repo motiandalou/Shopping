@@ -17,6 +17,5 @@ public class OrderLog {
     private String refundOrderNo;  // 售后工单号
     private String operatorName;   // 操作人
     private String operateContent; // 操作内容
-    private String ipAddress;      // IP
     private LocalDateTime createTime; // 时间
 }

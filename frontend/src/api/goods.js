@@ -18,6 +18,15 @@ export const addGoods = (data) => {
   });
 };
 
+// 修改预警阈值
+export const updateWarningNum = (data) => {
+  return request({
+    url: "/goods/updateWarningNum",
+    method: "POST",
+    data,
+  });
+};
+
 // 修改
 export const updateGoods = (data) => {
   return request({
