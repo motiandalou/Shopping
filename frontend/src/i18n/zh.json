@@ -22,7 +22,6 @@
   "menu.orderLog": "工单日志",
   "menu.profile": "个人中心",
   "menu.shopConfig": "店铺配置",
-  "menu.ruleConfig": "售后规则",
   "menu.stockAlert": "库存预警",
   "menu.operationLog": "操作日志",
 
@@ -127,5 +126,7 @@
   "status.refund.pending": "售后处理中",
   "status.refund.approved": "售后通过",
   "status.refund.finished": "已退款",
-  "status.refund.rejected": "售后拒绝"
+  "status.refund.rejected": "售后拒绝",
+  "status.log.success": "成功",
+  "status.log.fail": "失败"
 }

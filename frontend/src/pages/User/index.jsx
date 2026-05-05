@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 
 import { getUserList, updateUser, updateUserStatus } from "../../api/user";
 import ShoppingButton from "@/components/shopping_button";
-import ShoppingState from "../../components/Shopping_state";
+import ShoppingState from "@/components/Shopping_state";
 
 export default function UserManage() {
   const { t } = useTranslation();
@@ -48,7 +48,7 @@ export default function UserManage() {
         total: res.data?.length || 0,
       });
     } catch (err) {
-      message.error(t("user.getListFail"));
+      console.error("err:", err);
     }
   };
 
@@ -60,7 +60,7 @@ export default function UserManage() {
       setModalVisible(false);
       fetchUserList();
     } catch (err) {
-      message.error(t("user.updateFail"));
+      console.error("err:", err);
     }
   };
 
@@ -88,7 +88,7 @@ export default function UserManage() {
       message.success(t("user.operateSuccess"));
       fetchUserList();
     } catch (err) {
-      message.error(t("user.operateFail"));
+      console.error("err:", err);
     }
   };
 

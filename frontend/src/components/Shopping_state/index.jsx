@@ -40,6 +40,9 @@ const ShoppingState = ({ status, refundStatus, type = "order" }) => {
 
     user_1: { text: t("status.user.normal"), color: "#2e7d32" },
     user_0: { text: t("status.user.banned"), color: "#616161" },
+
+    log_1: { text: t("status.log.success"), color: "#2e7d32" },
+    log_0: { text: t("status.log.fail"), color: "#c62828" },
   };
 
   const key = `${type}_${status}`;

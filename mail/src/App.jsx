@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { Layout, Button, Dropdown, Menu, message, Input, Badge } from "antd";
 import {
   UserOutlined,
-  ShoppingCartOutlined,
   OrderedListOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
@@ -14,53 +13,22 @@ import Order from "@/pages/Order";
 import OrderList from "@/pages/OrderList";
 import GoodsDetail from "@/pages/Goods/detail";
 import OrderDetail from "@/pages/OrderList/detail";
-import { getCartList } from "@/api/cart";
+
 import ChatPage from "@/pages/Chat";
+import MailSideFloatBar from "@/components/MailSideFloatBar";
+import MailTopMiniNav from "@/components/MailTopMiniNav";
 
 import "./App.css";
 
 const { Header, Content, Footer } = Layout;
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [cartCount, setCartCount] = useState(0);
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // 判断是否是登录页
-  const isLoginPage = location.pathname === "/login";
-
-  // 获取用户信息
-  useEffect(() => {
-    const u = localStorage.getItem("userInfo");
-    if (u) {
-      setUser(JSON.parse(u));
-    } else {
-      setUser(null);
-    }
-  }, [location.pathname]);
-
-  // 获取购物车数量
-  useEffect(() => {
-    if (user) {
-      getCartList()
-        .then((res) => {
-          setCartCount(res.data?.length || 0);
-        })
-        .catch(() => {
-          setCartCount(0);
-        });
-    } else {
-      setCartCount(0);
-    }
-  }, [user, location.pathname]);
 
   const logout = () => {
     localStorage.clear();
-    setUser(null);
     setCartCount(0);
-    message.success("退出成功");
     navigate("/login");
   };
 
@@ -76,25 +44,17 @@ function App() {
     navigate(`/?search=${searchValue}`);
   };
 
-  // ==============================================
-  // 登录页面 → 直接全屏渲染，不带头部底部
-  // ==============================================
-  if (isLoginPage) {
-    return <Login setUser={setUser} />;
-  }
-
-  // ==============================================
-  // 其他页面 → 带头部底部
-  // ==============================================
   return (
     <Layout className="jd-layout">
+      <MailTopMiniNav />
+
       <Header className="jd-top-header">
         <div className="jd-header-container">
           <div
             className="jd-logo"
             onClick={() => navigate("/")}
           >
-            <span className="jd-logo-text">Mail</span>
+            <span className="jd-logo-text">MALL</span>
           </div>
 
           <div className="jd-search-box">
@@ -112,53 +72,6 @@ function App() {
               onClick={handleSearch}
             >
               搜索
-            </Button>
-          </div>
-
-          <div className="jd-user-actions">
-            {user ? (
-              <Dropdown
-                overlay={userMenu}
-                trigger={["click"]}
-              >
-                <Button
-                  type="text"
-                  icon={<UserOutlined />}
-                  className="jd-user-btn"
-                >
-                  {user.userName}
-                </Button>
-              </Dropdown>
-            ) : (
-              <Button
-                type="text"
-                onClick={() => navigate("/login")}
-                className="jd-user-btn"
-              >
-                请登录
-              </Button>
-            )}
-
-            <Badge
-              count={cartCount}
-              color="#ff3300"
-              size="small"
-            >
-              <Button
-                icon={<ShoppingCartOutlined />}
-                onClick={() => navigate("/cart")}
-                className="jd-cart-btn"
-              >
-                购物车
-              </Button>
-            </Badge>
-
-            <Button
-              icon={<OrderedListOutlined />}
-              onClick={() => navigate("/orders")}
-              className="jd-order-btn"
-            >
-              订单
             </Button>
           </div>
         </div>
@@ -196,6 +109,9 @@ function App() {
           />
         </Routes>
       </Content>
+
+      {/* 右侧侧边栏 */}
+      <MailSideFloatBar />
     </Layout>
   );
 }

@@ -56,7 +56,7 @@ export default function CategoryManage() {
       setVisible(false);
       fetchCategoryList();
     } catch (err) {
-      message.error(t("category.addFail"));
+      console.error("Failed to add category:", err);
     }
   };
 
@@ -67,7 +67,7 @@ export default function CategoryManage() {
       setVisible(false);
       fetchCategoryList();
     } catch (err) {
-      message.error(t("category.editFail"));
+      console.error("Failed to update category:", err);
     }
   };
 
@@ -77,7 +77,7 @@ export default function CategoryManage() {
       message.success(res.msg);
       fetchCategoryList();
     } catch (err) {
-      message.error(t("category.deleteFail"));
+      console.error("Failed to delete category:", err);
     }
   };
 

@@ -22,7 +22,7 @@ const ServiceAudit = () => {
       const res = await refundOrderList(params);
       setData(res.data?.records || []);
     } catch (err) {
-      message.error("加载失败");
+      console.error("Failed to fetch refund order list:", err);
     } finally {
       setLoading(false);
     }

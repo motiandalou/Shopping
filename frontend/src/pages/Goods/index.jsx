@@ -89,7 +89,8 @@ export default function GoodsManage() {
       }
       setCategoryHasMore(categoryList.length + list.length < total);
     } catch (err) {
-      message.error(t("goods.getCategoryFail"));
+      console.error("Failed to add category:", err);
+      console.error("Failed to fetch category list:", err);
     } finally {
       isLoadingRef.current = false;
       setTimeout(() => setShowLoading(false), 300);
@@ -105,11 +106,10 @@ export default function GoodsManage() {
   const handleAdd = async (values) => {
     try {
       await addGoods(values);
-      message.success(t("goods.addSuccess"));
       setVisible(false);
       fetchGoodsList();
     } catch (err) {
-      message.error(t("goods.addFail"));
+      console.error("Failed to add goods:", err);
     }
   };
 
@@ -120,7 +120,8 @@ export default function GoodsManage() {
       setVisible(false);
       fetchGoodsList();
     } catch (err) {
-      message.error(t("goods.editFail"));
+      console.error("Failed to add category:", err);
+      console.error("Failed to update goods:", err);
     }
   };
 
@@ -130,7 +131,7 @@ export default function GoodsManage() {
       message.success(t("goods.deleteSuccess"));
       fetchGoodsList();
     } catch (err) {
-      message.error(t("goods.deleteFail"));
+      console.error("Failed to delete goods:", err);
     }
   };
 

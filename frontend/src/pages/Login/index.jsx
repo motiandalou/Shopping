@@ -33,7 +33,8 @@ export default function Login() {
       setToken(res.data.token);
       navigate("/dashboard");
     } catch (err) {
-      message.error(t("login.fail"));
+      console.error("Failed to add category:", err);
+      console.error("Login failed:", err);
     }
   };
 

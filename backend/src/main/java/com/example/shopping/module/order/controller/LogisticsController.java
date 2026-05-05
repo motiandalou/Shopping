@@ -101,7 +101,7 @@ public class LogisticsController {
                 "}";;
 
         try {
-            // 把 String 转成 JsonNode（必须这一步！）
+            // 把 String 转成 JsonNode
             JsonNode root = new ObjectMapper().readTree(fakeJson);
             // ✅ 只取出 Traces 数组返回
             JsonNode traces = root.get("Traces");

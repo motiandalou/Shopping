@@ -22,7 +22,6 @@
   "menu.orderLog": "Ticket Logs",
   "menu.profile": "Profile",
   "menu.shopConfig": "Shop Settings",
-  "menu.ruleConfig": "ASales Rules",
   "menu.stockAlert": "Stock Alerts",
   "menu.operationLog": "Operation Logs",
 
@@ -127,5 +126,7 @@
   "status.refund.pending": "After-sales Pending",
   "status.refund.approved": "After-sales Approved",
   "status.refund.finished": "Refunded",
-  "status.refund.rejected": "After-sales Rejected"
+  "status.refund.rejected": "After-sales Rejected",
+  "status.log.success": "success",
+  "status.log.fail": "fail"
 }

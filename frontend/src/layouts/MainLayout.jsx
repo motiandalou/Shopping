@@ -197,12 +197,6 @@ export default function MainLayout() {
                 label: <Link to="/system/shop">{t("menu.shopConfig")}</Link>,
               },
               {
-                key: "/system/order-rule",
-                label: (
-                  <Link to="/system/order-rule">{t("menu.ruleConfig")}</Link>
-                ),
-              },
-              {
                 key: "/system/stock",
                 label: <Link to="/system/stock">{t("menu.stockAlert")}</Link>,
               },

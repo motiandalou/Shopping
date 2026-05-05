@@ -44,7 +44,7 @@ export default function Profile() {
         // 成功后 强制刷新页面
         window.location.reload();
       } else {
-        message.error(res.msg);
+        console.error(res.msg);
       }
     } catch (err) {
       console.error("保存个人信息失败", err);

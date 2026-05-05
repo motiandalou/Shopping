@@ -1,12 +1,13 @@
 package com.example.shopping.module.goods.controller;
 
+import com.example.shopping.module.log.annotation.Log;
 import com.example.shopping.config.Result;
 import com.example.shopping.module.goods.entity.Goods;
 import com.example.shopping.module.goods.service.GoodsService;
 import lombok.RequiredArgsConstructor;
+//import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -22,7 +23,7 @@ public class GoodsController {
         return Result.success(goodsService.list(goods));
     }
 
-    // ===================== 新增【商品详情接口】=====================
+    // =====================【商品详情接口】=====================
     @GetMapping("/detail/{id}")
     public Result<Goods> getGoodsDetail(@PathVariable Integer id) {
         Goods goods = goodsService.getDetailById(id);
@@ -30,6 +31,7 @@ public class GoodsController {
     }
 
     // 新增
+    @Log(module = "商品管理", operation = "新增商品")
     @PostMapping("/add")
     public Result<String> add(@RequestBody Goods goods) {
         try {
@@ -42,12 +44,14 @@ public class GoodsController {
     }
 
     // 修改
+    @Log(module = "商品管理", operation = "修改商品")
     @PutMapping("/update")
     public Result<String> update(@RequestBody Goods goods) {
         return Result.success(goodsService.update(goods));
     }
 
     // 删除
+    @Log(module = "商品管理", operation = "删除商品")
     @DeleteMapping("/delete/{id}")
     public Result<String> delete(@PathVariable Integer id) {
         return Result.success(goodsService.delete(id));

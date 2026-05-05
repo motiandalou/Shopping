@@ -14,7 +14,7 @@ const ServiceTrace = () => {
       const res = await getOrderLogList({ pageNum: 1, pageSize: 100 });
       setData(res.data?.records || []);
     } catch (err) {
-      message.error("加载日志失败");
+      console.error("Failed to fetch order log list:", err);
     } finally {
       setLoading(false);
     }

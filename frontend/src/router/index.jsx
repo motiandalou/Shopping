@@ -10,7 +10,6 @@ import Category from "../pages/Category";
 import Profile from "@/pages/System/Profile";
 import Staff from "@/pages/System/Staff";
 import ShopConfig from "@/pages/System/ShopConfig";
-import OrderRule from "@/pages/System/OrderRule";
 import StockWarning from "@/pages/System/StockWarning";
 import OperationLog from "@/pages/System/OperationLog";
 
@@ -63,7 +62,6 @@ const router = createBrowserRouter([
           { path: "profile", element: <Profile /> },
           { path: "staff", element: <Staff /> },
           { path: "shop", element: <ShopConfig /> },
-          { path: "order-rule", element: <OrderRule /> },
           { path: "stock", element: <StockWarning /> },
           { path: "log", element: <OperationLog /> },
         ],

@@ -34,7 +34,7 @@ export default function StockWarning() {
         total: res.data?.total || data.length,
       });
     } catch (err) {
-      message.error("加载失败");
+      console.error("err", err);
     } finally {
       setLoading(false);
     }

@@ -43,7 +43,7 @@ export default function StaffManage() {
       const res = await getStaffList({});
       setList(res.data || []);
     } catch (err) {
-      message.error(t("staff.getFail"));
+      console.error("err:", err);
     }
   };
 
@@ -56,10 +56,10 @@ export default function StaffManage() {
         fetchStaffList();
         message.success(t("staff.addSuccess"));
       } else {
-        message.error(res.msg);
+        console.error("res.msg:", res.msg);
       }
     } catch (err) {
-      message.error(t("staff.addFail"));
+      console.error("err:", err);
     }
   };
 
@@ -70,7 +70,7 @@ export default function StaffManage() {
       setVisible(false);
       fetchStaffList();
     } catch (err) {
-      message.error(t("staff.editFail"));
+      console.error("err:", err);
     }
   };
 
@@ -80,7 +80,7 @@ export default function StaffManage() {
       message.success(t("staff.deleteSuccess"));
       fetchStaffList();
     } catch (err) {
-      message.error(t("staff.deleteFail"));
+      console.error("err:", err);
     }
   };
 

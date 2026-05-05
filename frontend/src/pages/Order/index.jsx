@@ -93,7 +93,7 @@ export default function OrderManage() {
       // 立即刷新订单列表（兼容 WS 推送前手动刷新）
       fetchOrderList();
     } catch (err) {
-      message.error("发货失败，请检查表单或网络");
+      console.error("Failed to confirm delivery:", err);
     }
   };
 
