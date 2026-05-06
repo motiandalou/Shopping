@@ -1,17 +1,17 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
-import MainLayout from "../layouts/MainLayout";
+import MainLayout from "@/layouts/MainLayout";
 import AuthRoute from "./AuthRoute";
-import Login from "../pages/Login";
-import Dashboard from "../pages/Dashboard";
-import Goods from "../pages/Goods";
-import Order from "../pages/Order";
-import User from "../pages/User";
-import Category from "../pages/Category";
+import Login from "@/pages/Login";
+import Dashboard from "@/pages/Dashboard";
+import Goods from "@/pages/Goods";
+import Order from "@/pages/Order";
+import User from "@/pages/User";
+import Category from "@/pages/Category";
 import Profile from "@/pages/System/Profile";
 import Staff from "@/pages/System/Staff";
 import ShopConfig from "@/pages/System/ShopConfig";
 import StockWarning from "@/pages/System/StockWarning";
-import OperationLog from "@/pages/System/OperationLog";
+import Log from "@/pages/System/Log";
 
 import ServiceChat from "@/pages/Service/chat";
 import ServiceTicket from "@/pages/Service/ticket";
@@ -63,7 +63,7 @@ const router = createBrowserRouter([
           { path: "staff", element: <Staff /> },
           { path: "shop", element: <ShopConfig /> },
           { path: "stock", element: <StockWarning /> },
-          { path: "log", element: <OperationLog /> },
+          { path: "log", element: <Log /> },
         ],
       },
       // 404 页面

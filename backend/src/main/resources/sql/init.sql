@@ -159,3 +159,20 @@ CREATE TABLE `t_order_log` (
     KEY `idx_order_id` (`order_id`),
     KEY `idx_refund_no` (`refund_order_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单/售后操作日志';
+
+CREATE TABLE `sys_operation_log` (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
+    module VARCHAR(50) COMMENT '模块（如 商品 / 订单）',
+    operation VARCHAR(100) COMMENT '操作类型（新增 / 删除 / 修改 / 登录）',
+    method VARCHAR(200) COMMENT '方法名',
+    request_url VARCHAR(255) COMMENT '请求地址',
+    request_method VARCHAR(10) COMMENT '请求方式',
+    operator_id BIGINT COMMENT '操作人ID',
+    operator_name VARCHAR(50) COMMENT '操作人名称',
+    request_param TEXT COMMENT '请求参数',
+    response_data TEXT COMMENT '返回数据',
+    status TINYINT COMMENT '状态 1成功 0失败',
+    error_msg TEXT COMMENT '错误信息',
+    cost_time BIGINT COMMENT '耗时(ms)',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);

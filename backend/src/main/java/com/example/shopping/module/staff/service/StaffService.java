@@ -5,8 +5,8 @@ import java.util.List;
 
 public interface StaffService {
 
-    // 登录
-    String login(Staff auth);
+    // 登录（只做校验，不生成token）
+    void login(Staff auth);
 
     // 员工列表
     List<Staff> list(Staff staff);
@@ -20,7 +20,7 @@ public interface StaffService {
     // 新增员工
     boolean save(Staff staff);
 
-    // 新增：根据用户名查询员工（用于重复校验）
+    // 根据用户名查询员工
     Staff getByUserName(String userName);
 
     // 修改员工

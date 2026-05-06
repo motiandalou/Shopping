@@ -4,7 +4,7 @@ import { getLogList } from "@/api/log";
 import dayjs from "dayjs";
 import ShoppingState from "@/components/Shopping_state";
 
-export default function OperationLog() {
+export default function Log() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 

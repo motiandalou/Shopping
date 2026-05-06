@@ -23,7 +23,7 @@
   "menu.profile": "Profile",
   "menu.shopConfig": "Shop Settings",
   "menu.stockAlert": "Stock Alerts",
-  "menu.operationLog": "Operation Logs",
+  "menu.logs": "Logs",
 
   "btn.add": "Add",
   "btn.edit": "Edit",

@@ -6,8 +6,8 @@ import {
   EyeTwoTone,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { setToken } from "../../utils/token";
-import { loginApi, registerApi, getUserInfo } from "../../api/user";
+import { getUserInfo } from "@/api/user";
+import { loginApi, registerApi } from "@/api/auth";
 import "./index.less";
 
 export default function Login() {
@@ -22,8 +22,11 @@ export default function Login() {
   const handleLogin = async (values) => {
     try {
       const res = await loginApi(values);
-      setToken(res.data.token);
-      // 拿token查询完整用户信息
+      const { accessToken, refreshToken } = res.data;
+      // 存储双 token
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      // TODO 拿token查询完整用户信息
       const { data: userInfo } = await getUserInfo();
       // 保存完整信息（包含用户名、电话、地址等）
       localStorage.setItem("userInfo", JSON.stringify(userInfo));

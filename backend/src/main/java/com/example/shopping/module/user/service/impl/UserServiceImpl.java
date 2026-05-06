@@ -1,7 +1,6 @@
 package com.example.shopping.module.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.example.shopping.common.util.JwtUtil;
 import com.example.shopping.module.user.entity.User;
 import com.example.shopping.module.user.mapper.UserMapper;
 import com.example.shopping.module.user.service.UserService;
@@ -17,13 +16,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
-    // 注入：密码加密器
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    // 注入：JWT工具类
-    @Autowired
-    private JwtUtil jwtUtil;
 
     /**
      * 注册
@@ -41,18 +35,16 @@ public class UserServiceImpl implements UserService {
         // 密码加密
         String encryptedPwd = passwordEncoder.encode(auth.getPassword());
         auth.setPassword(encryptedPwd);
-
-        // 保留原有角色设置
         auth.setRole(auth.getRole());
 
         return userMapper.insert(auth) > 0;
     }
 
     /**
-     * 登录
+     * 登录（只做校验，不生成token）
      */
     @Override
-    public String login(User auth) {
+    public void login(User auth) {
         User dbUser = userMapper.selectOne(
                 new LambdaQueryWrapper<User>()
                         .eq(User::getUserName, auth.getUserName())
@@ -66,31 +58,17 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(auth.getPassword(), dbUser.getPassword())) {
             throw new RuntimeException("密码错误");
         }
-
-        // 生成角色
-        String role = dbUser.getRole() == 1 ? "ROLE_ADMIN" : "ROLE_USER";
-
-        // 生成 JWT
-        String token = jwtUtil.generateToken(
-                dbUser.getUserName(),
-                role,
-                dbUser.getId()
-        );
-
-        return token;
     }
 
     /**
-     * 查询用户列表（支持用户名/手机号模糊查询）
+     * 查询用户列表
      */
     @Override
     public List<User> list(User user) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
-        // 按用户名模糊查询
         if (user.getUserName() != null && !user.getUserName().isEmpty()) {
             wrapper.like(User::getUserName, user.getUserName());
         }
-        // 按手机号模糊查询
         if (user.getPhone() != null && !user.getPhone().isEmpty()) {
             wrapper.like(User::getPhone, user.getPhone());
         }
@@ -118,5 +96,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getById(Long id) {
         return userMapper.selectById(id);
+    }
+
+    @Override
+    public User getByUserName(String userName) {
+        return userMapper.selectOne(new LambdaQueryWrapper<User>()
+                .eq(User::getUserName, userName));
     }
 }

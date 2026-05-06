@@ -42,7 +42,7 @@ export default function ShopSetting() {
                   />
                 </Form.Item>
                 <Form.Item>
-                  <Button type="primary">保存配置</Button>
+                  <Button type="primary">保存</Button>
                 </Form.Item>
               </Form>
             ),
@@ -80,7 +80,7 @@ export default function ShopSetting() {
                   <Switch />
                 </Form.Item>
                 <Form.Item>
-                  <Button type="primary">保存规则</Button>
+                  <Button type="primary">保存</Button>
                 </Form.Item>
               </Form>
             ),

@@ -36,14 +36,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = null;
         String username = null;
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-            username = jwtUtil.extractUsername(token);
+        // ===================== 【关键修复】空值 + 格式校验 =====================
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
+        // 截取 token
+        token = authHeader.substring(7);
+
+        // 【安全保护】token 为空/格式错误直接跳过
+        if (token.isEmpty()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // 【异常捕获】防止解析失败导致项目报错
+        try {
+            username = jwtUtil.extractUsername(token);
+        } catch (Exception e) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        // ====================================================================
+
+        // 用户名不为空 且 未认证
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
+            // 验证 token 是否有效
             if (jwtUtil.validateToken(token, userDetails.getUsername())) {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
@@ -54,7 +75,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
 
-                // 只给前台用户设置userId，后台员工不处理
+                // 尝试获取 userId（前台用户才有，后台员工没有，不报错）
                 try {
                     Long userId = jwtUtil.extractUserId(token);
                     if (userId != null) {
@@ -62,10 +83,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         request.setAttribute("username", username);
                     }
                 } catch (Exception ignored) {
-                    // 后台token没有userId，捕获异常不处理
+                    // 后台员工无 userId，忽略即可
                 }
             }
         }
+
         filterChain.doFilter(request, response);
     }
 }

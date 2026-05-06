@@ -3,6 +3,7 @@ package com.example.shopping.module.category.controller;
 import com.example.shopping.config.Result;
 import com.example.shopping.module.category.entity.Category;
 import com.example.shopping.module.category.service.CategoryService;
+import com.example.shopping.module.log.annotation.Log;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ public class CategoryController {
     }
 
     // 新增
+    @Log(module = "分类管理", operation = "新增分类")
     @PostMapping("/add")
     public Result<String> add(@RequestBody Category category) {
         try {
@@ -50,12 +52,14 @@ public class CategoryController {
     }
 
     // 修改
+    @Log(module = "分类管理", operation = "修改分类")
     @PutMapping("/update")
     public Result<String> update(@RequestBody Category category) {
         return Result.success(categoryService.update(category));
     }
 
     // 删除
+    @Log(module = "分类管理", operation = "删除分类")
     @DeleteMapping("/delete/{id}")
     public Result<String> delete(@PathVariable Integer id) {
         return Result.success(categoryService.delete(id));

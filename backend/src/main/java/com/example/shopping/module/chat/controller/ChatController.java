@@ -4,6 +4,7 @@ import com.example.shopping.config.Result;
 import com.example.shopping.module.chat.entity.ChatMessage;
 import com.example.shopping.module.chat.entity.ChatSession;
 import com.example.shopping.module.chat.service.ChatService;
+import com.example.shopping.module.log.annotation.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,7 @@ public class ChatController {
      * 获取会话的聊天记录
      * 进入聊天页 → 清空未读小红点
      */
+    @Log(module = "聊天管理", operation = "查看聊天记录")
     @GetMapping("/messages")
     public Result<List<ChatMessage>> getMessages(
             @RequestParam Long sessionId) {  // 客服ID（必须传）
@@ -51,6 +53,7 @@ public class ChatController {
     /**
      * 单独清空未读（备用，前端也可以调用）
      */
+    @Log(module = "聊天管理", operation = "清空未读消息")
     @GetMapping("/clearUnread")
     public Result clearUnread(
             @RequestParam Long sessionId) {

@@ -1,14 +1,9 @@
-// 存储 token
-export const setToken = (token) => {
-  localStorage.setItem("token", token);
+// 获取 refreshToken
+export const getRefreshToken = () => {
+  return localStorage.getItem("refreshToken");
 };
 
-// 获取 token
-export const getToken = () => {
-  return localStorage.getItem("token");
-};
-
-// 删除 token（退出登录）
-export const removeToken = () => {
-  localStorage.removeItem("token");
+// 获取 accessToken
+export const getAccessToken = () => {
+  return localStorage.getItem("accessToken");
 };

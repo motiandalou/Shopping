@@ -2,8 +2,7 @@ import { useState } from "react";
 import { Form, Input, message, Typography, Modal } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { setToken } from "../../utils/token";
-import { loginApi } from "@/api/staff";
+import { loginApi } from "@/api/auth";
 import ShoppingButton from "@/components/shopping_button";
 import { useTranslation } from "react-i18next";
 import "./index.less";
@@ -30,10 +29,12 @@ export default function Login() {
   const handleLogin = async (values) => {
     try {
       const res = await loginApi(values);
-      setToken(res.data.token);
-      navigate("/dashboard");
+      const { accessToken, refreshToken } = res.data;
+      // 存储双 token
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      navigate("/");
     } catch (err) {
-      console.error("Failed to add category:", err);
       console.error("Login failed:", err);
     }
   };
@@ -184,7 +185,6 @@ export default function Login() {
                 style={{
                   height: 48,
                   borderRadius: 24,
-                  background: "#1a1a2e",
                   border: "none",
                   fontSize: 16,
                   fontWeight: 600,

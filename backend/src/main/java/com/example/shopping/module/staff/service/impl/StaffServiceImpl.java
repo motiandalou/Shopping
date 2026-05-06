@@ -2,12 +2,12 @@ package com.example.shopping.module.staff.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.shopping.common.util.JwtUtil;
 import com.example.shopping.module.staff.entity.Staff;
 import com.example.shopping.module.staff.mapper.StaffMapper;
 import com.example.shopping.module.staff.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.shopping.common.util.JwtUtil;
 
 import java.util.List;
 
@@ -16,14 +16,14 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
 
     @Autowired
     private StaffMapper staffMapper;
-
     @Autowired
     private JwtUtil jwtUtil;
 
-    // 登录
+    // ==================== 登录（只做校验） ====================
     @Override
-    public String login(Staff staff) {
+    public void login(Staff staff) {
         Staff dbStaff = staffMapper.selectByUserName(staff.getUserName());
+
         if (dbStaff == null) {
             throw new RuntimeException("账号不存在");
         }
@@ -33,16 +33,15 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
         if (dbStaff.getStatus() == 0) {
             throw new RuntimeException("账号已禁用");
         }
-        return jwtUtil.generateToken(dbStaff.getUserName(), String.valueOf(dbStaff.getRole()));
     }
 
-    // 员工列表
+    // ==================== 员工列表 ====================
     @Override
     public List<Staff> list(Staff staff) {
         return staffMapper.selectList(null);
     }
 
-    // 修改状态
+    // ==================== 修改状态 ====================
     @Override
     public String updateStatus(Long id, Integer status) {
         Staff s = new Staff();
@@ -52,38 +51,39 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff> implements
         return "状态修改成功";
     }
 
-    // 根据 token 获取员工信息
+    // ==================== 根据 token 获取员工信息 ====================
     @Override
     public Staff getStaffInfoByToken(String token) {
         String userName = jwtUtil.extractUsername(token);
         Staff staff = staffMapper.selectByUserName(userName);
-        staff.setPassword(null); // 清空密码
+        staff.setPassword(null);
         return staff;
     }
 
-    // 新增员工
+    // ==================== 新增员工 ====================
     @Override
     public boolean save(Staff staff) {
         return super.save(staff);
     }
 
-    // 修改员工
-    @Override
-    public boolean updateById(Staff staff) {
-        return super.updateById(staff);
-    }
-
-    // 删除员工
-    @Override
-    public boolean removeById(Long id) {
-        return super.removeById(id);
-    }
-
+    // ==================== 根据用户名查询 ====================
     @Override
     public Staff getByUserName(String userName) {
         return staffMapper.selectOne(
                 new LambdaQueryWrapper<Staff>()
                         .eq(Staff::getUserName, userName)
         );
+    }
+
+    // ==================== 修改员工 ====================
+    @Override
+    public boolean updateById(Staff staff) {
+        return super.updateById(staff);
+    }
+
+    // ==================== 删除员工 ====================
+    @Override
+    public boolean removeById(Long id) {
+        return super.removeById(id);
     }
 }

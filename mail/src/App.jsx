@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  useNavigate,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import { Layout, Button, Dropdown, Menu, message, Input, Badge } from "antd";
 import {
   UserOutlined,
@@ -22,13 +28,33 @@ import "./App.css";
 
 const { Header, Content, Footer } = Layout;
 
+// 路由守卫：未登录自动跳转到登录页
+const PrivateRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  return token ? (
+    children
+  ) : (
+    <Navigate
+      to="/login"
+      replace
+    />
+  );
+};
+
 function App() {
   const [searchValue, setSearchValue] = useState("");
+  const [cartCount, setCartCount] = useState(0);
   const navigate = useNavigate();
+  const location = useLocation();
 
+  // 判断是否是登录页
+  const isLoginPage = location.pathname === "/login";
+
+  // 退出登录
   const logout = () => {
     localStorage.clear();
     setCartCount(0);
+    message.success("退出登录成功");
     navigate("/login");
   };
 
@@ -44,6 +70,19 @@ function App() {
     navigate(`/?search=${searchValue}`);
   };
 
+  // 登录页单独渲染，不包裹 Layout
+  if (isLoginPage) {
+    return (
+      <Routes>
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+      </Routes>
+    );
+  }
+
+  // 其他页面走正常电商布局
   return (
     <Layout className="jd-layout">
       <MailTopMiniNav />
@@ -84,28 +123,49 @@ function App() {
             element={<Goods />}
           />
           <Route
-            path="/cart"
-            element={<Cart />}
-          />
-          <Route
-            path="/order"
-            element={<Order />}
-          />
-          <Route
-            path="/orders"
-            element={<OrderList />}
-          />
-          <Route
-            path="/order/detail/:id"
-            element={<OrderDetail />}
-          />
-          <Route
             path="/goods/detail/:id"
             element={<GoodsDetail />}
           />
+
+          <Route
+            path="/cart"
+            element={
+              <PrivateRoute>
+                <Cart />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/order"
+            element={
+              <PrivateRoute>
+                <Order />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <PrivateRoute>
+                <OrderList />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/order/detail/:id"
+            element={
+              <PrivateRoute>
+                <OrderDetail />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/chat"
-            element={<ChatPage />}
+            element={
+              <PrivateRoute>
+                <ChatPage />
+              </PrivateRoute>
+            }
           />
         </Routes>
       </Content>

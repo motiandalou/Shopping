@@ -33,9 +33,9 @@ import {
   MessageOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
-import { removeToken } from "../utils/token";
 import ShoppingButton from "../components/shopping_button";
-import { getStaffInfo } from "../api/staff";
+import { getStaffInfo } from "@/api/staff";
+import { logoutApi } from "@/api/auth";
 import "./index.less";
 import { useTranslation } from "react-i18next";
 import useTheme from "@/hooks/useTheme";
@@ -202,7 +202,7 @@ export default function MainLayout() {
               },
               {
                 key: "/system/log",
-                label: <Link to="/system/log">{t("menu.operationLog")}</Link>,
+                label: <Link to="/system/log">{t("menu.logs")}</Link>,
               },
             ]
           : [
@@ -221,8 +221,10 @@ export default function MainLayout() {
     localStorage.setItem("lang", nextLang);
   };
 
+  // 退出登录
   const handleLogout = () => {
-    removeToken();
+    logoutApi();
+    localStorage.clear();
     navigate("/login");
   };
 

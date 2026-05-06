@@ -4,6 +4,7 @@ import com.example.shopping.config.Result;
 import com.example.shopping.module.cart.entity.Cart;
 import com.example.shopping.module.cart.service.CartService;
 import com.example.shopping.module.cart.vo.CartVO;
+import com.example.shopping.module.log.annotation.Log;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    // ====================== 用户端：查询我的购物车 + 关联商品（返回VO） ======================
+    // ====================== 用户端：查询我的购物车 + 关联商品 ======================
     @GetMapping("/list")
     public Result<List<CartVO>> list(HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
@@ -46,6 +47,7 @@ public class CartController {
     }
 
     // ====================== 加入购物车 ======================
+    @Log(module = "购物车管理", operation = "加入购物车")
     @PostMapping("/add")
     public Result<String> add(@RequestBody Cart cart, HttpServletRequest request) {
         try {
@@ -59,6 +61,7 @@ public class CartController {
     }
 
     // ====================== 修改购物车（数量/选中状态） ======================
+    @Log(module = "购物车管理", operation = "修改购物车")
     @PutMapping("/update")
     public Result<String> update(@RequestBody Cart cart) {
         try {
@@ -70,6 +73,7 @@ public class CartController {
     }
 
     // ====================== 删除购物车 ======================
+    @Log(module = "购物车管理", operation = "删除购物车")
     @DeleteMapping("/delete/{id}")
     public Result<String> delete(@PathVariable Long id) {
         try {
@@ -81,6 +85,7 @@ public class CartController {
     }
 
     // 清空购物车
+    @Log(module = "购物车管理", operation = "清空购物车")
     @DeleteMapping("/clear")
     public Result<Void> clearCart(HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");

@@ -23,7 +23,7 @@
   "menu.profile": "个人中心",
   "menu.shopConfig": "店铺配置",
   "menu.stockAlert": "库存预警",
-  "menu.operationLog": "操作日志",
+  "menu.logs": "操作日志",
 
   "btn.add": "新增",
   "btn.edit": "编辑",

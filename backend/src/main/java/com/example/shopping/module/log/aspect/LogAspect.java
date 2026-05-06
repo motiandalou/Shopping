@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -69,7 +68,6 @@ public class LogAspect {
             try {
                 // 请求参数 → 转 JsonNode
                 JsonNode reqJson = objectMapper.readTree(objectMapper.writeValueAsString(point.getArgs()));
-                System.out.println("reqJson: "+reqJson);
                 log.setRequestParam(reqJson);
             } catch (Exception e) {
                 log.setRequestParam(objectMapper.createObjectNode());
@@ -77,20 +75,21 @@ public class LogAspect {
 
             log.setCostTime(time);
 
-            // 从请求头获取 token
+            // TODO 获取不到authHeader 从请求头获取 token
             String authHeader = request.getHeader("Authorization");
             String token = null;
             Long userId = 0L;
             String username = "匿名用户";
 
-            // 按标准 Bearer 格式解析
+            System.out.println("authHeader: "+ authHeader);
+
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 token = authHeader.substring(7);
                 try {
-                    // 2. 正常解析（和过滤器逻辑一样）
                     username = jwtUtil.extractUsername(token);
                     userId = jwtUtil.extractUserId(token);
                 } catch (Exception ignored) {
+                    // 解析失败 = 无效token，保持默认值不变
                 }
             }
 

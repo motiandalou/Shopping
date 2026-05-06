@@ -37,14 +37,7 @@ export const deleteStaff = (id) => {
   });
 };
 
-// 员工登录
-export const loginApi = (data) => {
-  return request({
-    url: "/staff/login",
-    method: "POST",
-    data,
-  });
-};
+
 
 // 员工信息
 export const getStaffInfo = () => {

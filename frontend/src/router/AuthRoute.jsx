@@ -1,10 +1,13 @@
 import { Navigate } from "react-router-dom";
-import { getToken } from "../utils/token";
+import { getRefreshToken, getAccessToken } from "../utils/token";
 
-// 有 token 正常显示，没有跳去登录
+// 双Token校验：必须同时存在 accessToken 和 refreshToken 才算登录
 export default function AuthRoute({ children }) {
-  const token = getToken();
-  if (!token) {
+  const refreshToken = getRefreshToken();
+  const accessToken = getAccessToken();
+
+  // 任意一个不存在 → 跳登录
+  if (!refreshToken || !accessToken) {
     return (
       <Navigate
         to="/login"
@@ -12,5 +15,6 @@ export default function AuthRoute({ children }) {
       />
     );
   }
+
   return children;
 }

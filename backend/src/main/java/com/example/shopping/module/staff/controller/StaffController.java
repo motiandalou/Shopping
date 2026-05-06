@@ -1,6 +1,7 @@
 package com.example.shopping.module.staff.controller;
 
 import com.example.shopping.config.Result;
+import com.example.shopping.module.log.annotation.Log;
 import com.example.shopping.module.staff.entity.Staff;
 import com.example.shopping.module.staff.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,19 +18,6 @@ public class StaffController {
     @Autowired
     private StaffService staffService;
 
-    // 员工登录
-    @PostMapping("/login")
-    public Result<Map<String, String>> login(@RequestBody Staff staff) {
-        try {
-            String token = staffService.login(staff);
-            Map<String, String> map = new HashMap<>();
-            map.put("token", token);
-            return Result.success(map);
-        } catch (RuntimeException e) {
-            return Result.error(e.getMessage());
-        }
-    }
-
     // 获取当前登录员工信息
     @GetMapping("/info")
     public Result<Staff> info(@RequestHeader("Authorization") String auth) {
@@ -45,6 +33,7 @@ public class StaffController {
     }
 
     // 修改员工状态
+    @Log(module = "员工管理", operation = "修改员工状态")
     @PutMapping("/status/{id}")
     public Result<String> updateStatus(
             @PathVariable Long id,
@@ -53,6 +42,7 @@ public class StaffController {
     }
 
     // 新增员工
+    @Log(module = "员工管理", operation = "新增员工")
     @PostMapping("/add")
     public Result<Boolean> add(@RequestBody Staff staff) {
         // 校验账号是否重复
@@ -64,12 +54,14 @@ public class StaffController {
     }
 
     // 修改员工
+    @Log(module = "员工管理", operation = "修改员工信息")
     @PostMapping("/update")
     public Result<Boolean> update(@RequestBody Staff staff) {
         return Result.success(staffService.updateById(staff));
     }
 
     // 删除员工
+    @Log(module = "员工管理", operation = "删除员工")
     @DeleteMapping("/delete")
     public Result<Boolean> delete(@RequestParam Long id) {
         return Result.success(staffService.removeById(id));
