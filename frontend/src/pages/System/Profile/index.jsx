@@ -13,7 +13,7 @@ export default function Profile() {
   const userStr = localStorage.getItem("userInfo");
   const userInfo = userStr ? JSON.parse(userStr) : {};
 
-  // 页面加载时回填表单
+  // TODO (需要请求接口)页面加载时回填表单
   useEffect(() => {
     if (userInfo) {
       form.setFieldsValue({
@@ -24,7 +24,7 @@ export default function Profile() {
     }
   }, [userInfo, form]);
 
-  // 保存修改（预留接口位置）
+  // 保存修改
   const handleSave = async (values) => {
     try {
       const params = {

@@ -128,5 +128,35 @@
   "status.refund.finished": "Refunded",
   "status.refund.rejected": "After-sales Rejected",
   "status.log.success": "success",
-  "status.log.fail": "fail"
+  "status.log.fail": "fail",
+
+  "shopSetting.title": "Shop Settings",
+  "shopSetting.tab.basic": "Basic Settings",
+  "shopSetting.tab.order": "Order & After-sale",
+
+  "shopSetting.shopName": "Shop Name",
+  "shopSetting.contactPhone": "Contact Phone",
+  "shopSetting.shopAddress": "Shop Address",
+  "shopSetting.businessHours": "Business Hours",
+  "shopSetting.shopIntro": "Shop Intro",
+  "shopSetting.freeShippingThreshold": "Free Shipping",
+
+  "shopSetting.unpaidTimeoutMinutes": "Unpaid Timeout (min)",
+  "shopSetting.autoConfirmReceiveDays": "Auto Confirm (days)",
+  "shopSetting.afterSaleApplyDays": "After-sale Days",
+  "shopSetting.autoAgreeAfterSale": "Auto Agree After-sale",
+  "shopSetting.newOrderPushNotice": "New Order Push",
+
+  "shopSetting.placeholder.shopName": "Enter shop name",
+  "shopSetting.placeholder.contactPhone": "Enter phone",
+  "shopSetting.placeholder.shopAddress": "Enter address",
+  "shopSetting.placeholder.businessHours": "e.g. 08:00 - 22:00",
+  "shopSetting.placeholder.shopIntro": "Enter intro",
+  "shopSetting.placeholder.freeShippingThreshold": "Free shipping amount",
+  "shopSetting.placeholder.default15": "Default 15",
+  "shopSetting.placeholder.default7": "Default 7",
+
+  "common.save": "Save",
+  "common.saveSuccess": "Saved successfully",
+  "common.saveFailed": "Save failed"
 }

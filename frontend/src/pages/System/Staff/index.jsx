@@ -66,7 +66,6 @@ export default function StaffManage() {
   const handleUpdate = async (values) => {
     try {
       await updateStaff(values);
-      message.success(t("staff.editSuccess"));
       setVisible(false);
       fetchStaffList();
     } catch (err) {

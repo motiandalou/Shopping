@@ -128,5 +128,35 @@
   "status.refund.finished": "已退款",
   "status.refund.rejected": "售后拒绝",
   "status.log.success": "成功",
-  "status.log.fail": "失败"
+  "status.log.fail": "失败",
+
+  "shopSetting.title": "店铺配置",
+  "shopSetting.tab.basic": "基础设置",
+  "shopSetting.tab.order": "订单/售后规则",
+
+  "shopSetting.shopName": "店铺名称",
+  "shopSetting.contactPhone": "联系电话",
+  "shopSetting.shopAddress": "店铺地址",
+  "shopSetting.businessHours": "营业时间",
+  "shopSetting.shopIntro": "店铺简介",
+  "shopSetting.freeShippingThreshold": "包邮门槛",
+
+  "shopSetting.unpaidTimeoutMinutes": "未付款超时关闭(分钟)",
+  "shopSetting.autoConfirmReceiveDays": "发货后自动确认收货(天)",
+  "shopSetting.afterSaleApplyDays": "售后可申请期限(天)",
+  "shopSetting.autoAgreeAfterSale": "超时自动同意售后",
+  "shopSetting.newOrderPushNotice": "新订单自动推送通知",
+
+  "shopSetting.placeholder.shopName": "请输入店铺名称",
+  "shopSetting.placeholder.contactPhone": "请输入联系电话",
+  "shopSetting.placeholder.shopAddress": "请输入店铺地址",
+  "shopSetting.placeholder.businessHours": "例如 08:00 - 22:00",
+  "shopSetting.placeholder.shopIntro": "请输入店铺简介",
+  "shopSetting.placeholder.freeShippingThreshold": "满多少包邮",
+  "shopSetting.placeholder.default15": "默认15",
+  "shopSetting.placeholder.default7": "默认7",
+
+  "common.save": "保存",
+  "common.saveSuccess": "保存成功",
+  "common.saveFailed": "保存失败"
 }

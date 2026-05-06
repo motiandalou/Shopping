@@ -160,6 +160,7 @@ CREATE TABLE `t_order_log` (
     KEY `idx_refund_no` (`refund_order_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单/售后操作日志';
 
+# 日志
 CREATE TABLE `sys_operation_log` (
     id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键',
     module VARCHAR(50) COMMENT '模块（如 商品 / 订单）',
@@ -176,3 +177,23 @@ CREATE TABLE `sys_operation_log` (
     cost_time BIGINT COMMENT '耗时(ms)',
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+# 店铺配置
+CREATE TABLE `shop_config` (
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `shop_name` varchar(100) DEFAULT NULL COMMENT '店铺名称',
+    `contact_phone` varchar(20) DEFAULT NULL COMMENT '联系电话',
+    `shop_address` varchar(255) DEFAULT NULL COMMENT '店铺地址',
+    `business_hours` varchar(100) DEFAULT NULL COMMENT '营业时间',
+    `shop_intro` text COMMENT '店铺简介',
+    `free_shipping_threshold` decimal(10,2) DEFAULT NULL COMMENT '包邮门槛',
+    `unpaid_timeout_minutes` int DEFAULT 15 COMMENT '未付款超时关闭(分钟)',
+    `auto_confirm_receive_days` int DEFAULT 7 COMMENT '发货后自动确认收货(天)',
+    `after_sale_apply_days` int DEFAULT 7 COMMENT '售后可申请期限(天)',
+    `auto_agree_after_sale` tinyint(1) DEFAULT '0' COMMENT '超时自动同意售后 0-关闭 1-开启',
+    `new_order_push_notice` tinyint(1) DEFAULT '0' COMMENT '新订单自动推送通知 0-关闭 1-开启',
+    `created_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='店铺配置表';
+
