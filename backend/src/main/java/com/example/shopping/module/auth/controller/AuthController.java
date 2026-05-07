@@ -103,22 +103,33 @@ public class AuthController {
 
     // ==================== 双 Token 刷新 ====================
     @PostMapping("/refreshToken")
-    public Result<Map<String, String>> refreshToken(@RequestParam String refreshToken) {
+    public Result<Map<String, String>> refreshToken(@RequestBody Map<String, String> map) {
+        String refreshToken = map.get("refreshToken");
+
         try {
             String username = jwtUtil.extractUsername(refreshToken);
             String role = jwtUtil.extractRole(refreshToken);
             Long userId = jwtUtil.extractUserId(refreshToken);
 
             String newAccessToken;
+            String newRefreshToken;
+
+            // 区分有无 userId(电商网站 / 后台管理系统)
             if (userId == null) {
                 newAccessToken = jwtUtil.generateAccessToken(username, role);
+                newRefreshToken = jwtUtil.generateRefreshToken(username, role);
             } else {
                 newAccessToken = jwtUtil.generateAccessToken(username, role, userId);
+                newRefreshToken = jwtUtil.generateRefreshToken(username, role, userId);
             }
 
-            Map<String, String> map = new HashMap<>();
-            map.put("accessToken", newAccessToken);
-            return Result.success(map);
+            // 经常登录的用户,一直保持登录状态
+            Map<String, String> result = new HashMap<>();
+            result.put("accessToken", newAccessToken);
+            result.put("refreshToken", newRefreshToken);
+
+            return Result.success(result);
+
         } catch (Exception e) {
             return Result.error("登录已过期，请重新登录");
         }

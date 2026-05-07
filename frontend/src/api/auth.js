@@ -19,10 +19,10 @@ export const logoutApi = (data) => {
 };
 
 // 获取 accessToken 来重新获取令牌
-export const refreshTokenApi = (data) => {
+export const refreshTokenApi = (refreshToken) => {
   return request({
     url: "/auth/refreshToken",
     method: "POST",
-    data,
+    data: { refreshToken },
   });
 };
