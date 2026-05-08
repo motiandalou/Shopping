@@ -1,18 +1,11 @@
-package com.example.shopping.module.chat.entity;
+package com.example.shopping.module.chat.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 
 @Data
-@TableName("chat_session")
-public class ChatSession {
-
-    @TableId(type = IdType.AUTO)
+public class ChatSessionVO {
     private Long id;
     private Long shopId;
     private Long userId;
@@ -24,4 +17,7 @@ public class ChatSession {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updatedAt;
+
+    // 用户名
+    private String userName;
 }

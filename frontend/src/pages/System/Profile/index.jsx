@@ -3,48 +3,48 @@ import { Card, Form, Input, Button, Avatar, message } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import useTheme from "@/hooks/useTheme";
 import "./index.less";
-import { updateStaff } from "@/api/staff";
+import { updateStaff, getStaffInfo } from "@/api/staff";
 
 export default function Profile() {
   const { theme } = useTheme();
   const [form] = Form.useForm();
 
-  // 读取本地用户信息
-  const userStr = localStorage.getItem("userInfo");
-  const userInfo = userStr ? JSON.parse(userStr) : {};
-
-  // TODO (需要请求接口)页面加载时回填表单
   useEffect(() => {
-    if (userInfo) {
-      form.setFieldsValue({
-        username: userInfo.userName,
-        realName: userInfo.realName,
-        phone: userInfo.phone || "",
-      });
-    }
-  }, [userInfo, form]);
+    // 获取个人信息
+    const fetchStaffInfo = async () => {
+      const res = await getStaffInfo();
+      if (res.success) {
+        const { id, userName, realName, phone, email } = res.data;
+        form.setFieldsValue({
+          id,
+          userName,
+          realName,
+          phone,
+          email,
+        });
+      }
+    };
+    fetchStaffInfo();
+  }, [form]);
 
   // 保存修改
   const handleSave = async (values) => {
     try {
       const params = {
-        id: userInfo.id,
+        id: values.id,
         realName: values.realName,
         phone: values.phone,
+        email: values.email,
       };
       if (values.password) {
         params.password = values.password;
       }
       const res = await updateStaff(params);
       if (res.success) {
-        // 更新本地存储的用户信息
-        const updatedUserInfo = { ...userInfo, ...params };
-        localStorage.setItem("userInfo", JSON.stringify(updatedUserInfo));
-
-        // 成功后 强制刷新页面
+        // 刷新页面
         window.location.reload();
       } else {
-        console.error(res.msg);
+        console.error(res.msg || "保存失败");
       }
     } catch (err) {
       console.error("保存个人信息失败", err);
@@ -55,7 +55,7 @@ export default function Profile() {
     <div className="profile-container">
       <Card
         className="profile-card"
-        bordered={false}
+        variant="borderless"
       >
         {/* 头像区域 */}
         <div className="profile-avatar-box">
@@ -74,8 +74,14 @@ export default function Profile() {
           onFinish={handleSave}
         >
           <Form.Item
+            name="id"
+            hidden
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
             label="用户名"
-            name="username"
+            name="userName"
           >
             <Input
               disabled
@@ -98,6 +104,13 @@ export default function Profile() {
           </Form.Item>
 
           <Form.Item
+            label="邮箱"
+            name="email"
+          >
+            <Input placeholder="请输入邮箱地址" />
+          </Form.Item>
+
+          <Form.Item
             label="修改密码"
             name="password"
           >
@@ -110,7 +123,7 @@ export default function Profile() {
               size="large"
               htmlType="submit"
             >
-              保存修改
+              保存
             </Button>
           </Form.Item>
         </Form>

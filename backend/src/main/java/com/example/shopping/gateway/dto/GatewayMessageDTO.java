@@ -21,6 +21,7 @@ public class GatewayMessageDTO {
     private String content;
     private Long shopId;
     private String senderType;
+    private String userName;
 
     // 订单专用字段
     private Order orderInfo;

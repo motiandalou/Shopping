@@ -17,3 +17,12 @@ export const getChatMessages = (params) => {
     params,
   });
 };
+
+// 获取会话的历史消息
+export const clearUnread = (params) => {
+  return request({
+    url: "/chat/clearUnread",
+    method: "GET",
+    params,
+  });
+};

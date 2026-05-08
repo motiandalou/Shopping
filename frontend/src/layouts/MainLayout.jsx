@@ -230,6 +230,7 @@ export default function MainLayout() {
 
   const getRoleText = () => {
     if (!userInfo) return "";
+    // 角色：0-老板，1-员工
     return userInfo.role === 0 ? "Admin" : "Staff";
   };
 

@@ -3,7 +3,7 @@ import { Layout, List, Avatar, Input, Button, Badge } from "antd";
 import { SendOutlined, UserOutlined } from "@ant-design/icons";
 import "./index.less";
 import { subscribe, unsubscribe } from "@/utils/websocket";
-import { getChatSessions, getChatMessages } from "@/api/service";
+import { getChatSessions, getChatMessages, clearUnread } from "@/api/service";
 import emptyImg from "@/assets/image/empty.png";
 
 const { Sider, Content } = Layout;
@@ -13,8 +13,16 @@ const SHOP_ID = 1;
 
 const ServiceChat = () => {
   // 切换用户的ID
-  const [selectedUser, setSelectedUser] = useState(null);
-  // 发送消息的人(不是客户,是哪个用户发的)
+  const [selectedUser, setSelectedUser] = useState(() => {
+    // 从本地缓存读取上次选中的用户
+    try {
+      const lastUser = localStorage.getItem("lastChatUser");
+      return lastUser ? JSON.parse(lastUser) : null;
+    } catch (e) {
+      return {};
+    }
+  });
+  // 发送消息的人(是哪个用户发的)
   const [selectedFromUserId, setSelectedFromUserId] = useState(null);
   const [userList, setUserList] = useState({});
   const [inputValue, setInputValue] = useState("");
@@ -30,14 +38,12 @@ const ServiceChat = () => {
       try {
         const res = await getChatSessions({ shopId: SHOP_ID });
         const list = res.data || [];
-
         const map = {};
         list.forEach((session) => {
           map[session.userId] = {
             info: {
               userId: session.userId,
-              // TODO 需要显示真名(用户注册的名字)这里先简单展示
-              userName: `用户 ${session.userId}`,
+              userName: session.userName || `用户 ${session.userId}`,
               sessionId: session.id,
             },
             messages: [],
@@ -46,6 +52,19 @@ const ServiceChat = () => {
         });
 
         setUserList(map);
+
+        // 页面刷新后，自动选中上次聊天的用户
+        const lastUserStr = localStorage.getItem("lastChatUser");
+        if (lastUserStr) {
+          try {
+            const parsedUser = JSON.parse(lastUserStr);
+            if (parsedUser && parsedUser.userId) {
+              handleSelectUser(parsedUser);
+            }
+          } catch (e) {
+            localStorage.removeItem("lastChatUser");
+          }
+        }
       } catch (err) {
         console.error("拉取会话列表失败", err);
       }
@@ -53,9 +72,53 @@ const ServiceChat = () => {
     fetchSessions();
   }, []);
 
-  // TODO 订阅店铺ID
+  // 订阅--店铺
+  useEffect(() => {
+    const topic = `shop_${SHOP_ID}`;
 
-  // 订阅
+    subscribe(topic, (data) => {
+      if (data.type !== "CHAT") return;
+      if (data.senderType == "SHOP_ADMIN") return;
+      if (data.fromUserId == selectedUser?.userId) return;
+      const fromUserId = data.fromUserId;
+      // 列表显示用的简短内容
+      const lastContent = data.content || "[图片]";
+      setUserList((prev) => {
+        const old = prev[fromUserId];
+        if (old) {
+          // 已有用户：更新最后一条内容 + 未读
+          const isSelected = selectedUser?.userId === fromUserId;
+          return {
+            ...prev,
+            [fromUserId]: {
+              ...old,
+              lastContent,
+              unread: isSelected ? 0 : old.unread + 1,
+            },
+          };
+        } else {
+          // 新用户：自动加入列表
+          return {
+            ...prev,
+            [fromUserId]: {
+              info: {
+                userId: fromUserId,
+                userName: data.userName || `用户 ${fromUserId}`,
+                sessionId: data.sessionId || fromUserId,
+              },
+              messages: [],
+              lastContent,
+              unread: 1,
+            },
+          };
+        }
+      });
+    });
+
+    return () => unsubscribe(topic);
+  }, [selectedUser, SHOP_ID]);
+
+  // 订阅--每一个单独的用户的消息
   useEffect(() => {
     if (!selectedUser?.userId) return;
 
@@ -78,7 +141,10 @@ const ServiceChat = () => {
 
       setUserList((prev) => {
         const user = prev[fromUserId] || {
-          info: { userId: fromUserId, userName: `用户 ${fromUserId}` },
+          info: {
+            userId: fromUserId,
+            userName: data.userName || `用户 ${fromUserId}`,
+          },
           messages: [],
           unread: 0,
         };
@@ -102,12 +168,19 @@ const ServiceChat = () => {
 
   // 切换用户
   const handleSelectUser = async (user) => {
+    if (!user || !user.userId) return;
+
     setSelectedUser(user);
+
+    // 保存当前用户到本地，实现刷新记忆
+    localStorage.setItem("lastChatUser", JSON.stringify(user));
 
     setUserList((prev) => ({
       ...prev,
       [user.userId]: { ...prev[user.userId], unread: 0 },
     }));
+    // 清空未读消息
+    await clearUnread({ sessionId: user.sessionId });
 
     try {
       const res = await getChatMessages({ sessionId: user.sessionId });
@@ -135,7 +208,7 @@ const ServiceChat = () => {
 
   // 发送消息
   const handleSend = () => {
-    if (!inputValue.trim() || !selectedUser) return;
+    if (!inputValue.trim() || !selectedUser || !selectedUser.userId) return;
 
     const targetUserId = selectedUser.userId;
     const topic = `chat_${targetUserId}`;
@@ -175,7 +248,9 @@ const ServiceChat = () => {
   // 自动滚动
   useEffect(() => {
     if (chatRef.current) {
-      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+      setTimeout(() => {
+        chatRef.current.scrollTop = chatRef.current.scrollHeight;
+      }, 0);
     }
   }, [userList, selectedUser]);
 
@@ -191,30 +266,35 @@ const ServiceChat = () => {
       >
         <List
           dataSource={Object.values(userList)}
-          renderItem={(user) => (
-            <List.Item
-              className={`user-item ${selectedUser?.userId === user.info.userId ? "active" : ""}`}
-              onClick={() => handleSelectUser(user.info)}
-            >
-              <List.Item.Meta
-                avatar={
-                  <Avatar
-                    icon={<UserOutlined />}
-                    src={`https://picsum.photos/40/40?random=${user.info.userId}`}
-                    style={{ width: 50, height: 50 }}
-                  />
-                }
-                title={user.info.userName}
-                description={`咨询ID: ${user.info.userId}`}
-              />
-              {user.unread > 0 && <Badge count={user.unread} />}
-            </List.Item>
-          )}
+          renderItem={(user) => {
+            if (!user || !user.info) return null;
+            return (
+              <List.Item
+                className={`user-item ${selectedUser?.userId === user.info.userId ? "active" : ""}`}
+                onClick={() => handleSelectUser(user.info)}
+              >
+                <List.Item.Meta
+                  avatar={
+                    <Avatar
+                      icon={<UserOutlined />}
+                      src={`https://picsum.photos/40/40?random=${user.info.userId}`}
+                      style={{ width: 50, height: 50 }}
+                    />
+                  }
+                  title={user.info.userName}
+                  description={`咨询ID: ${user.info.userId}`}
+                />
+                {user.unread > 0 && <Badge count={user.unread} />}
+              </List.Item>
+            );
+          }}
         />
       </Sider>
 
       <Content className="chat-content">
-        {selectedUser ? (
+        {selectedUser &&
+        Object.keys(selectedUser).length > 0 &&
+        selectedUser.userId ? (
           <>
             <div className="chat-header">
               <h3>与 {selectedUser.userName} 的对话</h3>

@@ -92,6 +92,8 @@ CREATE TABLE `t_staff` (
     `user_name` varchar(50) NOT NULL COMMENT '登录账号',
     `password` varchar(100) NOT NULL COMMENT '密码',
     `real_name` varchar(50) DEFAULT NULL COMMENT '真实姓名',
+    `phone` varchar(20) COMMENT '手机号',
+    `email` varchar(100) COMMENT '邮箱',
     `role` tinyint NOT NULL DEFAULT 1 COMMENT '角色 0-老板 1-员工',
     `status` tinyint NOT NULL DEFAULT 1 COMMENT '状态 0-禁用 1-正常',
     `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -100,7 +102,7 @@ CREATE TABLE `t_staff` (
     UNIQUE KEY `uk_user_name` (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='店铺员工表';
 
--- 初始化老板账号（你用这个登录）
+-- 初始化老板账号
 INSERT INTO `t_staff` (`user_name`, `password`, `real_name`, `role`)
 VALUES ('admin', '123456', '店铺管理员', 0);
 
@@ -141,6 +143,7 @@ CREATE TABLE `chat_message` (
     `content` varchar(1000) NOT NULL COMMENT '消息内容',
     `topic` varchar(100) DEFAULT NULL COMMENT 'WebSocket主题',
     `is_read` tinyint NOT NULL DEFAULT '0' COMMENT '是否已读：0未读，1已读',
+    `user_name` VARCHAR(50) DEFAULT NULL,
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     PRIMARY KEY (`id`),
     KEY `idx_session_id` (`session_id`),

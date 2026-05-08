@@ -23,7 +23,6 @@ class WebSocketClient {
       clearTimeout(this.reconnectTimer);
 
       Object.keys(this.subscriptions).forEach((topic) => {
-        // 这里！！！只发 topic，不要 type
         this.send({ topic });
       });
     };
@@ -86,7 +85,7 @@ class WebSocketClient {
     this.subscriptions[topic].push(callback);
 
     if (this.isConnected) {
-      this.send({ topic }); 
+      this.send({ topic });
     }
     this.connect();
   }

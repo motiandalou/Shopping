@@ -64,9 +64,7 @@ public class GatewayMessageHandler extends SimpleChannelInboundHandler<TextWebSo
             // 聊天消息（只在 用户发送 时创建会话 + 入库）
             if ("CHAT".equals(dto.getType())) {
                 if (chatService == null) return;
-
                 Long targetUserId = null;
-
                 // 1. 用户发消息
                 if (fromUserId != null) {
                     targetUserId = fromUserId;
@@ -78,14 +76,9 @@ public class GatewayMessageHandler extends SimpleChannelInboundHandler<TextWebSo
                         targetUserId = Long.parseLong(userIdStr);
                     }
                 }
-
                 // 只要找到目标用户，就入库
                 if (targetUserId != null) {
                     ChatSession session = chatService.getOrCreateSession(shopId, targetUserId);
-
-//                    String userName = (String) request.getAttribute("username");
-//                    order.setUserName(userName);
-
 
                     chatService.saveMessage(
                             session.getId(),
@@ -94,14 +87,21 @@ public class GatewayMessageHandler extends SimpleChannelInboundHandler<TextWebSo
                             topic,
                             dto.getSenderType()
                     );
-
                     System.out.println("✅ 消息已入库：" + content);
                 }
             }
-
             sendToTopic(topic , json);
-            sendToTopic("shop_" + shopId, json);
-
+            // 推送给店铺，把 topic 改成 shop_1
+            GatewayMessageDTO shopMsg = new GatewayMessageDTO();
+            shopMsg.setTopic("shop_" + shopId);
+            shopMsg.setType(dto.getType());
+            shopMsg.setFromUserId(dto.getFromUserId());
+            shopMsg.setShopId(dto.getShopId());
+            shopMsg.setGoodsId(dto.getGoodsId());
+            shopMsg.setSenderType(dto.getSenderType());
+            shopMsg.setContent(dto.getContent());
+            String shopJson = objectMapper.writeValueAsString(shopMsg);
+            sendToTopic("shop_" + shopId, shopJson);
         } catch (Exception e) {
             System.err.println("❌ 消息处理失败：" + e.getMessage());
             e.printStackTrace();

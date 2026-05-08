@@ -23,6 +23,12 @@ public class Staff {
     // 真实姓名
     private String realName;
 
+    // 手机号
+    private String phone;
+
+    // 邮箱
+    private String email;
+
     // 角色：0-老板，1-员工
     private Integer role;
 

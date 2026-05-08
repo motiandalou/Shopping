@@ -99,7 +99,7 @@ export default function StaffManage() {
         const canOperate = r.role === 1;
 
         if (isSelf || !canOperate) {
-          return <span>-</span>;
+          return <span></span>;
         }
 
         return (

@@ -6,9 +6,6 @@ import { subscribe, unsubscribe } from "@/utils/websocket";
 import { getChatSessions, getChatMessages } from "@/api/service";
 import "./index.less";
 
-// TODO目前是单店铺
-const SHOP_ID = 1;
-
 const ChatPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,6 +15,8 @@ const ChatPage = () => {
   const userStr = localStorage.getItem("userInfo");
   const userInfo = userStr ? JSON.parse(userStr) : {};
   const userId = userInfo.id;
+  // TODO目前是单店铺
+  const SHOP_ID = storeId;
 
   const [msg, setMsg] = useState("");
   const [list, setList] = useState([

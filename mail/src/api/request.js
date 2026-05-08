@@ -10,7 +10,7 @@ const service = axios.create({
   },
 });
 
-// 请求拦截：自动带上 token —— 修复：刷新接口不带token
+// 请求拦截
 service.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("accessToken");

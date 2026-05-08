@@ -19,26 +19,28 @@ import Order from "@/pages/Order";
 import OrderList from "@/pages/OrderList";
 import GoodsDetail from "@/pages/Goods/detail";
 import OrderDetail from "@/pages/OrderList/detail";
-
 import ChatPage from "@/pages/Chat";
 import MailSideFloatBar from "@/components/MailSideFloatBar";
 import MailTopMiniNav from "@/components/MailTopMiniNav";
-
 import "./App.css";
+import { getRefreshToken, getAccessToken } from "@/utils/token";
 
 const { Header, Content, Footer } = Layout;
 
-// 路由守卫：未登录自动跳转到登录页
+// 路由守卫
 const PrivateRoute = ({ children }) => {
-  const token = localStorage.getItem("token");
-  return token ? (
-    children
-  ) : (
-    <Navigate
-      to="/login"
-      replace
-    />
-  );
+  const refreshToken = getRefreshToken();
+  const accessToken = getAccessToken();
+
+  // 任意一个不存在 → 跳登录
+  if (!refreshToken || !accessToken) {
+    return (
+      <Navigate
+        to="/login"
+        replace
+      />
+    );
+  }
 };
 
 function App() {
@@ -162,9 +164,9 @@ function App() {
           <Route
             path="/chat"
             element={
-              <PrivateRoute>
-                <ChatPage />
-              </PrivateRoute>
+              // <PrivateRoute>
+              <ChatPage />
+              // </PrivateRoute>
             }
           />
         </Routes>

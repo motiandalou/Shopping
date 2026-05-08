@@ -26,7 +26,7 @@ export default function Login() {
       // 存储双 token
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-      // TODO 拿token查询完整用户信息
+      // 拿token查询完整用户信息
       const { data: userInfo } = await getUserInfo();
       // 保存完整信息（包含用户名、电话、地址等）
       localStorage.setItem("userInfo", JSON.stringify(userInfo));
