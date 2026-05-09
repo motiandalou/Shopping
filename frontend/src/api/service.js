@@ -26,3 +26,11 @@ export const clearUnread = (params) => {
     params,
   });
 };
+
+// 获取用户状态
+export const getUserStatus = () => {
+  return request({
+    url: "/chat/user/status",
+    method: "GET",
+  });
+};

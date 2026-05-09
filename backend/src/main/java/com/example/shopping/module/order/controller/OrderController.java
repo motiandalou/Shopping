@@ -8,6 +8,9 @@ import com.example.shopping.gateway.handler.GatewayMessageHandler;
 import com.example.shopping.module.log.annotation.Log;
 import com.example.shopping.module.order.entity.Order;
 import com.example.shopping.module.order.service.OrderService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/order")
+@Tag(name = "订单管理", description = "订单创建、查询、发货、删除、退款售后全流程接口")
 public class OrderController {
 
     private final OrderService orderService;
@@ -26,9 +30,10 @@ public class OrderController {
 
     // 【后台 - 管理员】
     @GetMapping("/back/list")
+    @Operation(summary = "后台-订单列表", description = "管理员查看所有订单数据")
     public Result<?> backList(
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize
+            @Parameter(description = "页码", example = "1") @RequestParam(defaultValue = "1") Integer pageNum,
+            @Parameter(description = "每页条数", example = "10") @RequestParam(defaultValue = "10") Integer pageSize
     ) {
         Page<Order> page = orderService.backOrderList(pageNum, pageSize);
         return Result.success(page.getRecords());
@@ -37,11 +42,12 @@ public class OrderController {
     // 发货
     @Log(module = "订单管理", operation = "订单发货")
     @PostMapping("/back/updateStatus")
+    @Operation(summary = "后台-订单发货/修改状态", description = "支持修改状态、填写快递信息、同步物流")
     public Result<?> backUpdateStatus(
-            @RequestParam Long orderId,
-            @RequestParam Integer status,
-            @RequestParam(required = false) String expressCompany,
-            @RequestParam(required = false) String expressNo
+            @Parameter(description = "订单ID", required = true, example = "1001") @RequestParam Long orderId,
+            @Parameter(description = "订单状态", required = true, example = "2") @RequestParam Integer status,
+            @Parameter(description = "快递公司编码 SF/STO/YTO") @RequestParam(required = false) String expressCompany,
+            @Parameter(description = "快递单号") @RequestParam(required = false) String expressNo
     ) {
         Order order = new Order();
         order.setId(orderId);
@@ -69,14 +75,21 @@ public class OrderController {
     // 删除
     @Log(module = "订单管理", operation = "删除订单")
     @PostMapping("/back/delete")
-    public Result<?> backDelete(@RequestParam Long orderId) {
+    @Operation(summary = "后台-删除订单", description = "管理员删除指定订单")
+    public Result<?> backDelete(
+            @Parameter(description = "订单ID", required = true, example = "1001") @RequestParam Long orderId
+    ) {
         orderService.removeById(orderId);
         return Result.success("删除成功");
     }
 
     // 【前台 - 用户】
     @PostMapping("/front/add")
-    public Result<?> frontAdd(@RequestBody Order order, HttpServletRequest request) {
+    @Operation(summary = "前台-创建订单", description = "用户提交订单，自动推送消息给管理员")
+    public Result<?> frontAdd(
+            @Parameter(description = "订单信息", required = true) @RequestBody Order order,
+            HttpServletRequest request
+    ) {
         Long userId = (Long) request.getAttribute("userId");
         String userName = (String) request.getAttribute("username");
         order.setUserId(userId);
@@ -94,19 +107,21 @@ public class OrderController {
 
     // 列表
     @GetMapping("/front/my")
+    @Operation(summary = "前台-我的订单", description = "用户查询自己的订单列表")
     public Result<Page<Order>> frontMyOrder(
-            @RequestParam Long userId,
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize
+            @Parameter(description = "用户ID", required = true, example = "1001") @RequestParam Long userId,
+            @Parameter(description = "页码", example = "1") @RequestParam(defaultValue = "1") Integer pageNum,
+            @Parameter(description = "每页条数", example = "10") @RequestParam(defaultValue = "10") Integer pageSize
     ) {
         return Result.success(orderService.frontMyOrder(userId, pageNum, pageSize));
     }
 
     // 删除
     @PostMapping("/front/delete")
+    @Operation(summary = "前台-删除订单", description = "用户删除自己的订单")
     public Result<?> frontDelete(
-            @RequestParam Long orderId,
-            @RequestParam Long userId
+            @Parameter(description = "订单ID", required = true) @RequestParam Long orderId,
+            @Parameter(description = "用户ID", required = true) @RequestParam Long userId
     ) {
         orderService.frontDeleteOrder(orderId, userId);
         return Result.success("删除成功");
@@ -114,9 +129,10 @@ public class OrderController {
 
     // 订单详情
     @GetMapping("/front/detail/{orderId}/{userId}")
+    @Operation(summary = "前台-订单详情", description = "查询订单详细信息")
     public Result<Order> frontDetail(
-            @PathVariable Long orderId,
-            @PathVariable Long userId
+            @Parameter(description = "订单ID", required = true) @PathVariable Long orderId,
+            @Parameter(description = "用户ID", required = true) @PathVariable Long userId
     ) {
         return Result.success(orderService.frontDetail(orderId, userId));
     }
@@ -125,6 +141,7 @@ public class OrderController {
      * 【前台 - 用户】申请退款 / 退货退款
      */
     @PostMapping("/front/applyRefund")
+    @Operation(summary = "前台-申请退款/退货", description = "用户发起退款或退货退款申请")
     public Result<?> applyRefund(
             @RequestBody Map<String, Object> params,
             HttpServletRequest request
@@ -139,27 +156,32 @@ public class OrderController {
 
     // 售后工单列表
     @GetMapping("/back/refund/list")
+    @Operation(summary = "后台-退款/售后列表", description = "管理员查看所有退款申请")
     public Result<?> refundOrderList(
-            @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize,
-            @RequestParam(required = false, name = "refundStatus[]") Integer[] refundStatus
+            @Parameter(description = "页码", example = "1") @RequestParam(defaultValue = "1") Integer pageNum,
+            @Parameter(description = "每页条数", example = "10") @RequestParam(defaultValue = "10") Integer pageSize,
+            @Parameter(description = "退款状态筛选") @RequestParam(required = false, name = "refundStatus[]") Integer[] refundStatus
     ) {
         return Result.success(orderService.getRefundOrderList(pageNum, pageSize, refundStatus));
     }
 
     // 售后工单详情
     @GetMapping("/back/refund/detail")
-    public Result<?> refundDetail(@RequestParam Long orderId) {
+    @Operation(summary = "后台-退款详情", description = "查看退款申请详情")
+    public Result<?> refundDetail(
+            @Parameter(description = "订单ID", required = true) @RequestParam Long orderId
+    ) {
         return Result.success(orderService.getRefundDetail(orderId));
     }
 
     // 审核退款
     @Log(module = "订单管理", operation = "审核退款订单")
     @PostMapping("/back/refund/audit")
+    @Operation(summary = "后台-审核退款", description = "同意/拒绝用户退款申请")
     public Result<?> auditRefund(
-            @RequestParam Long orderId,
-            @RequestParam Integer refundStatus,
-            @RequestParam(required = false) String refundRemark
+            @Parameter(description = "订单ID", required = true) @RequestParam Long orderId,
+            @Parameter(description = "审核结果状态", required = true) @RequestParam Integer refundStatus,
+            @Parameter(description = "审核备注") @RequestParam(required = false) String refundRemark
     ) {
         orderService.auditRefund(orderId, refundStatus, refundRemark);
         return Result.success("审核成功");

@@ -24,62 +24,93 @@ public class GatewayMessageHandler extends SimpleChannelInboundHandler<TextWebSo
     private static final ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     private static final Map<Long, Channel> userChannelMap = new ConcurrentHashMap<>();
     private static final Map<String, Set<Channel>> topicChannelMap = new ConcurrentHashMap<>();
+    // 在线状态
+    private static final Map<Long, Boolean> userOnlineMap = new ConcurrentHashMap<>();
 
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     private static ChatService chatService;
+
+    public static final Long SHOP_ID = 1L;
 
     public static void setChatService(ChatService service) {
         chatService = service;
     }
 
+    // ===================== 客户端连接 =====================
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) {
         channelGroup.add(ctx.channel());
         System.out.println("✅ 新客户端连接：" + ctx.channel().id());
     }
 
+    // ===================== 客户端断开 =====================
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) {
+        Channel channel = ctx.channel();
+
+        // 找到断开连接的用户
+        Long offlineUserId = null;
+        for (Map.Entry<Long, Channel> entry : userChannelMap.entrySet()) {
+            if (entry.getValue() == channel) {
+                offlineUserId = entry.getKey();
+                break;
+            }
+        }
+
+        // 用户离线
+        if (offlineUserId != null) {
+            userChannelMap.remove(offlineUserId);
+            userOnlineMap.put(offlineUserId, false);
+            broadcastUserStatus(offlineUserId, false); // 广播离线
+            System.out.println("❌ 用户离线：" + offlineUserId);
+        }
+
+        topicChannelMap.forEach((k, channels) -> channels.removeIf(c -> c == channel));
+        channelGroup.remove(channel);
+        System.out.println("❌ 客户端断开：" + ctx.channel().id());
+    }
+
+    // ===================== 消息处理 =====================
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame frame) throws Exception {
         try {
             String json = frame.text();
             GatewayMessageDTO dto = objectMapper.readValue(json, GatewayMessageDTO.class);
-            System.out.println("📋 解析后消息对象 = " + dto);
 
             Long fromUserId = dto.getFromUserId();
             String topic = dto.getTopic();
             String content = dto.getContent();
             Long shopId = dto.getShopId() == null ? 1L : dto.getShopId();
 
-            // 绑定用户
+            // ========== 用户绑定 + 上线标记 ==========
             if (fromUserId != null) {
                 userChannelMap.put(fromUserId, ctx.channel());
+                userOnlineMap.put(fromUserId, true);  // 标记在线
+                broadcastUserStatus(fromUserId, true); // 广播上线
             }
-
             // 绑定 topic
             if (topic != null && !topic.isBlank()) {
                 topicChannelMap.computeIfAbsent(topic, k -> ConcurrentHashMap.newKeySet()).add(ctx.channel());
                 System.out.println("当前已注册 topic: " + topicChannelMap.keySet());
             }
 
-            // 聊天消息（只在 用户发送 时创建会话 + 入库）
+            // 聊天消息入库
             if ("CHAT".equals(dto.getType())) {
                 if (chatService == null) return;
+
                 Long targetUserId = null;
-                // 1. 用户发消息
+
                 if (fromUserId != null) {
                     targetUserId = fromUserId;
-                }
-                // 2. 客服发消息（从 topic 解析出用户ID：chat_2 → 2）
-                else {
+                } else {
                     if (topic.startsWith("chat_")) {
                         String userIdStr = topic.replace("chat_", "");
                         targetUserId = Long.parseLong(userIdStr);
                     }
                 }
-                // 只要找到目标用户，就入库
+
                 if (targetUserId != null) {
                     ChatSession session = chatService.getOrCreateSession(shopId, targetUserId);
-
                     chatService.saveMessage(
                             session.getId(),
                             fromUserId,
@@ -87,11 +118,13 @@ public class GatewayMessageHandler extends SimpleChannelInboundHandler<TextWebSo
                             topic,
                             dto.getSenderType()
                     );
-                    System.out.println("✅ 消息已入库：" + content);
                 }
             }
-            sendToTopic(topic , json);
-            // 推送给店铺，把 topic 改成 shop_1
+
+            // 发送消息
+            sendToTopic(topic, json);
+
+            // 推送给店铺
             GatewayMessageDTO shopMsg = new GatewayMessageDTO();
             shopMsg.setTopic("shop_" + shopId);
             shopMsg.setType(dto.getType());
@@ -102,21 +135,30 @@ public class GatewayMessageHandler extends SimpleChannelInboundHandler<TextWebSo
             shopMsg.setContent(dto.getContent());
             String shopJson = objectMapper.writeValueAsString(shopMsg);
             sendToTopic("shop_" + shopId, shopJson);
+
         } catch (Exception e) {
             System.err.println("❌ 消息处理失败：" + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) {
-        Channel channel = ctx.channel();
-        userChannelMap.values().removeIf(c -> c == channel);
-        topicChannelMap.forEach((k, channels) -> channels.removeIf(c -> c == channel));
-        channelGroup.remove(channel);
-        System.out.println("❌ 客户端断开：" + ctx.channel().id());
+    // ===================== 广播用户在线/离线状态 =====================
+    private void broadcastUserStatus(Long userId, boolean isOnline) {
+        try {
+            GatewayMessageDTO dto = new GatewayMessageDTO();
+            dto.setTopic("shop_" + SHOP_ID);
+            dto.setType("USER_STATUS");
+            dto.setFromUserId(userId);
+            dto.setContent(isOnline ? "online" : "offline");
+
+            String json = objectMapper.writeValueAsString(dto);
+            sendToTopic("shop_" + SHOP_ID, json);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    // ===================== 工具方法 =====================
     public static void sendToUser(Long userId, Object msg) {
         try {
             Channel channel = userChannelMap.get(userId);
@@ -136,15 +178,12 @@ public class GatewayMessageHandler extends SimpleChannelInboundHandler<TextWebSo
     public static void sendToTopic(String topic, Object msg) {
         try {
             Set<Channel> channels = topicChannelMap.get(topic);
-
             if (channels == null || channels.isEmpty()) {
                 System.out.println("❌ 无人订阅该 topic：" + topic);
                 return;
             }
-
             ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
             String json = mapper.writeValueAsString(msg);
-
             for (Channel channel : channels) {
                 if (channel.isOpen()) {
                     channel.writeAndFlush(new TextWebSocketFrame(json));
@@ -165,5 +204,10 @@ public class GatewayMessageHandler extends SimpleChannelInboundHandler<TextWebSo
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // 【新增】给前端提供获取所有用户在线状态的方法
+    public static Map<Long, Boolean> getAllUserOnlineStatus() {
+        return new ConcurrentHashMap<>(userOnlineMap);
     }
 }

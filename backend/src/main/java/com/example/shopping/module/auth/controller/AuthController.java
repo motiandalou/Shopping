@@ -8,6 +8,9 @@ import com.example.shopping.module.staff.entity.Staff;
 import com.example.shopping.module.staff.service.StaffService;
 import com.example.shopping.module.user.entity.User;
 import com.example.shopping.module.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +24,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "认证授权", description = "登录、注册、Token刷新、退出登录接口")
 public class AuthController {
 
     private final JwtUtil jwtUtil;
@@ -30,7 +34,10 @@ public class AuthController {
     // ==================== 【后台】员工登录 ====================
     @Log(module = "员工管理", operation = "员工登录")
     @PostMapping("/staff/login")
-    public Result<Map<String, String>> staffLogin(@RequestBody Staff staff) {
+    @Operation(summary = "后台员工登录", description = "员工账号密码登录，返回Token")
+    public Result<Map<String, String>> staffLogin(
+            @Parameter(description = "员工登录信息", required = true) @RequestBody Staff staff
+    ) {
         try {
             // 登录校验
             staffService.login(staff);
@@ -50,12 +57,15 @@ public class AuthController {
 
     // ==================== 【前台】用户登录 ====================
     @PostMapping("/user/login")
-    public Result<Map<String, String>> userLogin(@RequestBody User user) {
+    @Operation(summary = "前台用户登录", description = "商城用户账号密码登录，返回Token")
+    public Result<Map<String, String>> userLogin(
+            @Parameter(description = "用户登录信息", required = true) @RequestBody User user
+    ) {
         try {
             // 1. 调用你原来的登录（密码校验）
             userService.login(user);
 
-            // 2. 用你正确的方法名查询用户 ✅
+            // 2. 用你正确的方法名查询用户
             User loginUser = userService.getByUserName(user.getUserName());
 
             Long userId = loginUser.getId();
@@ -84,26 +94,34 @@ public class AuthController {
 
     // ==================== 【前台】用户注册 ====================
     @PostMapping("/user/register")
-    public Result<Boolean> register(@RequestBody User user) {
+    @Operation(summary = "前台用户注册", description = "商城用户账号注册")
+    public Result<Boolean> register(
+            @Parameter(description = "用户注册信息", required = true) @RequestBody User user
+    ) {
         return Result.success(userService.register(user));
     }
 
     // ==================== 【后台】员工退出 ====================
     @Log(module = "员工管理", operation = "员工退出登录")
     @PostMapping("/staff/logout")
+    @Operation(summary = "后台员工退出登录", description = "员工登出，清空Token")
     public Result<String> staffLogout() {
         return Result.success("退出成功");
     }
 
     // ==================== 【前台】用户退出 ====================
     @PostMapping("/user/logout")
+    @Operation(summary = "前台用户退出登录", description = "用户登出，清空Token")
     public Result<String> userLogout() {
         return Result.success("退出成功");
     }
 
     // ==================== 双 Token 刷新 ====================
     @PostMapping("/refreshToken")
-    public Result<Map<String, String>> refreshToken(@RequestBody Map<String, String> map) {
+    @Operation(summary = "刷新Token", description = "使用refreshToken获取新的accessToken")
+    public Result<Map<String, String>> refreshToken(
+            @Parameter(description = "refreshToken参数", required = true) @RequestBody Map<String, String> map
+    ) {
         String refreshToken = map.get("refreshToken");
 
         try {

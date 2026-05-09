@@ -161,6 +161,39 @@ const ChatPage = () => {
     window.ws.send(message);
   };
 
+  // TODO
+  useEffect(() => {
+    // ==============================================
+    // ✅ 强制发送上线绑定（必须这样写）
+    // ==============================================
+    const loginMsg = {
+      topic: "chat_1",
+      type: "ONLINE",
+      fromUserId: 1, // 必须有！
+      shopId: 1,
+    };
+
+    // ✅ 必须 JSON.stringify！！！
+    setTimeout(() => {
+      window.ws.send(loginMsg);
+      console.log("✅ 已发送上线消息：", loginMsg);
+    }, 300);
+
+    // ✅ 离开/卸载时：发离线消息
+    return () => {
+      // 1. 发离线
+      const logoutMsg = {
+        topic: "chat_1",
+        type: "OFFLINE", // 新增类型
+        fromUserId: 1,
+        shopId: 1,
+      };
+      if (window.ws?.readyState === WebSocket.OPEN) {
+        window.ws.send(logoutMsg);
+      }
+    };
+  });
+
   // 4. 自动滚动到底部
   useEffect(() => {
     if (chatRef.current) {

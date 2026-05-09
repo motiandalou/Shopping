@@ -3,24 +3,33 @@ package com.example.shopping.module.user.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@TableName("t_user") // 对应数据库表名
+@TableName("t_user")
+@Schema(description = "用户实体")
 public class User {
 
     @TableId(type = IdType.AUTO)
+    @Schema(description = "用户ID", example = "1")
     private Long id;
-    // 用户名称
+
+    @Schema(description = "用户名称", example = "张三")
     private String userName;
-    // 密码
+
+    @Schema(description = "密码", example = "123456")
     private String password;
-    // 角色类型
+
+    @Schema(description = "角色类型 0-普通用户 1-管理员", example = "0")
     private Integer role;
-    // 年龄
+
+    @Schema(description = "年龄", example = "22")
     private Integer age;
-    // 手机号码
+
+    @Schema(description = "手机号码", example = "13800138000")
     private String phone;
-    // 状态 0-禁用 1-启用
+
+    @Schema(description = "状态 0-禁用 1-启用", example = "1")
     private Integer status;
 }

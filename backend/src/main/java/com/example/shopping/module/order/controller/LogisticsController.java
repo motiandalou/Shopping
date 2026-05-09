@@ -4,6 +4,9 @@ import com.example.shopping.common.util.KdniaoUtil;
 import com.example.shopping.config.Result;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/logistics")
 @RequiredArgsConstructor
+@Tag(name = "物流快递管理", description = "快递物流轨迹查询接口")
 public class LogisticsController {
 
     private final KdniaoUtil kdniaoUtil;
@@ -41,8 +45,11 @@ public class LogisticsController {
 
     // TODO 开发环境
     @GetMapping("/track/{shipperCode}/{logisticCode}")
+    @Operation(summary = "查询物流快递轨迹", description = "根据快递公司编码+运单号查询物流信息，开发环境返回模拟数据")
     public Result<JsonNode> queryLogisticsTrack(
+            @Parameter(description = "快递公司编码 SF=顺丰,STO=申通,YTO=圆通", example = "STO", required = true)
             @PathVariable String shipperCode,
+            @Parameter(description = "快递运单号", example = "773367326370601", required = true)
             @PathVariable String logisticCode) {
 
         // 假数据字符串
@@ -103,7 +110,7 @@ public class LogisticsController {
         try {
             // 把 String 转成 JsonNode
             JsonNode root = new ObjectMapper().readTree(fakeJson);
-            // ✅ 只取出 Traces 数组返回
+            // 只取出 Traces 数组返回
             JsonNode traces = root.get("Traces");
             return Result.success(traces);
         } catch (Exception e) {

@@ -3,6 +3,7 @@ package com.example.shopping.gateway.dto;
 import com.example.shopping.module.order.entity.Order;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;

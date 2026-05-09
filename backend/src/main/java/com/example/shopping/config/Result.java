@@ -1,9 +1,11 @@
 package com.example.shopping.config;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import java.io.Serializable;
 
 @Data
+@Schema(description = "统一返回结果")
 public class Result<T> implements Serializable {
 
     // 固定序列化ID
@@ -15,15 +17,19 @@ public class Result<T> implements Serializable {
     public static final int UNAUTHORIZED = 401;
 
     // 200成功 500失败 401未登录
+    @Schema(description = "响应码：200成功 500失败 401未登录", example = "200")
     private int code;
 
     // 提示信息
+    @Schema(description = "响应提示信息", example = "操作成功")
     private String msg;
 
     // 数据
+    @Schema(description = "响应数据")
     private T data;
 
     // 新增：是否成功
+    @Schema(description = "是否成功", example = "true")
     private boolean success;
 
     // 成功返回（带数据）

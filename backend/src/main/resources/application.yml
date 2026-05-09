@@ -43,3 +43,27 @@ kdniao:
   url: https://api.kdniao.com/api/dist
   connect-timeout: 5000
   read-timeout: 5000
+
+# Swagger
+# 访问地址: http://localhost:8081/api/doc.html
+springdoc:
+  info:
+    # 标题
+    title: MALL
+    # 描述
+    description: MALL商城和shopping后台管理系统的全部接口
+    # 版本
+    version: v1.0.0
+  # 扫描的包
+  packages-to-scan: com.example.shopping
+  # 匹配包下所有接口路径
+  paths-to-match: /**
+
+knife4j:
+  # 开启增强模式
+  enable: true
+  # 开启生产环境关闭（可选）
+  production: false
+  # 开启侧边栏和增强功能
+  basic:
+    enable: false

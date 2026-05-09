@@ -3,7 +3,12 @@ import { Layout, List, Avatar, Input, Button, Badge } from "antd";
 import { SendOutlined, UserOutlined } from "@ant-design/icons";
 import "./index.less";
 import { subscribe, unsubscribe } from "@/utils/websocket";
-import { getChatSessions, getChatMessages, clearUnread } from "@/api/service";
+import {
+  getChatSessions,
+  getChatMessages,
+  clearUnread,
+  getUserStatus,
+} from "@/api/service";
 import emptyImg from "@/assets/image/empty.png";
 
 const { Sider, Content } = Layout;
@@ -77,9 +82,31 @@ const ServiceChat = () => {
     const topic = `shop_${SHOP_ID}`;
 
     subscribe(topic, (data) => {
+      // 推送用户状态
+      if (data.type === "USER_STATUS") {
+        const userId = data.fromUserId;
+        // 用户状态: 在线 / 离线
+        const isOnline = data.content === "online";
+
+        setUserList((prev) => {
+          if (!prev[userId]) return prev;
+          return {
+            ...prev,
+            [userId]: {
+              ...prev[userId],
+              isOnline: isOnline,
+            },
+          };
+        });
+        return;
+      }
+      // 不是聊天的截断
       if (data.type !== "CHAT") return;
+      // 自己不给自己推送
       if (data.senderType == "SHOP_ADMIN") return;
+      // 自己不渲染自己发的消息
       if (data.fromUserId == selectedUser?.userId) return;
+
       const fromUserId = data.fromUserId;
       // 列表显示用的简短内容
       const lastContent = data.content || "[图片]";
@@ -165,6 +192,24 @@ const ServiceChat = () => {
       unsubscribe(topic);
     };
   }, [selectedUser]);
+
+  useEffect(() => {
+    // 拉取用户在线状态
+    const fetchStatus = async () => {
+      const res = await getUserStatus();
+      const statusMap = await res.json();
+      setUserList((prev) => {
+        const newList = { ...prev };
+        Object.keys(statusMap).forEach((userId) => {
+          if (newList[userId]) {
+            newList[userId].isOnline = statusMap[userId];
+          }
+        });
+        return newList;
+      });
+    };
+    fetchStatus();
+  }, []);
 
   // 切换用户
   const handleSelectUser = async (user) => {
@@ -268,6 +313,7 @@ const ServiceChat = () => {
           dataSource={Object.values(userList)}
           renderItem={(user) => {
             if (!user || !user.info) return null;
+            const isOnline = user.isOnline ?? false;
             return (
               <List.Item
                 className={`user-item ${selectedUser?.userId === user.info.userId ? "active" : ""}`}
@@ -282,7 +328,21 @@ const ServiceChat = () => {
                     />
                   }
                   title={user.info.userName}
-                  description={`咨询ID: ${user.info.userId}`}
+                  description={
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 4 }}
+                    >
+                      <div
+                        style={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: "50%",
+                          backgroundColor: isOnline ? "#52c41a" : "#cccccc",
+                        }}
+                      />
+                      {isOnline ? "在线" : "离线"}
+                    </div>
+                  }
                 />
                 {user.unread > 0 && <Badge count={user.unread} />}
               </List.Item>
