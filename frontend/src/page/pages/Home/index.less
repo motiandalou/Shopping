@@ -1,0 +1,346 @@
+@primary-color: #db4444;
+.home-page {
+  .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  // Hero Section
+  .hero-section {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 40px 0;
+
+    .category-menu {
+      width: 100%;
+      height: 400px;
+      overflow-y: auto;
+      transition: all 0.3s ease;
+      border: none;
+      border-right: 1px solid #f0f0f0;
+      padding-left: 16px;
+
+      &::-webkit-scrollbar {
+        width: 2px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #f0f0f0;
+        border-radius: 3px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+    }
+
+    .hero-carousel {
+      background: #000;
+      border-radius: 4px;
+      overflow: hidden;
+
+      .hero-slide {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        padding: 60px;
+        min-height: 400px;
+      }
+
+      .hero-content {
+        color: #fff;
+
+        .hero-brand {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+
+          .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            border-radius: 4px;
+          }
+
+          span {
+            font-size: 16px;
+          }
+        }
+
+        .hero-title {
+          color: #fff;
+          font-size: 48px;
+          font-weight: 600;
+          line-height: 1.2;
+          margin: 0;
+        }
+
+        .hero-cta {
+          color: #fff;
+          border-bottom: 1px solid #fff;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding-bottom: 4px;
+
+          &:hover {
+            color: #fff;
+            opacity: 0.8;
+          }
+        }
+      }
+
+      .hero-image {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+          width: 300px;
+          height: 300px;
+          object-fit: cover;
+          border-radius: 50%;
+        }
+
+        .hero-placeholder {
+          width: 300px;
+          height: 300px;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  // Section Styles
+  .section {
+    padding: 80px 0;
+
+    .section-header {
+      margin-bottom: 40px;
+
+      .section-tag {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+
+        .tag-indicator {
+          width: 20px;
+          height: 40px;
+          background: @primary-color;
+          border-radius: 4px;
+        }
+
+        span {
+          color: @primary-color;
+          font-weight: 600;
+          font-size: 16px;
+        }
+      }
+
+      .section-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .section-title {
+        font-size: 36px;
+        font-weight: 600;
+        margin: 0;
+      }
+    }
+
+    .section-footer {
+      text-align: center;
+      margin-top: 48px;
+    }
+  }
+
+  // Product Card
+  .product-card {
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all 0.3s;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+      .add-to-cart-overlay {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+
+    .product-image-wrapper {
+      position: relative;
+      background: #f5f5f5;
+      padding: 40px 20px;
+      text-align: center;
+
+      .discount-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: @primary-color;
+        color: #fff;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .product-actions {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .product-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .add-to-cart-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s;
+      }
+    }
+
+    :global {
+      .ant-card-body {
+        padding: 16px;
+      }
+
+      .ant-card-meta-title a {
+        color: #000;
+        font-weight: 500;
+
+        &:hover {
+          color: @primary-color;
+        }
+      }
+
+      .ant-card-meta-description {
+        .price {
+          color: @primary-color;
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        .original-price {
+          color: #999;
+          text-decoration: line-through;
+          font-size: 14px;
+        }
+
+        .reviews {
+          color: #999;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  // Promo Banner
+  .promo-banner {
+    background: #000;
+    padding: 80px 0;
+
+    .banner-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 60px;
+    }
+
+    .banner-text {
+      flex: 1;
+
+      .banner-category {
+        color: #00ff66;
+        font-weight: 600;
+        margin-bottom: 32px;
+      }
+
+      .banner-title {
+        color: #fff;
+        font-size: 48px;
+        font-weight: 600;
+        margin-bottom: 40px;
+        line-height: 1.2;
+      }
+    }
+
+    .banner-image {
+      .banner-placeholder {
+        width: 400px;
+        height: 400px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+      }
+    }
+  }
+
+  // Services
+  .services-section {
+    padding: 80px 0;
+
+    .service-item {
+      text-align: center;
+
+      .service-icon {
+        margin-bottom: 24px;
+
+        .icon-circle {
+          width: 80px;
+          height: 80px;
+          background: #c1c0c1;
+          border-radius: 50%;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 4px;
+
+          .icon-inner {
+            width: 60px;
+            height: 60px;
+            background: #000;
+            border-radius: 50%;
+          }
+        }
+      }
+
+      .service-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .service-desc {
+        color: #666;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+// 基础样式：默认高度固定，溢出隐藏，加滚动条

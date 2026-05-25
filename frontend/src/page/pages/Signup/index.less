@@ -1,0 +1,111 @@
+@primary-color: #db4444;
+.signup-page {
+  background: #fff;
+  min-height: calc(100vh - 200px);
+  display: flex;
+  align-items: center;
+  padding: 80px 0;
+
+  .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
+  }
+
+  .signup-image {
+    background: #cbe4e8;
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 40px;
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    :global(.ant-btn-primary) {
+      min-width: 120px;
+    }
+
+    .forgot-link {
+      color: @primary-color;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .signup-form-wrapper {
+    max-width: 400px;
+    margin: 0 auto;
+
+    .form-title {
+      font-size: 36px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .form-subtitle {
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    :global {
+      .ant-input,
+      .ant-input-password {
+        border: none;
+        border-bottom: 1px solid #d9d9d9;
+        border-radius: 0;
+        padding-left: 0;
+
+        &:focus,
+        &:hover {
+          border-bottom-color: #000;
+        }
+      }
+
+      .ant-form-item {
+        margin-bottom: 32px;
+      }
+
+      .ant-btn-primary {
+        margin-bottom: 16px;
+      }
+    }
+
+    .google-btn {
+      margin-bottom: 32px;
+    }
+
+    .login-text {
+      text-align: center;
+      color: #666;
+
+      .login-link {
+        color: @primary-color;
+        font-weight: 500;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .signup-page {
+    .form-title {
+      font-size: 28px !important;
+    }
+  }
+}

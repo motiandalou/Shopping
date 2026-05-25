@@ -113,6 +113,7 @@ public class AuthController {
     @PostMapping("/user/logout")
     @Operation(summary = "前台用户退出登录", description = "用户登出，清空Token")
     public Result<String> userLogout() {
+
         return Result.success("退出成功");
     }
 

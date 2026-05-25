@@ -1,0 +1,172 @@
+@primary-color: #db4444;
+.footer {
+  background-color: #000;
+  color: #fff;
+  padding: 80px 0 24px;
+
+  .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .footer-section {
+    .footer-title {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .footer-subtitle {
+      color: #fff;
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    .footer-desc {
+      color: #fafafa;
+      font-size: 14px;
+      margin-bottom: 16px;
+
+      &.small {
+        font-size: 12px;
+        color: #a0a0a0;
+      }
+    }
+
+    .subscribe-input {
+      :global {
+        .ant-input {
+          background-color: transparent;
+          border: 1px solid #fff;
+          color: #fff;
+
+          &::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+          }
+        }
+
+        .ant-input-group-addon {
+          background-color: transparent;
+
+          button {
+            background-color: transparent;
+            border: none;
+            color: #fff;
+
+            &:hover {
+              background-color: rgba(255, 255, 255, 0.1);
+            }
+          }
+        }
+      }
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      a,
+      p {
+        color: #fafafa;
+        font-size: 14px;
+        text-decoration: none;
+        transition: color 0.3s;
+
+        &:hover {
+          color: #fff;
+        }
+      }
+
+      p {
+        margin: 0;
+      }
+    }
+
+    .app-download {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+
+      .qr-code {
+        .qr-placeholder {
+          width: 80px;
+          height: 80px;
+          background-color: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #000;
+          font-weight: bold;
+          border-radius: 4px;
+        }
+      }
+
+      .app-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .app-button {
+          background-color: #fff;
+          color: #000;
+          padding: 8px 12px;
+          border-radius: 4px;
+          font-size: 12px;
+          text-align: center;
+          cursor: pointer;
+          transition: background-color 0.3s;
+
+          &:hover {
+            background-color: #db4444;
+            color: #fff;
+          }
+        }
+      }
+    }
+
+    .social-icons {
+      a {
+        color: #fff;
+        font-size: 24px;
+        transition: color 0.3s;
+
+        &:hover {
+          color: @primary-color;
+        }
+      }
+    }
+  }
+
+  .copyright {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 60px;
+    padding-top: 24px;
+    text-align: center;
+
+    p {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      margin: 0;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 40px 0 24px;
+
+    .footer-section {
+      .footer-title {
+        font-size: 18px;
+        margin-bottom: 16px;
+      }
+    }
+
+    .copyright {
+      margin-top: 40px;
+    }
+  }
+}

@@ -26,21 +26,10 @@ public class CategoryController {
 
     // 分类管理列表
     @GetMapping("/list")
-    @Operation(summary = "分页查询商品分类列表", description = "后台分页获取所有商品分类数据")
-    public Result<Map<String, Object>> list(
-            @Parameter(description = "页码", example = "1") @RequestParam(defaultValue = "1") Integer pageNum,
-            @Parameter(description = "每页条数", example = "10") @RequestParam(defaultValue = "10") Integer pageSize
-    ) {
-        PageHelper.startPage(pageNum, pageSize);
+    @Operation(summary = "查询商品分类列表", description = "获取所有商品分类数据")
+    public Result<List<Category>> list() {
         List<Category> categoryList = categoryService.list(null);
-        PageInfo<Category> pageInfo = new PageInfo<>(categoryList);
-
-        Map<String, Object> map = new HashMap<>();
-        // 数据(默认前10条)
-        map.put("list", pageInfo.getList());
-        // 总数
-        map.put("total", pageInfo.getTotal());
-        return Result.success(map);
+        return Result.success(categoryList);
     }
 
     // 新增

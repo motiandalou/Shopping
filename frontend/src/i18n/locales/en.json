@@ -1,0 +1,121 @@
+{
+  "nav": {
+    "home": "Home",
+    "contact": "Contact",
+    "about": "About",
+    "signup": "Sign Up",
+    "login": "Login",
+    "cart": "Cart",
+    "wishlist": "Wishlist",
+    "account": "My Account"
+  },
+  "header": {
+    "summer_sale": "Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!",
+    "shop_now": "ShopNow",
+    "search_placeholder": "Search",
+    "language": "English"
+  },
+  "home": {
+    "flash_sales": "Flash Sales",
+    "today": "Today's",
+    "best_selling": "Best Selling Products",
+    "this_month": "This Month",
+    "view_all": "View All Products",
+    "enhance_music": "Enhance Your Music Experience",
+    "buy_now": "Buy Now!"
+  },
+  "product": {
+    "add_to_cart": "Add To Cart",
+    "in_stock": "In Stock",
+    "out_of_stock": "Out of Stock",
+    "reviews": "Reviews",
+    "colors": "Colours",
+    "size": "Size",
+    "quantity": "Quantity",
+    "related_items": "Related Item"
+  },
+  "cart": {
+    "your_cart": "Your cart is empty",
+    "continue_shopping": "Continue Shopping",
+    "product": "Product",
+    "price": "Price",
+    "quantity": "Quantity",
+    "subtotal": "Subtotal",
+    "return_to_shop": "Return To Shop",
+    "update_cart": "Update Cart",
+    "coupon_code": "Coupon Code",
+    "apply_coupon": "Apply Coupon",
+    "cart_total": "Cart Total",
+    "shipping": "Shipping",
+    "free_shipping": "Free",
+    "total": "Total",
+    "proceed_checkout": "Proceed to checkout"
+  },
+  "checkout": {
+    "billing_details": "Billing Details",
+    "first_name": "First Name",
+    "name": "Name",
+    "company_name": "Company Name",
+    "street_address": "Address",
+    "apartment": "Apartment, floor, etc. (optional)",
+    "town_city": "Town/City",
+    "phone_number": "Phone Number",
+    "email_address": "Email Address",
+    "save_info": "Save this information for faster check-out next time",
+    "payment_method": "Payment Method",
+    "bank": "Bank",
+    "cash_on_delivery": "Cash on delivery",
+    "place_order": "Place Order"
+  },
+  "footer": {
+    "subscribe": "Subscribe",
+    "get_discount": "Get 10% off your first order",
+    "email_placeholder": "Enter your email",
+    "support": "Support",
+    "account": "Account",
+    "my_account": "My Account",
+    "login_register": "Login / Register",
+    "shop": "Shop",
+    "quick_link": "Quick Link",
+    "privacy_policy": "Privacy Policy",
+    "terms": "Terms Of Use",
+    "faq": "FAQ",
+    "download_app": "Download App",
+    "save_with_app": "Save $3 with App New User Only",
+    "copyright": "Copyright Rimel 2022. All right reserved"
+  },
+  "services": {
+    "free_delivery": "FREE AND FAST DELIVERY",
+    "free_delivery_desc": "Free delivery for all orders over $140",
+    "customer_service": "24/7 CUSTOMER SERVICE",
+    "customer_service_desc": "Friendly 24/7 customer support",
+    "money_back": "MONEY BACK GUARANTEE",
+    "money_back_desc": "We return money within 30 days"
+  },
+  "common": {
+    "search": "Search",
+    "filter": "Filters",
+    "sort": "Sort by",
+    "apply": "Apply",
+    "cancel": "Cancel",
+    "save": "Save Changes",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "signup": {
+    "create_account": "Create an account",
+    "enter_details": "Enter your details below",
+    "name": "Name",
+    "email_or_phone": "Email or Phone Number",
+    "password": "Password",
+    "create_account_btn": "Create Account",
+    "sign_up_with_google": "Sign up with Google",
+    "already_have_account": "Already have an account?",
+    "log_in": "Log in",
+    "required_name": "Please input your name!",
+    "required_email": "Please input your email or phone number!",
+    "invalid_email": "Please enter a valid email address!",
+    "required_password": "Please input your password!",
+    "password_min": "Password must be at least 6 characters!"
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "nav": {
+    "home": "首页",
+    "contact": "联系我们",
+    "about": "关于我们",
+    "signup": "注册",
+    "login": "登录",
+    "cart": "购物车",
+    "wishlist": "收藏夹",
+    "account": "我的账户"
+  },
+  "header": {
+    "summer_sale": "夏季特卖！所有泳装五折优惠并免费快递！",
+    "shop_now": "立即购买",
+    "search_placeholder": "搜索商品",
+    "language": "中文"
+  },
+  "home": {
+    "flash_sales": "限时抢购",
+    "today": "今日特惠",
+    "best_selling": "热销商品",
+    "this_month": "本月精选",
+    "view_all": "查看所有商品",
+    "enhance_music": "提升您的音乐体验",
+    "buy_now": "立即购买！"
+  },
+  "product": {
+    "add_to_cart": "加入购物车",
+    "in_stock": "有货",
+    "out_of_stock": "缺货",
+    "reviews": "评价",
+    "colors": "颜色",
+    "size": "尺寸",
+    "quantity": "数量",
+    "related_items": "相关商品"
+  },
+  "cart": {
+    "your_cart": "您的购物车是空的",
+    "continue_shopping": "继续购物",
+    "product": "商品",
+    "price": "价格",
+    "quantity": "数量",
+    "subtotal": "小计",
+    "return_to_shop": "返回商店",
+    "update_cart": "更新购物车",
+    "coupon_code": "优惠券代码",
+    "apply_coupon": "使用优惠券",
+    "cart_total": "购物车总计",
+    "shipping": "运费",
+    "free_shipping": "免费",
+    "total": "总计",
+    "proceed_checkout": "去结算"
+  },
+  "checkout": {
+    "billing_details": "账单详情",
+    "first_name": "名字",
+    "name": "名字",
+    "company_name": "公司名称",
+    "street_address": "街道地址",
+    "apartment": "公寓、楼层等（可选）",
+    "town_city": "城市",
+    "phone_number": "电话号码",
+    "email_address": "电子邮箱",
+    "save_info": "保存此信息以便下次快速结账",
+    "payment_method": "支付方式",
+    "bank": "银行卡",
+    "cash_on_delivery": "货到付款",
+    "place_order": "提交订单"
+  },
+  "footer": {
+    "subscribe": "订阅",
+    "get_discount": "首单立减10%",
+    "email_placeholder": "输入您的邮箱",
+    "support": "支持",
+    "account": "账户",
+    "my_account": "我的账户",
+    "login_register": "登录 / 注册",
+    "shop": "商店",
+    "quick_link": "快速链接",
+    "privacy_policy": "隐私政策",
+    "terms": "使用条款",
+    "faq": "常见问题",
+    "download_app": "下载应用",
+    "save_with_app": "新用户下载应用省$3",
+    "copyright": "版权所有 Rimel 2022. 保留所有权利"
+  },
+  "services": {
+    "free_delivery": "免费快速配送",
+    "free_delivery_desc": "订单满$140免费配送",
+    "customer_service": "24/7客户服务",
+    "customer_service_desc": "友好的24/7客户支持",
+    "money_back": "退款保证",
+    "money_back_desc": "30天内无理由退款"
+  },
+  "common": {
+    "search": "搜索",
+    "filter": "筛选",
+    "sort": "排序",
+    "apply": "应用",
+    "cancel": "取消",
+    "save": "保存更改",
+    "edit": "编辑",
+    "delete": "删除"
+  },
+  "signup": {
+    "create_account": "创建账户",
+    "enter_details": "请输入以下信息",
+    "name": "姓名",
+    "email_or_phone": "邮箱或手机号",
+    "password": "密码",
+    "create_account_btn": "创建账户",
+    "sign_up_with_google": "使用 Google 注册",
+    "already_have_account": "已有账户？",
+    "log_in": "登录",
+    "required_name": "请输入您的姓名！",
+    "required_email": "请输入您的邮箱或手机号！",
+    "invalid_email": "请输入有效的邮箱地址！",
+    "required_password": "请输入您的密码！",
+    "password_min": "密码至少需要 6 个字符！"
+  }
+}

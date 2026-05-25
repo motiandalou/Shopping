@@ -10,10 +10,15 @@ public interface UserService {
     void login(User auth);
     // 列表
     List<User> list(User user);
-    // 修改状态
-    String updateStatus(Long id, Integer status);
+
     // 根据ID查询
     User getById(Long id);
     // 根据用户名查询
     User getByUserName(String userName);
+    // 修改个人信息
+    String updateProfile(User user);
+    // 修改状态
+    String updateStatus(Long id, Integer status);
+    // 修改用户密码
+    String updatePwd(Long userId,String oldPwd,String newPwd,String confirmPwd);
 }

@@ -9,25 +9,20 @@ export const getOrdersList = (params) => {
   });
 };
 
-// 确认发货
-export const updateOrders = (id, data) => {
+// 新增
+export const addOrder = (data) => {
   return request({
-    url: `/order/back/updateStatus`,
-    method: "post",
-    params: {
-      orderId: id,
-      status: data.status,
-      expressCompany: data.expressCompany,
-      expressNo: data.expressNo,
-    },
+    url: "/order/front/add",
+    method: "POST",
+    data,
   });
 };
 
-// 查询物流
-export const getLogistics = (shipperCode, logisticCode) => {
+// 修改
+export const updateOrders = (id) => {
   return request({
-    url: `/logistics/track/${shipperCode}/${logisticCode}`,
-    method: "GET",
+    url: `/order/back/updateStatus${id}`,
+    method: "PUT",
   });
 };
 
@@ -39,42 +34,19 @@ export const deleteOrders = (id) => {
   });
 };
 
-// 售后工单列表
-export const refundOrderList = (params) => {
+// 退款申请（仅退款 / 退货退款）
+export const applyRefund = (data) => {
   return request({
-    url: "/order/back/refund/list",
+    url: "/order/front/applyRefund",
+    method: "POST",
+    data,
+  });
+};
+
+// 订单详情
+export const getOrderDetail = (orderId, userId) => {
+  return request({
+    url: `/order/front/detail/${orderId}/${userId}`,
     method: "GET",
-    params,
-  });
-};
-
-// 工单日志列表
-export const getOrderLogList = (params) => {
-  return request({
-    url: "/order/log/list",
-    method: "GET",
-    params: params,
-  });
-};
-
-// 2. 售后工单详情
-export const refundDetail = (orderId) => {
-  return request({
-    url: "/order/back/refund/detail",
-    method: "get",
-    params: { orderId },
-  });
-};
-
-// 3. 审核退款（同意 / 拒绝）
-export const auditRefund = (orderId, refundStatus, refundRemark) => {
-  return request({
-    url: "/order/back/refund/audit",
-    method: "post",
-    params: {
-      orderId,
-      refundStatus,
-      refundRemark,
-    },
   });
 };

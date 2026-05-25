@@ -1,0 +1,154 @@
+@primary-color: #db4444;
+.about-page {
+  background: #fff;
+  padding: 40px 0 80px;
+
+  .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .breadcrumb {
+    margin-bottom: 40px;
+  }
+
+  .story-section {
+    margin-bottom: 80px;
+
+    .section-title {
+      font-size: 48px;
+      font-weight: 600;
+      margin-bottom: 32px;
+    }
+
+    .story-text {
+      color: #666;
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    .story-image {
+      border-radius: 8px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+
+  .stats-section {
+    margin-bottom: 80px;
+
+    .stat-card {
+      text-align: center;
+      border-radius: 8px;
+      transition: all 0.3s;
+
+      &:hover,
+      &.highlighted {
+        background: @primary-color;
+        color: #fff;
+
+        .stat-icon,
+        :global(.ant-statistic-content),
+        .stat-title {
+          color: #fff !important;
+        }
+      }
+
+      .stat-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+
+      :global(.ant-statistic-content) {
+        font-size: 32px;
+        font-weight: 600;
+      }
+
+      .stat-title {
+        margin-top: 8px;
+        font-size: 14px;
+        color: #666;
+      }
+    }
+  }
+
+  .team-section {
+    margin-bottom: 80px;
+
+    .team-member {
+      text-align: center;
+
+      .member-image {
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 24px;
+
+        img {
+          width: 100%;
+          height: 400px;
+          object-fit: cover;
+        }
+      }
+
+      .member-name {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .member-position {
+        color: #666;
+      }
+    }
+  }
+
+  .services-section {
+    .service-item {
+      text-align: center;
+
+      .service-icon {
+        width: 80px;
+        height: 80px;
+        background: #c1c0c1;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        font-size: 32px;
+
+        :global(.anticon) {
+          color: #fff;
+        }
+      }
+
+      h3 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      p {
+        color: #666;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .about-page {
+    .story-section .section-title {
+      font-size: 32px;
+    }
+
+    .team-section .team-member .member-image img {
+      height: 300px;
+    }
+  }
+}

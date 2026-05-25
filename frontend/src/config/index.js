@@ -2,10 +2,10 @@
 const config = {
   // 后端接口基础配置
   api: {
-    protocol: "http", // 协议 http / https
-    host: "localhost", // 域名/IP
-    port: "8081", // 后端端口
-    prefix: "/api", // 接口前缀
+    protocol: "http",
+    host: "localhost",
+    port: "8081",
+    prefix: "/api",
   },
 
   // 前端项目配置

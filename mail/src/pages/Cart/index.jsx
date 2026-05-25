@@ -38,9 +38,8 @@ export default function Cart() {
 
       if (res.code === 200) {
         fetchCartList();
-        message.success("修改成功");
       } else {
-        message.error(res.msg || "修改失败");
+        message.error(res.msg);
       }
     } catch (err) {
       message.error("修改失败");
@@ -52,8 +51,7 @@ export default function Cart() {
       const res = await deleteCart(id);
       if (res.code === 200) {
         fetchCartList();
-        // 刷新页面，重新获取购物车数量
-        window.history.go(0);
+        message.success("删除成功");
       } else {
         message.error(res.msg || "删除失败");
       }

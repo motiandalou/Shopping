@@ -1,0 +1,134 @@
+@primary-color: #db4444;
+.top-header {
+  background-color: #000;
+  color: #fff;
+  padding: 12px 0;
+  font-size: 14px;
+
+  .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .top-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .flex-spacer {
+    flex: 1;
+  }
+
+  .promo-text {
+    text-align: center;
+  }
+
+  .shop-now-link {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: underline;
+    margin-left: 8px;
+
+    &:hover {
+      color: #fff;
+      opacity: 0.8;
+    }
+  }
+
+  .top-header-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .language-select {
+    color: #fff;
+
+    :global {
+      .ant-select-selector {
+        background-color: transparent !important;
+        border: none !important;
+        color: #fff !important;
+      }
+
+      .ant-select-arrow {
+        color: #fff;
+      }
+    }
+
+    .ant-select-selection-item {
+      color: #fff !important;
+    }
+  }
+}
+
+.main-header {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 16px 0;
+
+  .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+  }
+
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+
+    &:hover {
+      color: #000;
+    }
+  }
+
+  .nav-menu {
+    display: flex;
+    gap: 32px;
+    flex: 1;
+
+    a {
+      position: relative;
+      padding: 6px 0;
+      color: #000;
+      text-decoration: none;
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0;
+        height: 2px;
+        background: #333;
+        transition: width 0.2s;
+      }
+      &.active-nav::after {
+        width: 100%;
+      }
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-icon {
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+
+    &:hover {
+      color: @primary-color;
+    }
+  }
+}

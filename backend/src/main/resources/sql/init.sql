@@ -10,7 +10,10 @@ CREATE TABLE `t_user` (
     `user_name` varchar(50) NOT NULL COMMENT '用户名（登录账号）',
     `password` varchar(100) NOT NULL COMMENT '密码（BCrypt加密）',
     `phone` varchar(20) DEFAULT NULL COMMENT '手机号',
+    `email` varchar(100) DEFAULT NULL COMMENT '用户邮箱',
     `address` varchar(255) DEFAULT NULL COMMENT '收货地址',
+    `birth_date` date DEFAULT NULL COMMENT '出生日期',
+    `gender` varchar(10) DEFAULT NULL COMMENT '性别 male-男 female-女',
     `role` tinyint NOT NULL DEFAULT '0' COMMENT '角色 0=普通用户 1=管理员',
     `age` int DEFAULT NULL COMMENT '年龄',
     `status` tinyint NOT NULL DEFAULT '1' COMMENT '状态 0=禁用 1=正常',
@@ -25,12 +28,12 @@ CREATE TABLE `t_user` (
 # 密码：123456
 INSERT INTO t_user (user_name, password, role, status, phone, address)
 VALUES (
-           'admin',
-           '$2a$10$gLazgxv4VJ7nHdBDWJxSCOc2pZx1Vv4lX2nHdBDWJ7nHdBDWJ7nHd',
-           2,
-           1,
-           '13800000000',
-           '系统内置超级管理员'
+    'admin',
+    '$2a$10$gLazgxv4VJ7nHdBDWJxSCOc2pZx1Vv4lX2nHdBDWJ7nHdBDWJ7nHd',
+    2,
+    1,
+    '13800000000',
+    '系统内置超级管理员'
        );
 
 # 创建分类列表
