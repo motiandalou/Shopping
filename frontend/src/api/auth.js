@@ -1,27 +1,18 @@
 import request from "./request";
 
-// 注册接口
-export const registerApi = (data) => {
-  return request({
-    url: "/auth/user/register",
-    method: "POST",
-    data,
-  });
-};
-
-// 登录接口
+// 员工登录
 export const loginApi = (data) => {
   return request({
-    url: "/auth/user/login",
+    url: "/auth/staff/login",
     method: "POST",
     data,
   });
 };
 
-// 退出登录
+// 员工退出登录
 export const logoutApi = (data) => {
   return request({
-    url: "/auth/user/logout",
+    url: "/auth/staff/logout",
     method: "POST",
     data,
   });

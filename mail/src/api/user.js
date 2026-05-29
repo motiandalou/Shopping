@@ -1,13 +1,12 @@
 import request from "./request";
 
-// 获取列表
-export const getUserList = (data) => {
+// 获取用户信息
+export function getUserInfo() {
   return request({
-    url: "/user/list",
-    method: "POST",
-    data,
+    url: "/user/getCurrentUser",
+    method: "GET",
   });
-};
+}
 
 // 修改
 export const updateUser = (data) => {
@@ -18,18 +17,20 @@ export const updateUser = (data) => {
   });
 };
 
-// 修改用户状态
-export const updateUserStatus = (data) => {
+// 修改用户基本信息
+export const updateUserProfile = (data) => {
   return request({
-    url: "/user/updateStatus",
+    url: "/user/updateProfile",
     method: "PUT",
     data,
   });
 };
 
-export function getUserInfo() {
+// 修改用户密码
+export const updateUserPwd = (data) => {
   return request({
-    url: "/user/getCurrentUser",
-    method: "GET",
+    url: "/user/updatePwd",
+    method: "PUT",
+    data,
   });
-}
+};

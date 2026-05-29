@@ -9,18 +9,19 @@ export const getGoodsList = (data) => {
   });
 };
 
-// 获取详情
-export const getGoodsDetail = (id) => {
-  return request({
-    url: `/goods/detail/${id}`,
-    method: "GET",
-  });
-};
-
 // 新增
 export const addGoods = (data) => {
   return request({
     url: "/goods/add",
+    method: "POST",
+    data,
+  });
+};
+
+// 修改预警阈值
+export const updateWarningNum = (data) => {
+  return request({
+    url: "/goods/updateWarningNum",
     method: "POST",
     data,
   });

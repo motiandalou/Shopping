@@ -18,6 +18,15 @@ export const loginApi = (data) => {
   });
 };
 
+// 退出登录
+export const logoutApi = (data) => {
+  return request({
+    url: "/auth/user/logout",
+    method: "POST",
+    data,
+  });
+};
+
 // 获取 accessToken 来重新获取令牌
 export const refreshTokenApi = (refreshToken) => {
   return request({
