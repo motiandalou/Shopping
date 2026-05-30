@@ -29,6 +29,35 @@ spring:
         min-idle: 0
         max-wait: -1ms
 
+  # Kafka 配置
+  # 启动 zookeeper
+#  brew services start zookeeper
+  # 启动 kafka
+#  brew services start kafka
+
+# 1. 先关 Kafka
+# brew services stop kafka
+# 2. 再关 Zookeeper
+# brew services stop zookeeper
+  kafka:
+    # 1. Kafka服务地址和端口，本地单机默认 9092
+    bootstrap-servers: 127.0.0.1:9092
+    # ========== 生产者配置（发消息：收藏/取消收藏时推送事件） ==========
+    producer:
+      # key 序列化：把消息key转为字符串格式
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # value 序列化：把Java对象(FavoriteMsg)转成JSON字符串发送
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    # ========== 消费者配置（收消息：后台批量处理收藏逻辑） ==========
+    consumer:
+      # key 反序列化：把收到的字符串key转回原始格式
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # value 反序列化：把收到的JSON字符串转回Java对象(FavoriteMsg)
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      # 关闭自动提交偏移量：业务处理成功后再手动标记消息已消费，防止丢消息
+      enable-auto-commit: false
+      # 批量消费：一次最多拉取 300 条消息，统一批量入库、更新缓存
+      max-poll-records: 300
 
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml

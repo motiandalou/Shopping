@@ -1,3 +1,4 @@
+// --
 import { useState, useEffect } from "react";
 import {
   Table,
@@ -27,14 +28,23 @@ export default function CategoryManage() {
   const [visible, setVisible] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
+  // 分页状态
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+
   useEffect(() => {
     fetchCategoryList();
-  }, []);
+  }, [current, pageSize]);
 
   const fetchCategoryList = async () => {
     try {
-      const res = await getCategoryList();
+      const res = await getCategoryList({
+        pageNum: current,
+        pageSize: pageSize,
+      });
       setList(res.data.list || res.data);
+      setTotal(res.data.total || 100);
     } catch (err) {
       console.error("Failed to fetch goods list:", err);
     }
@@ -137,6 +147,20 @@ export default function CategoryManage() {
           >
             {t("btn.add")}
           </ShoppingButton>
+
+          <Pagination
+            current={current}
+            pageSize={pageSize}
+            total={total}
+            onChange={(page, size) => {
+              setCurrent(page);
+              setPageSize(size);
+            }}
+            showSizeChanger
+            pageSizeOptions={["5", "10", "20"]}
+            showLessItems
+            showTotal={(total) => t("category.total").replace("{total}", total)}
+          />
         </div>
 
         <Table

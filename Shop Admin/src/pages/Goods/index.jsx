@@ -43,7 +43,6 @@ export default function GoodsManage() {
   // 分类滚动加载
   const [categoryPage, setCategoryPage] = useState(1);
   const [showLoading, setShowLoading] = useState(false);
-  const [categoryHasMore, setCategoryHasMore] = useState(true);
   const CATEGORY_PAGE_SIZE = 10;
   const isLoadingRef = useRef(false);
 
@@ -73,24 +72,15 @@ export default function GoodsManage() {
 
   // 加载分类
   const fetchMoreCategories = async () => {
-    if (!categoryHasMore || isLoadingRef.current) return;
+    if (isLoadingRef.current) return;
     isLoadingRef.current = true;
     setShowLoading(true);
 
     try {
-      const res = await getCategoryList({
-        pageNum: categoryPage,
-        pageSize: CATEGORY_PAGE_SIZE,
-      });
-      const { list = [], total = 0 } = res.data || {};
-      if (list.length > 0) {
-        setCategoryList((prev) => [...prev, ...list]);
-        setCategoryPage((prev) => prev + 1);
-      }
-      setCategoryHasMore(categoryList.length + list.length < total);
+      const res = await getCategoryList();
+      setCategoryList(res.data);
     } catch (err) {
-      console.error("Failed to add category:", err);
-      console.error("Failed to fetch category list:", err);
+      console.error(err);
     } finally {
       isLoadingRef.current = false;
       setTimeout(() => setShowLoading(false), 300);

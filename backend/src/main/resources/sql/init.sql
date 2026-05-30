@@ -123,6 +123,17 @@ CREATE TABLE `t_cart` (
     KEY `idx_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='购物车表';
 
+CREATE TABLE `t_favorite` (
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `user_id` bigint NOT NULL COMMENT '用户ID',
+    `goods_id` bigint NOT NULL COMMENT '商品ID',
+    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_user_goods` (`user_id`, `goods_id`) COMMENT '同一用户同一商品仅可收藏一次',
+    KEY `idx_user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品收藏表';
+
 -- 会话表
 CREATE TABLE `chat_session` (
     `id` bigint NOT NULL AUTO_INCREMENT COMMENT '会话ID',

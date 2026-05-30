@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "../../theme/ThemeContext";
 import "./Header.less";
 import { getCartList } from "@/api/cart";
+import { getFavoriteList } from "@/api/favorite";
 
 const { Search } = Input;
 
@@ -25,6 +26,7 @@ const Header: React.FC = () => {
   const location = useLocation();
   const { isDark, toggleTheme } = useTheme();
   const [cartCount, setCartCount] = useState(0);
+  const [FavoriteCount, setFavoriteCount] = useState(0);
   const refreshToken = localStorage.getItem("refreshToken");
 
   // 购物车数量
@@ -40,8 +42,22 @@ const Header: React.FC = () => {
     }
   };
 
+  // 心愿数量
+  const fetchRealFavorite = async () => {
+    try {
+      // TODO 任何页面都要变化
+      const res = await getFavoriteList();
+      if (res.success) {
+        setFavoriteCount(res.data.length);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     fetchRealCart();
+    fetchRealFavorite();
   });
 
   // 退出登录请求
@@ -181,7 +197,12 @@ const Header: React.FC = () => {
               />
 
               <Link to="/wishlist">
-                <HeartOutlined className="header-icon" />
+                <Badge
+                  count={FavoriteCount}
+                  size="small"
+                >
+                  <HeartOutlined className="header-icon" />
+                </Badge>
               </Link>
 
               <Link to="/cart">

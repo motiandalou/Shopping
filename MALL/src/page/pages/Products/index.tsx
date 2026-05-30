@@ -14,12 +14,18 @@ import {
   Pagination,
   message,
 } from "antd";
-import { HeartOutlined, EyeOutlined, FilterOutlined } from "@ant-design/icons";
+import {
+  HeartOutlined,
+  HeartFilled,
+  EyeOutlined,
+  FilterOutlined,
+} from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import "./index.less";
 import { addCart } from "../../../api/cart";
 import { getGoodsList } from "@/api/goods";
 import { getCategoryList } from "@/api/category";
+import { toggleFavorite, getBatchFavoriteState } from "@/api/favorite";
 
 const { Meta } = Card;
 
@@ -28,7 +34,7 @@ interface Category {
   categoryName: string;
 }
 
-// 商品接口返回的真实字段
+// 商品接口返回的真实字段，新增 isFavorite 收藏状态
 interface Product {
   id: number;
   goodsName: string;
@@ -37,6 +43,7 @@ interface Product {
   categoryName: string;
   rating?: number;
   reviews?: number;
+  isFavorite?: boolean;
 }
 
 const Products: React.FC = () => {
@@ -61,8 +68,11 @@ const Products: React.FC = () => {
         maxPrice: priceRange[1],
       });
       if (res.code === 200) {
-        setProducts(res.data);
-        setTotal(res.data.length);
+        let list = res.data || [];
+        setTotal(list.length);
+        // 批量查询每个商品收藏状态
+        await batchGetFavoriteStatus(list);
+        setProducts(list);
       } else {
         console.error(res.msg);
       }
@@ -70,6 +80,30 @@ const Products: React.FC = () => {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // 批量获取商品收藏状态
+  const batchGetFavoriteStatus = async (list: Product[]) => {
+    if (!list || list.length === 0) return;
+    // 提取当前页所有商品ID
+    const goodsIdList = list.map((item) => item.id);
+    try {
+      const res = await getBatchFavoriteState(goodsIdList);
+      if (res.code === 200) {
+        const stateMap = res.data || {};
+        // 批量赋值收藏状态
+        list.forEach((item) => {
+          // 不存在则默认未收藏
+          item.isFavorite = stateMap[item.id] ?? false;
+        });
+      }
+    } catch (err) {
+      // 接口异常，全部置为未收藏
+      list.forEach((item) => {
+        item.isFavorite = false;
+      });
+      console.error("批量获取收藏状态失败：", err);
     }
   };
 
@@ -102,6 +136,23 @@ const Products: React.FC = () => {
     }
   };
 
+  // 切换收藏/取消收藏
+  const handleToggleFavorite = async (goodsId: number) => {
+    try {
+      const res = await toggleFavorite(goodsId);
+      setProducts((prev) =>
+        prev.map((item) =>
+          item.id === goodsId
+            ? { ...item, isFavorite: !item.isFavorite }
+            : item,
+        ),
+      );
+      message.success(res.msg);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const ProductCard: React.FC<{ product: Product }> = ({ product }) => (
     <Card
       className="product-card"
@@ -109,9 +160,17 @@ const Products: React.FC = () => {
       cover={
         <div className="product-image-wrapper">
           <div className="product-actions">
+            {/* 根据收藏状态切换实心/空心爱心 */}
             <Button
               shape="circle"
-              icon={<HeartOutlined />}
+              icon={
+                product.isFavorite ? (
+                  <HeartFilled style={{ color: "#f5222d" }} />
+                ) : (
+                  <HeartOutlined />
+                )
+              }
+              onClick={() => handleToggleFavorite(product.id)}
             />
             <Button
               shape="circle"

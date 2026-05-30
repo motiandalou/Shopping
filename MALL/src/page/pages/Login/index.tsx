@@ -17,10 +17,9 @@ const Login: React.FC = () => {
   const [form] = Form.useForm<LoginFormValues>();
   const navigate = useNavigate();
 
-  // 登录逻辑（加了类型）
+  // 登录逻辑
   const handleLogin = async (values: LoginFormValues) => {
     try {
-      //
       const res = await loginApi(values);
       const { accessToken, refreshToken } = res.data;
       localStorage.setItem("accessToken", accessToken);

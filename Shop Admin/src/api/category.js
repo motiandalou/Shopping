@@ -1,11 +1,10 @@
 import request from "./request";
 
 // 获取列表
-export const getCategoryList = (params) => {
+export const getCategoryList = () => {
   return request({
     url: "/category/list",
     method: "GET",
-    params,
   });
 };
 
