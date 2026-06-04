@@ -1,6 +1,7 @@
 package com.example.shopping.module.goods.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,6 +29,16 @@ public class Goods implements Serializable {
     // 分类ID（必须加，关联分类表用）
     @Schema(description = "分类ID", example = "1", required = true)
     private Integer categoryId;
+
+    // 页码
+    @Schema(description = "页码")
+    @TableField(exist = false) // 数据库不存在该字段
+    private Integer pageNum;
+
+    // 每页条数
+    @Schema(description = "每页条数")
+    @TableField(exist = false) // 数据库不存在该字段
+    private Integer pageSize;
 
     // 分类名称（查询时返回用）
     @Schema(description = "分类名称", example = "手机数码")

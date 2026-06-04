@@ -1,5 +1,13 @@
 import { useState, useEffect } from "react";
-import { Card, Form, InputNumber, Button, Table, message, Modal } from "antd";
+import {
+  Card,
+  Form,
+  InputNumber,
+  Table,
+  message,
+  Modal,
+  Pagination,
+} from "antd";
 import { getGoodsList, updateGoods } from "@/api/goods";
 import ShoppingButton from "@/components/shopping_button";
 import { EditOutlined } from "@ant-design/icons";
@@ -9,11 +17,11 @@ export default function StockWarning() {
   const [globalForm] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState([]);
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  });
+  // 和商品管理统一分页变量
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
 
@@ -21,18 +29,22 @@ export default function StockWarning() {
   const loadList = async (page = 1, pageSize = 10) => {
     setLoading(true);
     try {
-      const res = await getGoodsList({ pageNum: page, pageSize });
-      const data = (res.data || []).map((item) => ({
+      const params = {
+        pageDTO: {
+          pageNum: page,
+          pageSize: pageSize,
+        },
+        queryDTO: {},
+      };
+      const res = await getGoodsList(params);
+      const pageData = res.data || {};
+      const dataArr = pageData.list ?? [];
+      const data = dataArr.map((item) => ({
         ...item,
-        // 库存 < 预警阈值 → 预警中
         status: item.stock < item.warningNum ? "预警中" : "正常",
       }));
       setList(data);
-      setPagination({
-        current: page,
-        pageSize,
-        total: res.data?.total || data.length,
-      });
+      setTotal(pageData.total || 0);
     } catch (err) {
       console.error("err", err);
     } finally {
@@ -40,16 +52,14 @@ export default function StockWarning() {
     }
   };
 
+  // 页码、每页条数变化自动刷新
+  useEffect(() => {
+    loadList(current, pageSize);
+  }, [current, pageSize]);
+
   useEffect(() => {
     loadList();
   }, []);
-
-  // TODO 保存全局预警设置
-  const handleSaveGlobal = async () => {
-    const values = await globalForm.validateFields();
-    // 保存后刷新列表状态
-    loadList(pagination.current, pagination.pageSize);
-  };
 
   // 打开修改阈值弹窗
   const openEditModal = (record) => {
@@ -61,7 +71,6 @@ export default function StockWarning() {
   // 保存单个商品预警阈值
   const handleSaveWarning = async () => {
     const values = await form.validateFields();
-    // 参数
     const params = {
       id: currentItem.id,
       warningNum: values.warningNum,
@@ -70,10 +79,8 @@ export default function StockWarning() {
 
     if (res.success) {
       message.success(res.msg);
-      // 关闭弹窗
       setModalVisible(false);
-      // 刷新列表
-      loadList(pagination.current, pagination.pageSize);
+      loadList(current, pageSize);
     }
   };
 
@@ -107,48 +114,40 @@ export default function StockWarning() {
   ];
 
   return (
-    <Card
-      title="库存预警配置"
-      bordered={false}
-    >
-      <Form
-        form={globalForm}
-        labelCol={{ span: 5 }}
-        wrapperCol={{ span: 12 }}
-        style={{ marginBottom: 20 }}
+    <Card title="库存预警配置">
+      {/* 关键：和商品管理一模一样的flex布局 */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: 16,
+        }}
       >
-        <Form.Item
-          label="全局默认预警库存"
-          name="globalWarning"
-          rules={[{ required: true, message: "请输入全局预警库存" }]}
-        >
-          <InputNumber
-            style={{ width: "100%" }}
-            placeholder="低于该数量预警"
-          />
-        </Form.Item>
-        <Form.Item wrapperCol={{ offset: 5 }}>
-          <ShoppingButton onClick={handleSaveGlobal}>
-            保存全局设置
-          </ShoppingButton>
-        </Form.Item>
-      </Form>
-
-      <Card
-        size="small"
-        title="商品库存预警列表"
-      >
-        <Table
-          rowKey="id"
-          loading={loading}
-          columns={columns}
-          dataSource={list}
-          pagination={{
-            ...pagination,
-            onChange: (page, pageSize) => loadList(page, pageSize),
+        <div></div>
+        {/* 右上角分页，配置完全对齐 */}
+        <Pagination
+          current={current}
+          pageSize={pageSize}
+          total={total}
+          onChange={(page, size) => {
+            setCurrent(page);
+            setPageSize(size);
           }}
+          showSizeChanger
+          pageSizeOptions={["5", "10", "20", "50"]}
+          showLessItems
+          showTotal={(total) => `共 ${total} 条`}
         />
-      </Card>
+      </div>
+
+      <Table
+        rowKey="id"
+        loading={loading}
+        columns={columns}
+        dataSource={list}
+        pagination={false}
+        style={{ marginTop: 16 }}
+      />
 
       {/* 修改阈值弹窗 */}
       <Modal

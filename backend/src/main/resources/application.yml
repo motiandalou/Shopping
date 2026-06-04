@@ -8,6 +8,10 @@ spring:
     active: dev  # 开发环境（保留这行）
     # active: prod  # 生产环境（注释掉，需要时再打开）
 
+  # categoryIdList: JSON 会自动转下划线category_id_list
+#  jackson:
+#    property-naming-strategy: SNAKE_CASE
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/shopping_db?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true

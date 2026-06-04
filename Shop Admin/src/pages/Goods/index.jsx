@@ -57,13 +57,20 @@ export default function GoodsManage() {
   // 获取商品列表
   const fetchGoodsList = async () => {
     try {
+      const searchData = searchForm.getFieldsValue();
+      // searchData.categoryId 多选自动是 number[]
       const params = {
-        ...searchForm.getFieldsValue(),
-        pageNum: current,
-        pageSize: pageSize,
+        pageDTO: {
+          pageNum: current,
+          pageSize: pageSize,
+        },
+        queryDTO: {
+          goodsName: searchData.goodsName,
+          categoryIdList: searchData.categoryId, // 多选数组丢给categoryIdList
+        },
       };
       const res = await getGoodsList(params);
-      setGoodsList(res.data.list || res.data);
+      setGoodsList(res.data.list || []);
       setTotal(res.data.total || 0);
     } catch (err) {
       console.error("Failed to fetch goods list:", err);
@@ -87,12 +94,6 @@ export default function GoodsManage() {
     }
   };
 
-  const handleCategoryScroll = (e) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.target;
-    const isBottom = scrollTop + clientHeight >= scrollHeight - 30;
-    if (isBottom && !isLoadingRef.current) fetchMoreCategories();
-  };
-
   const handleAdd = async (values) => {
     try {
       await addGoods(values);
@@ -105,23 +106,22 @@ export default function GoodsManage() {
 
   const handleUpdate = async (values) => {
     try {
-      await updateGoods({ ...values, id: currentGoods.id });
-      message.success(t("goods.editSuccess"));
+      const res = await updateGoods({ ...values, id: currentGoods.id });
+      message.success(res.msg);
       setVisible(false);
       fetchGoodsList();
     } catch (err) {
-      console.error("Failed to add category:", err);
-      console.error("Failed to update goods:", err);
+      console.error(err);
     }
   };
 
   const handleDelete = async (id) => {
     try {
-      await deleteGoods(id);
-      message.success(t("goods.deleteSuccess"));
+      const res = await deleteGoods(id);
+      message.success(res.msg);
       fetchGoodsList();
     } catch (err) {
-      console.error("Failed to delete goods:", err);
+      console.error(err);
     }
   };
 
@@ -129,13 +129,13 @@ export default function GoodsManage() {
     {
       title: t("goods.name"),
       dataIndex: "goodsName",
-      width: 200, // 压缩商品名列宽
+      width: 200,
       ellipsis: true,
     },
     {
       title: t("goods.category"),
       dataIndex: "categoryName",
-      width: 100, // 压缩分类列宽
+      width: 100,
     },
     {
       title: t("goods.price"),
@@ -261,15 +261,15 @@ export default function GoodsManage() {
               />
             </Form.Item>
 
+            {/* ========== 改成多选 mode="multiple" ========== */}
             <Form.Item name="categoryId">
               <Select
                 placeholder={t("goods.category.select")}
-                style={{ width: 140 }}
-                onPopupScroll={handleCategoryScroll}
+                style={{ minWidth: 220, maxWidth: 320 }}
                 loading={showLoading}
-                notFoundContent={
-                  showLoading ? <Spin size="small" /> : t("common.noMore")
-                }
+                mode="multiple"
+                allowClear
+                onChange={() => fetchGoodsList()}
               >
                 {categoryList.map((c) => (
                   <Select.Option
@@ -281,17 +281,6 @@ export default function GoodsManage() {
                 ))}
               </Select>
             </Form.Item>
-
-            <ShoppingButton
-              type="primary"
-              onClick={fetchGoodsList}
-              style={{ marginRight: 8 }}
-            >
-              {t("btn.search")}
-            </ShoppingButton>
-            <ShoppingButton onClick={() => searchForm.resetFields()}>
-              {t("btn.reset")}
-            </ShoppingButton>
           </Form>
 
           <Pagination
@@ -303,7 +292,7 @@ export default function GoodsManage() {
               setPageSize(size);
             }}
             showSizeChanger
-            pageSizeOptions={["5", "10", "20"]}
+            pageSizeOptions={["5", "10", "20", "50"]}
             showLessItems
             showTotal={(total) => `共 ${total} 条`}
           />
@@ -315,7 +304,7 @@ export default function GoodsManage() {
           dataSource={goodsList}
           pagination={false}
           style={{ marginTop: 16 }}
-          size="small" // 表格紧凑模式，减少列宽占用
+          size="small"
         />
       </Card>
 
@@ -341,13 +330,13 @@ export default function GoodsManage() {
           >
             <Input />
           </Form.Item>
+          {/* 弹窗新增编辑还是单选不变 */}
           <Form.Item
             label={t("goods.category")}
             name="categoryId"
             rules={[{ required: true, message: t("goods.categoryRequired") }]}
           >
             <Select
-              onPopupScroll={handleCategoryScroll}
               loading={showLoading}
               notFoundContent={
                 showLoading ? <Spin size="small" /> : t("common.noMore")

@@ -34,7 +34,6 @@ interface Category {
   categoryName: string;
 }
 
-// 商品接口返回的真实字段，新增 isFavorite 收藏状态
 interface Product {
   id: number;
   goodsName: string;
@@ -48,33 +47,54 @@ interface Product {
 
 const Products: React.FC = () => {
   const { t } = useTranslation();
+  const PAGE_SIZE = 12;
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("featured");
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+
+  // 筛选临时缓存（点击Apply才同步到查询参数）
+  const [tempPrice, setTempPrice] = useState<[number, number]>([0, 1000]);
+  const [tempCategoryIds, setTempCategoryIds] = useState<number[]>([]);
+  const [tempRatingArr, setTempRatingArr] = useState<number[]>([]);
+
+  // 真正用于接口请求的筛选参数
+  const [queryPrice, setQueryPrice] = useState<[number, number]>([0, 1000]);
+  const [queryCategoryIds, setQueryCategoryIds] = useState<number[]>([]);
+  const [queryMinRating, setQueryMinRating] = useState<number | undefined>(
+    undefined,
+  );
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
 
-  // 获取商品列表
+  // 获取商品
   const fetchGoodsList = async () => {
     setLoading(true);
     try {
-      const res = await getGoodsList({
-        pageNum: currentPage,
-        pageSize: 12,
-        sortBy,
-        minPrice: priceRange[0],
-        maxPrice: priceRange[1],
-      });
+      const params = {
+        pageDTO: {
+          pageNum: currentPage,
+          pageSize: PAGE_SIZE,
+        },
+        queryDTO: {
+          categoryIdList:
+            queryCategoryIds.length === categories.length
+              ? undefined
+              : queryCategoryIds,
+          minPrice: queryPrice[0],
+          maxPrice: queryPrice[1],
+          minRating: queryMinRating,
+          sortBy,
+        },
+      };
+      const res = await getGoodsList(params);
       if (res.code === 200) {
-        let list = res.data || [];
-        setTotal(list.length);
-        // 批量查询每个商品收藏状态
+        const pageData = res.data || {};
+        const list = pageData.list || [];
+        setTotal(pageData.total ?? 0);
         await batchGetFavoriteStatus(list);
         setProducts(list);
-      } else {
-        console.error(res.msg);
       }
     } catch (err) {
       console.error(err);
@@ -83,46 +103,59 @@ const Products: React.FC = () => {
     }
   };
 
-  // 批量获取商品收藏状态
+  // 批量收藏状态
   const batchGetFavoriteStatus = async (list: Product[]) => {
-    if (!list || list.length === 0) return;
-    // 提取当前页所有商品ID
-    const goodsIdList = list.map((item) => item.id);
+    if (!list.length) return;
+    const ids = list.map((item) => item.id);
     try {
-      const res = await getBatchFavoriteState(goodsIdList);
+      const res = await getBatchFavoriteState(ids);
       if (res.code === 200) {
-        const stateMap = res.data || {};
-        // 批量赋值收藏状态
-        list.forEach((item) => {
-          // 不存在则默认未收藏
-          item.isFavorite = stateMap[item.id] ?? false;
-        });
+        const map = res.data || {};
+        list.forEach((item) => (item.isFavorite = map[item.id] ?? false));
       }
-    } catch (err) {
-      // 接口异常，全部置为未收藏
-      list.forEach((item) => {
-        item.isFavorite = false;
-      });
-      console.error("批量获取收藏状态失败：", err);
+    } catch {
+      list.forEach((item) => (item.isFavorite = false));
     }
   };
 
-  // 获取分类列表
+  // 获取分类 + 默认全选
   const fetchCategoryList = async () => {
     try {
       const res = await getCategoryList();
-      setCategories(res.data);
+      const list = res.data || [];
+      setCategories(list);
+      const allIds = list.map((item) => item.id);
+      setTempCategoryIds(allIds);
+      setQueryCategoryIds(allIds);
     } catch (err) {
       console.error(err);
     }
   };
 
+  // 点击【Apply】确认筛选
+  const handleApplyFilter = () => {
+    // 把临时筛选值赋值给真正查询参数
+    setQueryPrice(tempPrice);
+    setQueryCategoryIds(tempCategoryIds);
+    // 取勾选星级里最小的数值传给后端minRating（满足>=该星级）
+    setQueryMinRating(
+      tempRatingArr.length ? Math.min(...tempRatingArr) : undefined,
+    );
+    // 筛选重置到第一页
+    setCurrentPage(1);
+  };
+
+  // 页码、排序改变自动刷新
   useEffect(() => {
     fetchGoodsList();
-    fetchCategoryList();
-  }, [currentPage, sortBy, priceRange]);
+  }, [currentPage, sortBy, queryPrice, queryCategoryIds, queryMinRating]);
 
-  // 加入购物车
+  // 页面初次加载拿分类
+  useEffect(() => {
+    fetchCategoryList();
+  }, []);
+
+  // 加购物车
   const handleAddToCart = async (product: Product) => {
     try {
       const res = await addCart({
@@ -131,15 +164,15 @@ const Products: React.FC = () => {
         price: product.price,
       });
       message.success(res.msg);
-    } catch (err) {
-      console.log(err);
+    } catch (e) {
+      console.error(e);
     }
   };
 
-  // 切换收藏/取消收藏
+  // 收藏切换
   const handleToggleFavorite = async (goodsId: number) => {
     try {
-      const res = await toggleFavorite(goodsId);
+      await toggleFavorite(goodsId);
       setProducts((prev) =>
         prev.map((item) =>
           item.id === goodsId
@@ -147,9 +180,9 @@ const Products: React.FC = () => {
             : item,
         ),
       );
-      message.success(res.msg);
-    } catch (err) {
-      console.log(err);
+      message.success("操作成功");
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -160,7 +193,6 @@ const Products: React.FC = () => {
       cover={
         <div className="product-image-wrapper">
           <div className="product-actions">
-            {/* 根据收藏状态切换实心/空心爱心 */}
             <Button
               shape="circle"
               icon={
@@ -195,7 +227,6 @@ const Products: React.FC = () => {
       }
     >
       <Meta
-        // 详情界面
         title={<Link to={`/product/${product.id}`}>{product.goodsName}</Link>}
         description={
           <Space
@@ -219,10 +250,34 @@ const Products: React.FC = () => {
     </Card>
   );
 
+  const startNum = (currentPage - 1) * PAGE_SIZE + 1;
+  const endNum = Math.min(currentPage * PAGE_SIZE, total);
+
+  // 分类勾选临时存储（不点Apply不生效）
+  const onCheckCategoryChange = (checked: boolean, id: number) => {
+    let newArr: number[];
+    if (checked) {
+      newArr = [...tempCategoryIds, id];
+    } else {
+      newArr = tempCategoryIds.filter((item) => item !== id);
+    }
+    setTempCategoryIds(newArr);
+  };
+
+  // 星级勾选临时存储
+  const onCheckRatingChange = (checked: boolean, val: number) => {
+    let newArr: number[];
+    if (checked) {
+      newArr = [...tempRatingArr, val];
+    } else {
+      newArr = tempRatingArr.filter((item) => item !== val);
+    }
+    setTempRatingArr(newArr);
+  };
+
   return (
     <div className="products-page">
       <div className="container">
-        {/* Breadcrumb */}
         <Breadcrumb className="breadcrumb">
           <Breadcrumb.Item>
             <Link to="/">{t("nav.home")}</Link>
@@ -231,7 +286,7 @@ const Products: React.FC = () => {
         </Breadcrumb>
 
         <Row gutter={32}>
-          {/* Filters Sidebar */}
+          {/* 左侧筛选栏 */}
           <Col
             xs={0}
             lg={6}
@@ -242,42 +297,54 @@ const Products: React.FC = () => {
                   <FilterOutlined /> {t("common.filter")}
                 </h3>
 
-                {/* Categories */}
+                {/* 分类多选区域 */}
                 <div className="filter-group">
                   <h4 className="filter-group-title">Categories</h4>
                   <Space direction="vertical">
                     {categories.map((c) => (
-                      <Checkbox key={c.id}>{c.categoryName}</Checkbox>
+                      <Checkbox
+                        key={c.id}
+                        checked={tempCategoryIds.includes(c.id)}
+                        onChange={(e) =>
+                          onCheckCategoryChange(e.target.checked, c.id)
+                        }
+                      >
+                        {c.categoryName}
+                      </Checkbox>
                     ))}
                   </Space>
                 </div>
 
-                {/* Price Range */}
+                {/* 价格区间（临时值） */}
                 <div className="filter-group">
                   <h4 className="filter-group-title">Price Range</h4>
                   <Slider
                     range
                     min={0}
                     max={1000}
-                    value={priceRange}
-                    onChange={(value) =>
-                      setPriceRange(value as [number, number])
-                    }
+                    value={tempPrice}
+                    onChange={(v) => setTempPrice(v as [number, number])}
                   />
                   <div className="price-range-text">
-                    ${priceRange[0]} - ${priceRange[1]}
+                    ${tempPrice[0]} - ${tempPrice[1]}
                   </div>
                 </div>
 
-                {/* Rating */}
+                {/* 星级筛选 */}
                 <div className="filter-group">
                   <h4 className="filter-group-title">Rating</h4>
                   <Space direction="vertical">
-                    {[4, 3, 2, 1].map((rating) => (
-                      <Checkbox key={rating}>
+                    {[4, 3, 2, 1].map((r) => (
+                      <Checkbox
+                        key={r}
+                        checked={tempRatingArr.includes(r)}
+                        onChange={(e) =>
+                          onCheckRatingChange(e.target.checked, r)
+                        }
+                      >
                         <Rate
                           disabled
-                          value={rating}
+                          value={r}
                           style={{ fontSize: 14 }}
                         />{" "}
                         & Up
@@ -286,10 +353,12 @@ const Products: React.FC = () => {
                   </Space>
                 </div>
 
+                {/* 点击确认筛选 */}
                 <Button
                   type="primary"
                   block
                   size="large"
+                  onClick={handleApplyFilter}
                 >
                   {t("common.apply")}
                 </Button>
@@ -297,18 +366,16 @@ const Products: React.FC = () => {
             </div>
           </Col>
 
-          {/* Products Grid */}
+          {/* 右侧商品 */}
           <Col
             xs={24}
             lg={18}
           >
-            {/* Sort Bar */}
             <div className="sort-bar">
               <div className="results-info">
                 Showing{" "}
                 <strong>
-                  {(currentPage - 1) * 12 + 1}-
-                  {Math.min(currentPage * 12, total)}
+                  {startNum}-{endNum}
                 </strong>{" "}
                 of <strong>{total}</strong> results
               </div>
@@ -326,27 +393,28 @@ const Products: React.FC = () => {
               />
             </div>
 
-            {/* Products Grid */}
             <Row gutter={[24, 24]}>
-              {products.map((product) => (
+              {products.map((p) => (
                 <Col
-                  key={product.id}
+                  key={p.id}
                   xs={24}
                   sm={12}
                   md={8}
                 >
-                  <ProductCard product={product} />
+                  <ProductCard product={p} />
                 </Col>
               ))}
             </Row>
 
-            {/* Pagination */}
-            <div className="pagination-wrapper">
+            <div
+              className="pagination-wrapper"
+              style={{ marginTop: 30 }}
+            >
               <Pagination
                 current={currentPage}
                 onChange={setCurrentPage}
                 total={total}
-                pageSize={12}
+                pageSize={PAGE_SIZE}
                 showSizeChanger={false}
               />
             </div>

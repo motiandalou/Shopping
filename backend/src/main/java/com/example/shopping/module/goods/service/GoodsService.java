@@ -1,5 +1,8 @@
 package com.example.shopping.module.goods.service;
 
+import com.example.shopping.common.page.PageDTO;
+import com.example.shopping.common.page.PageRespVO;
+import com.example.shopping.module.goods.dto.GoodsQueryDTO;
 import com.example.shopping.module.goods.entity.Goods;
 
 import java.util.List;
@@ -7,7 +10,9 @@ import java.util.List;
 public interface GoodsService {
 
     // 列表
-    List list(Goods goods);
+//    List list(Goods goods);
+    PageRespVO<Goods> pageQuery(PageDTO pageDTO, GoodsQueryDTO queryDTO);
+
 
     // 详情
     Goods getDetailById(Integer id);

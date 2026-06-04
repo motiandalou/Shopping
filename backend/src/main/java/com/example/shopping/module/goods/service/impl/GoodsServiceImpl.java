@@ -1,14 +1,22 @@
 package com.example.shopping.module.goods.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.shopping.common.page.PageDTO;
+import com.example.shopping.common.page.PageRespVO;
 import com.example.shopping.module.category.entity.Category;
 import com.example.shopping.module.category.mapper.CategoryMapper;
+import com.example.shopping.module.goods.dto.GoodsQueryDTO;
 import com.example.shopping.module.goods.entity.Goods;
 import com.example.shopping.module.goods.mapper.GoodsMapper;
 import com.example.shopping.module.goods.service.GoodsService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.github.xiaoymin.knife4j.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.*;
 import org.springframework.stereotype.Service;
+import cn.hutool.core.collection.CollUtil;
+
 
 import java.util.List;
 import java.util.Map;
@@ -24,40 +32,51 @@ public class GoodsServiceImpl implements GoodsService {
     @Autowired
     private CategoryMapper categoryMapper;
 
-    // ================= 查询 =================
-
-    // 商品列表缓存
     @Override
-    @Cacheable(value = "goods", key = "'list'")
-    public List<Goods> list(Goods goods) {
+    public PageRespVO<Goods> pageQuery(PageDTO pageDTO, GoodsQueryDTO queryDTO) {
+        // 拼接动态查询条件
         LambdaQueryWrapper<Goods> wrapper = new LambdaQueryWrapper<>();
-
-        if (goods.getGoodsName() != null && !goods.getGoodsName().isEmpty()) {
-            wrapper.like(Goods::getGoodsName, goods.getGoodsName());
+        // 模糊查询: 商品名称
+        if(queryDTO != null && StrUtil.isNotBlank(queryDTO.getGoodsName())){
+            wrapper.like(Goods::getGoodsName, queryDTO.getGoodsName());
         }
-        if (goods.getCategoryId() != null) {
-            wrapper.eq(Goods::getCategoryId, goods.getCategoryId());
+        // 模糊查询: 分类
+        if (queryDTO != null && CollUtil.isNotEmpty(queryDTO.getCategoryIdList())) {
+            wrapper.in(Goods::getCategoryId, queryDTO.getCategoryIdList());
         }
-
-        List<Goods> goodsList = goodsMapper.selectList(wrapper);
-
-        // ✅ 分类缓存（走缓存方法）
-        List<Category> categoryList = getAllCategory();
-
-        Map<Integer, String> categoryMap = categoryList.stream()
-                .collect(Collectors.toMap(Category::getId, Category::getCategoryName));
-
-        goodsList.forEach(goodsItem -> {
-            Integer cid = goodsItem.getCategoryId();
-            if (cid != null) {
-                goodsItem.setCategoryName(categoryMap.get(cid));
-            }
-        });
-
-        return goodsList;
+        // 分页
+        PageHelper.startPage(pageDTO.getPageNum(), pageDTO.getPageSize());
+        List<Goods> dataList = goodsMapper.selectList(wrapper);
+        // PageInfo封装分页信息，调用build方法(大数据)
+        PageInfo<Goods> pageInfo = new PageInfo<>(dataList);
+        PageRespVO<Goods> pageResp = PageRespVO.build(pageInfo);
+        // 缓存
+        fillCategoryName(dataList);
+        return pageResp;
     }
 
-    // 商品详情缓存
+    /**
+     * 作用：给商品列表批量补全分类名称，避免循环查数据库 N 次
+     * @param list
+     */
+    private void fillCategoryName(List<Goods> list){
+        // 一次性查出全部分类，只查 1 次库，之后走 Redis 缓存
+        List<Category> allCat = getAllCategory();
+        // 把全部分类转 Map：key=分类id，value=分类名字
+        Map<Integer,String> catMap = allCat.stream()
+                .collect(Collectors.toMap(Category::getId, Category::getCategoryName));
+        list.forEach(item->{
+            if(item.getCategoryId()!=null){
+                item.setCategoryName(catMap.get(item.getCategoryId()));
+            }
+        });
+    }
+
+    /**
+     * 商品详情缓存
+     * @param id
+     * @return
+     */
     @Override
     @Cacheable(value = "goods", key = "'detail:' + #id")
     public Goods getDetailById(Integer id) {
@@ -72,14 +91,20 @@ public class GoodsServiceImpl implements GoodsService {
         return goods;
     }
 
-    // ================= 分类缓存 =================
+    /**
+     * 商品分类
+     * @return
+     */
     @Cacheable(cacheNames = "category", key = "'all'", unless = "#result == null || #result.isEmpty()")
     public List<Category> getAllCategory() {
         return categoryMapper.selectList(null);
     }
 
-    // ================= 写操作（清缓存） =================
-
+    /**
+     * 新增
+     * @param goods
+     * @return
+     */
     @Override
     @CacheEvict(cacheNames = "goods", allEntries = true)
     public String add(Goods goods) {
@@ -96,8 +121,13 @@ public class GoodsServiceImpl implements GoodsService {
         return rows > 0 ? "新增成功" : "新增失败";
     }
 
+    /**
+     * 更新
+     * @param goods
+     * @return
+     */
     @Override
-    @CacheEvict(cacheNames = "goods", allEntries = true)
+    @CacheEvict(cacheNames = "goods", key = "'detail:' + #goods.id")
     public String update(Goods goods) {
 
         if (goods.getId() == null) {
@@ -118,8 +148,13 @@ public class GoodsServiceImpl implements GoodsService {
         return rows > 0 ? "修改成功" : "修改失败";
     }
 
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
     @Override
-    @CacheEvict(cacheNames = "goods", allEntries = true)
+    @CacheEvict(cacheNames = "goods", key = "'detail:' + #id")
     public String delete(Integer id) {
         int rows = goodsMapper.deleteById(id);
 

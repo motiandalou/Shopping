@@ -1,14 +1,21 @@
 package com.example.shopping.module.goods.controller;
 
+import com.example.shopping.common.page.PageRespVO;
+import com.example.shopping.module.goods.dto.GoodsQueryDTO;
 import com.example.shopping.module.log.annotation.Log;
 import com.example.shopping.config.Result;
 import com.example.shopping.module.goods.entity.Goods;
 import com.example.shopping.module.goods.service.GoodsService;
+import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
+import com.example.shopping.module.goods.dto.GoodsPageReq;
+
 
 import java.util.List;
 
@@ -23,9 +30,8 @@ public class GoodsController {
     // 商品管理列表
     @PostMapping("/list")
     @Operation(summary = "分页/条件查询商品列表", description = "支持根据名称、分类等条件筛选商品")
-    public Result<List<Goods>> list(
-            @Parameter(description = "商品查询条件", required = true) @RequestBody Goods goods) {
-        return Result.success(goodsService.list(goods));
+    public Result<PageRespVO<Goods>> list(@Valid @RequestBody GoodsPageReq req) {
+        return Result.success(goodsService.pageQuery(req.getPageDTO(), req.getQueryDTO()));
     }
 
     // =====================【商品详情接口】=====================
@@ -41,6 +47,7 @@ public class GoodsController {
     @Log(module = "商品管理", operation = "新增商品")
     @PostMapping("/add")
     @Operation(summary = "新增商品", description = "添加新商品到商城")
+    @CacheEvict(value = "goods", allEntries = true) // 清空goods整组缓存
     public Result<String> add(
             @Parameter(description = "商品信息", required = true) @RequestBody Goods goods) {
         try {
@@ -56,6 +63,7 @@ public class GoodsController {
     @Log(module = "商品管理", operation = "修改商品")
     @PutMapping("/update")
     @Operation(summary = "修改商品", description = "编辑更新已有商品信息")
+    @CacheEvict(value = "goods", allEntries = true) // 清空goods整组缓存
     public Result<String> update(
             @Parameter(description = "商品信息", required = true) @RequestBody Goods goods) {
         return Result.success(goodsService.update(goods));
@@ -65,6 +73,7 @@ public class GoodsController {
     @Log(module = "商品管理", operation = "删除商品")
     @DeleteMapping("/delete/{id}")
     @Operation(summary = "删除商品", description = "根据商品ID删除指定商品")
+    @CacheEvict(value = "goods", allEntries = true) // 清空goods整组缓存
     public Result<String> delete(
             @Parameter(description = "商品ID", required = true, example = "1001") @PathVariable Integer id) {
         return Result.success(goodsService.delete(id));

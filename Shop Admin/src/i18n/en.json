@@ -33,7 +33,7 @@
   "btn.ship": "Ship",
 
   "goods.management": "Goods Management",
-  "goods.name": "Goods Name",
+  "goods.name": "Name",
   "goods.category": "Category",
   "goods.price": "Price",
   "goods.stock": "Stock",
@@ -72,7 +72,7 @@
   "user.phone.placeholder": "Phone",
 
   "category.management": "Category Management",
-  "category.name": "Category Name",
+  "category.name": "Name",
   "category.sort": "Sort",
   "category.operation": "Action",
   "category.add": "Add Category",
