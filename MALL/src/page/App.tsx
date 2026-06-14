@@ -13,6 +13,7 @@ import Account from "./pages/Account";
 import Wishlist from "./pages/Wishlist";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Chat from "./pages/Chat";
 
 export default function App() {
   return (
@@ -67,6 +68,10 @@ export default function App() {
           <Route
             path="signup"
             element={<Signup />}
+          />{" "}
+          <Route
+            path="chat"
+            element={<Chat />}
           />
         </Routes>
       </BrowserRouter>

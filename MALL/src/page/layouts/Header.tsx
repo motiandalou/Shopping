@@ -4,13 +4,13 @@ import { Input, Badge, Dropdown, Select, Space, message } from "antd";
 import type { MenuProps } from "antd";
 import { logoutApi } from "@/api/auth";
 import {
-  SearchOutlined,
   ShoppingCartOutlined,
   HeartOutlined,
   UserOutlined,
   BulbOutlined,
   ShoppingOutlined,
   LogoutOutlined,
+  CustomerServiceOutlined,
 } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../theme/ThemeContext";
@@ -27,6 +27,7 @@ const Header: React.FC = () => {
   const { isDark, toggleTheme } = useTheme();
   const [cartCount, setCartCount] = useState(0);
   const [FavoriteCount, setFavoriteCount] = useState(0);
+  const [customerServiceCount, setCustomerServiceCount] = useState(0);
   const refreshToken = localStorage.getItem("refreshToken");
 
   // 购物车数量
@@ -196,6 +197,7 @@ const Header: React.FC = () => {
                 allowClear
               />
 
+              {/* 心愿清单 */}
               <Link to="/wishlist">
                 <Badge
                   count={FavoriteCount}
@@ -205,6 +207,7 @@ const Header: React.FC = () => {
                 </Badge>
               </Link>
 
+              {/* 购物车 */}
               <Link to="/cart">
                 <Badge
                   count={cartCount}
@@ -214,6 +217,17 @@ const Header: React.FC = () => {
                 </Badge>
               </Link>
 
+              {/* 客服 */}
+              <Link to="/chat">
+                <Badge
+                  count={customerServiceCount}
+                  size="small"
+                >
+                  <CustomerServiceOutlined className="header-icon" />
+                </Badge>
+              </Link>
+
+              {/* 用户选项 */}
               <Dropdown
                 menu={{ items: userMenuItems }}
                 placement="bottomRight"

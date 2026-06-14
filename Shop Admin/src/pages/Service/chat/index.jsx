@@ -247,7 +247,7 @@ const ServiceChat = () => {
         [user.userId]: { ...prev[user.userId], messages },
       }));
     } catch (err) {
-      console.error("拉取历史消息失败", err);
+      console.error(err);
     }
   };
 
