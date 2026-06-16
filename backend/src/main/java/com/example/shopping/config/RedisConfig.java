@@ -11,6 +11,7 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
+import java.util.Map;
 import java.util.Random;
 
 @Configuration
@@ -42,22 +43,32 @@ public class RedisConfig {
 
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory factory) {
-        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(10 + RANDOM.nextInt(5)))
-
-                // Key 序列化
+        // 全局默认配置：10~15分钟随机TTL，给其他普通缓存用
+        RedisCacheConfiguration defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(10 + new Random().nextInt(5)))
                 .serializeKeysWith(
                         RedisSerializationContext.SerializationPair.fromSerializer(stringSerializer)
                 )
-                // Value 用 Kryo（无类名、无JSON、无明文）
+                .serializeValuesWith(
+                        RedisSerializationContext.SerializationPair.fromSerializer(kryoSerializer)
+                );
+
+        // 单独配置秒杀首页缓存：强制30秒过期，覆盖全局配置
+        RedisCacheConfiguration flashHomeConfig = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofSeconds(30))
+                .serializeKeysWith(
+                        RedisSerializationContext.SerializationPair.fromSerializer(stringSerializer)
+                )
                 .serializeValuesWith(
                         RedisSerializationContext.SerializationPair.fromSerializer(kryoSerializer)
                 );
 
         return RedisCacheManager.builder(factory)
-                .cacheDefaults(config)
+                .cacheDefaults(defaultConfig)
+                // 指定缓存名称 flash_sale_home 使用30秒TTL
+                .withInitialCacheConfigurations(Map.of(
+                        "flash_sale_home", flashHomeConfig
+                ))
                 .build();
     }
-
-
 }

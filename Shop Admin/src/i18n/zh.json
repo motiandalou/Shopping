@@ -24,6 +24,7 @@
   "menu.shopConfig": "店铺配置",
   "menu.stockAlert": "库存预警",
   "menu.logs": "操作日志",
+  "menu.flashActivity": "秒杀活动管理",
 
   "btn.add": "新增",
   "btn.edit": "编辑",
@@ -89,6 +90,40 @@
   "staff.role.staff": "员工",
   "staff.role.shop_manager": "店铺管理员",
 
+  "flash.manageTitle": "秒杀活动管理",
+  "flash.activityName": "活动名称",
+  "flash.activityNamePlaceholder": "请输入活动名称",
+  "flash.activityNameRequired": "活动名称不能为空",
+  "flash.startTime": "开始时间",
+  "flash.startTimeRequired": "请选择活动开始时间",
+  "flash.endTime": "结束时间",
+  "flash.endTimeRequired": "请选择活动结束时间",
+  "flash.status": "活动状态",
+  "flash.statusSelect": "选择活动状态",
+  "flash.status0": "未开始",
+  "flash.status1": "进行中",
+  "flash.status2": "已结束",
+  "flash.statusRequired": "请选择活动状态",
+
+  "flash.bindGoods": "绑定商品",
+  "flash.bindGoodsTitle": "绑定秒杀商品",
+  "flash.selectGoods": "选择商品",
+  "flash.selectGoodsPlaceholder": "请选择要参与秒杀的商品",
+  "flash.goodsRequired": "必须选择商品",
+  "flash.flashPrice": "秒杀价格",
+  "flash.flashPriceRequired": "秒杀价格不能为空",
+  "flash.discountRate": "折扣百分比",
+  "flash.discountRateRequired": "折扣百分比不能为空",
+  "flash.flashStock": "秒杀库存",
+  "flash.flashStockRequired": "秒杀库存不能为空",
+
+  "flash.addSuccess": "创建活动成功",
+  "flash.editSuccess": "修改活动成功",
+  "flash.deleteSuccess": "删除活动成功",
+  "flash.bindGoodsSuccess": "商品绑定成功",
+
+  "flash.confirmDeleteActivity": "确定删除该秒杀活动？删除后所有绑定商品一并清空！",
+
   "dashboard.overview": "数据概览",
   "dashboard.total_users": "总用户数",
   "dashboard.total_goods": "总商品数",
@@ -129,6 +164,9 @@
   "status.refund.rejected": "售后拒绝",
   "status.log.success": "成功",
   "status.log.fail": "失败",
+  "status.flash.notStart": "未开始",
+  "status.flash.running": "进行中",
+  "status.flash.ended": "已结束",
 
   "shopSetting.title": "店铺配置",
   "shopSetting.tab.basic": "基础设置",
@@ -158,5 +196,8 @@
 
   "common.save": "保存",
   "common.saveSuccess": "保存成功",
-  "common.saveFailed": "保存失败"
+  "common.saveFailed": "保存失败",
+  "common.total": "共",
+  "common.item": "条",
+  "common.operation": "操作"
 }

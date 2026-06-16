@@ -57,6 +57,7 @@ CREATE TABLE `t_goods` (
     `cover_img` varchar(255) DEFAULT NULL COMMENT '商品封面图',
     `description` text COMMENT '商品描述',
     `status` tinyint NOT NULL DEFAULT '1' COMMENT '上架状态 0-未上架 1-已上架',
+    `review_count` INT DEFAULT 0 COMMENT '商品评价人数',
     `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`)
@@ -214,3 +215,27 @@ CREATE TABLE `shop_config` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='店铺配置表';
 
+# 表 1：flash_sale_activity 秒杀活动主表（管理场次、全局倒计时）
+CREATE TABLE `flash_sale_activity` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '活动ID',
+    `activity_name` VARCHAR(100) NOT NULL COMMENT '活动名称（今日闪购）',
+    `start_time` DATETIME NOT NULL COMMENT '本场秒杀开始时间',
+    `end_time` DATETIME NOT NULL COMMENT '本场秒杀结束时间',
+    `status` TINYINT DEFAULT 0 COMMENT '0未开始 1进行中 2已结束',
+    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '秒杀活动场次表';
+
+# 表 2：flash_sale_goods 秒杀商品关联中间表（商品 + 活动多对多）
+CREATE TABLE `flash_sale_goods` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `activity_id` BIGINT NOT NULL COMMENT '关联秒杀活动ID',
+    `goods_id` BIGINT NOT NULL COMMENT '关联商品ID',
+    `flash_price` DECIMAL(10,2) NOT NULL COMMENT '秒杀价',
+    `discount_rate` INT NOT NULL COMMENT '折扣百分比（40代表-40%）',
+    `flash_stock` INT NOT NULL DEFAULT 0 COMMENT '本场秒杀库存',
+    `sold_num` INT DEFAULT 0 COMMENT '本场已售数量',
+    UNIQUE KEY uk_activity_goods (`activity_id`,`goods_id`),
+    FOREIGN KEY (`activity_id`) REFERENCES flash_sale_activity(`id`),
+    FOREIGN KEY (`goods_id`) REFERENCES t_goods(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '秒杀活动-商品关联表';

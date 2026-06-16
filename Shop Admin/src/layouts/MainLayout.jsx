@@ -193,6 +193,14 @@ export default function MainLayout() {
                 label: <Link to="/system/staff">{t("menu.staff")}</Link>,
               },
               {
+                key: "/system/flashActivity",
+                label: (
+                  <Link to="/system/flashActivity">
+                    {t("menu.flashActivity")}
+                  </Link>
+                ),
+              },
+              {
                 key: "/system/shop",
                 label: <Link to="/system/shop">{t("menu.shopConfig")}</Link>,
               },
@@ -210,6 +218,14 @@ export default function MainLayout() {
               {
                 key: "/system/profile",
                 label: <Link to="/system/profile">{t("menu.profile")}</Link>,
+              },
+              {
+                key: "/system/flashActivity",
+                label: (
+                  <Link to="/system/flashActivity">
+                    {t("menu.flashActivity")}
+                  </Link>
+                ),
               },
             ],
     },

@@ -12,6 +12,7 @@ import Staff from "@/pages/System/Staff";
 import ShopConfig from "@/pages/System/ShopConfig";
 import StockWarning from "@/pages/System/StockWarning";
 import Log from "@/pages/System/Log";
+import FlashActivity from "@/pages/System/FlashActivity";
 
 import ServiceChat from "@/pages/Service/chat";
 import ServiceTicket from "@/pages/Service/ticket";
@@ -64,6 +65,7 @@ const router = createBrowserRouter([
           { path: "shop", element: <ShopConfig /> },
           { path: "stock", element: <StockWarning /> },
           { path: "log", element: <Log /> },
+          { path: "flashActivity", element: <FlashActivity /> },
         ],
       },
       // 404 页面

@@ -43,6 +43,14 @@ const ShoppingState = ({ status, refundStatus, type = "order" }) => {
 
     log_1: { text: t("status.log.success"), color: "#2e7d32" },
     log_0: { text: t("status.log.fail"), color: "#c62828" },
+
+    // 秒杀 flash 状态
+    // 未开始
+    flash_0: { text: t("status.flash.notStart"), color: "#616161" },
+    // 进行中
+    flash_1: { text: t("status.flash.running"), color: "#2e7d32" },
+    // 已结束
+    flash_2: { text: t("status.flash.ended"), color: "#c62828" },
   };
 
   const key = `${type}_${status}`;

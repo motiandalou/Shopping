@@ -24,6 +24,7 @@
   "menu.shopConfig": "Shop Settings",
   "menu.stockAlert": "Stock Alerts",
   "menu.logs": "Logs",
+  "menu.flashActivity": "Flash Sale Activity",
 
   "btn.add": "Add",
   "btn.edit": "Edit",
@@ -89,6 +90,40 @@
   "staff.role.staff": "Staff",
   "staff.role.shop_manager": "Shop Manager",
 
+  "flash.manageTitle": "Flash Sale Management",
+  "flash.activityName": "Activity Name",
+  "flash.activityNamePlaceholder": "Please enter activity name",
+  "flash.activityNameRequired": "Activity name is required",
+  "flash.startTime": "Start Time",
+  "flash.startTimeRequired": "Please select activity start time",
+  "flash.endTime": "End Time",
+  "flash.endTimeRequired": "Please select activity end time",
+  "flash.status": "Status",
+  "flash.statusSelect": "Select status",
+  "flash.status0": "Not Started",
+  "flash.status1": "Ongoing",
+  "flash.status2": "Ended",
+  "flash.statusRequired": "Activity status is required",
+
+  "flash.bindGoods": "Bind Goods",
+  "flash.bindGoodsTitle": "Bind Flash Sale Goods",
+  "flash.selectGoods": "Select Goods",
+  "flash.selectGoodsPlaceholder": "Select goods for flash sale",
+  "flash.goodsRequired": "Goods must be selected",
+  "flash.flashPrice": "Flash Price",
+  "flash.flashPriceRequired": "Flash price is required",
+  "flash.discountRate": "Discount Percentage",
+  "flash.discountRateRequired": "Discount percentage is required",
+  "flash.flashStock": "Flash Stock",
+  "flash.flashStockRequired": "Flash stock is required",
+
+  "flash.addSuccess": "Activity created successfully",
+  "flash.editSuccess": "Activity updated successfully",
+  "flash.deleteSuccess": "Activity deleted successfully",
+  "flash.bindGoodsSuccess": "Goods bind success",
+
+  "flash.confirmDeleteActivity": "Are you sure to delete this activity? All bound flash goods will be deleted together!",
+
   "dashboard.overview": "Overview",
   "dashboard.total_users": "Total Users",
   "dashboard.total_goods": "Total Goods",
@@ -129,6 +164,9 @@
   "status.refund.rejected": "After-sales Rejected",
   "status.log.success": "success",
   "status.log.fail": "fail",
+  "status.flash.notStart": "Not started",
+  "status.flash.running": "in progress",
+  "status.flash.ended": "Ended",
 
   "shopSetting.title": "Shop Settings",
   "shopSetting.tab.basic": "Basic Settings",
@@ -158,5 +196,8 @@
 
   "common.save": "Save",
   "common.saveSuccess": "Saved successfully",
-  "common.saveFailed": "Save failed"
+  "common.saveFailed": "Save failed",
+  "common.total": "Total",
+  "common.item": "items",
+  "common.operation": "Action"
 }
