@@ -1,18 +1,32 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col, Card, Button, Rate, Space, Carousel, Spin } from "antd";
-import heroEndframe from "../../assets/image/hero_endframe__cvklg0xk3w6e_large 2.png";
+import heroEndframe from "@/page/assets/image/hero_endframe__cvklg0xk3w6e_large 2.png";
 import {
   ArrowRightOutlined,
   HeartOutlined,
   EyeOutlined,
   LeftOutlined,
   RightOutlined,
+  TruckOutlined,
+  CustomerServiceOutlined,
+  SafetyCertificateOutlined,
+  MobileOutlined,
+  MonitorOutlined,
+  ScheduleOutlined,
+  CameraOutlined,
+  AudioOutlined,
+  PlaySquareOutlined,
 } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { getCategoryList } from "@/api/category";
 import { getBestSellingList, getFlashHomeData } from "@/api/home";
 import "./index.less";
+import volume1 from "@/page/assets/image/volume1.png";
+import newArrivalRightBottomLeft from "@/page/assets/image/newArrivalRightBottomLeft.png";
+import newArrivalRightBottomRight from "@/page/assets/image/newArrivalRightBottomRight.png";
+import newArrivalRightTop from "@/page/assets/image/newArrivalRightTop.png";
+import newArrivalLeftBig from "@/page/assets/image/newArrivalLeftBig.png";
 
 const { Meta } = Card;
 
@@ -26,11 +40,46 @@ interface Product {
   goodsName: string;
   flashPrice: number;
   originPrice?: number;
-  discount?: number;
+  discountRate?: number;
   rating: number;
   reviewCount: number;
   coverImg: string;
 }
+
+// New Arrival
+interface NewArrivalItem {
+  title: string;
+  desc?: string;
+  img: string;
+}
+const newArrivalList: {
+  leftBig: NewArrivalItem;
+  rightTop: NewArrivalItem;
+  rightBottom: NewArrivalItem[];
+} = {
+  leftBig: {
+    title: "PlayStation 5",
+    desc: "Black and White version of the PS5 coming out on sale.",
+    img: newArrivalLeftBig,
+  },
+  rightTop: {
+    title: "Women's Collections",
+    desc: "Featured woman collections that give you another vibe.",
+    img: newArrivalRightTop,
+  },
+  rightBottom: [
+    {
+      title: "Speakers",
+      desc: "Amazon wireless speakers",
+      img: newArrivalRightBottomLeft,
+    },
+    {
+      title: "Perfume",
+      desc: "GUCCI INTENSE OUD EDP",
+      img: newArrivalRightBottomRight,
+    },
+  ],
+};
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
@@ -47,6 +96,45 @@ const Home: React.FC = () => {
   });
   // 活动状态秒数
   const [activitySec, setActivitySec] = useState(0);
+
+  // 分类模块状态
+  const [activeCat, setActiveCat] = useState<string>("camera");
+  const [catScrollX, setCatScrollX] = useState<number>(0);
+  const categoryIconList = [
+    {
+      name: "Phones",
+      icon: <MobileOutlined size={32} />,
+      key: "phones",
+    },
+    {
+      name: "Computers",
+      icon: <MonitorOutlined size={32} />,
+      key: "computers",
+    },
+    {
+      name: "SmartWatch",
+      icon: <ScheduleOutlined size={32} />,
+      key: "watch",
+    },
+    {
+      name: "Camera",
+      icon: <CameraOutlined size={32} />,
+      key: "camera",
+    },
+    {
+      name: "HeadPhones",
+      icon: <AudioOutlined size={32} />,
+      key: "headphone",
+    },
+    {
+      name: "Gaming",
+      icon: <PlaySquareOutlined size={32} />,
+      key: "gaming",
+    },
+  ];
+
+  const scrollCatLeft = () => setCatScrollX((prev) => Math.max(prev - 220, 0));
+  const scrollCatRight = () => setCatScrollX((prev) => prev + 220);
 
   // 分页配置 每页4个
   const pageSize = 4;
@@ -67,9 +155,18 @@ const Home: React.FC = () => {
   const bestHasPrev = bestPage > 0;
   const bestHasNext = (bestPage + 1) * pageSize < bestSelling.length;
 
+  // Our Products
+  const [productPage, setProductPage] = useState(0);
+  const currentProductList = bestSelling.slice(
+    productPage * pageSize,
+    (productPage + 1) * pageSize,
+  );
+  const productHasPrev = productPage > 0;
+  const productHasNext = (productPage + 1) * pageSize < bestSelling.length;
+
   // 倒计时定时器
   useEffect(() => {
-    // 1. 本地每秒倒计时UI
+    // 本地每秒倒计时UI
     const countTimer = setInterval(() => {
       let sec = totalSecondRef.current;
       if (sec <= 0) {
@@ -85,7 +182,7 @@ const Home: React.FC = () => {
       setCountdown({ days, hours, minutes, seconds });
     }, 1000);
 
-    // 2. 每30秒同步后端真实剩余秒数
+    // 每30秒同步后端真实剩余秒数
     const syncTimer = setInterval(async () => {
       try {
         const res = await getFlashHomeData();
@@ -134,8 +231,8 @@ const Home: React.FC = () => {
       className="product-card"
       cover={
         <div className="product-image-wrapper">
-          {product.discount && (
-            <div className="discount-badge">-{product.discount}%</div>
+          {product.discountRate && (
+            <div className="discount-badge">-{product.discountRate}%</div>
           )}
           <div className="product-actions">
             <Button
@@ -189,6 +286,66 @@ const Home: React.FC = () => {
         }
       />
     </Card>
+  );
+
+  // 新品格子卡片组件
+  const NewArrivalBox: React.FC<{ item: NewArrivalItem; big?: boolean }> = ({
+    item,
+    big,
+  }) => (
+    <div
+      style={{
+        width: "100%",
+        height: big ? 420 : 200,
+        background: "#000",
+        borderRadius: 4,
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <img
+        src={item.img}
+        alt={item.title}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          opacity: 0.8,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          left: 24,
+          bottom: 24,
+          color: "#fff",
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+        }}
+      >
+        <h3 style={{ margin: 0, fontSize: big ? 32 : 22, fontWeight: 600 }}>
+          {item.title}
+        </h3>
+        {item.desc && (
+          <p style={{ margin: 0, opacity: 0.8, maxWidth: big ? 300 : 220 }}>
+            {item.desc}
+          </p>
+        )}
+        <Link
+          to="/products"
+          style={{
+            color: "#fff",
+            textDecoration: "none",
+            borderBottom: "1px solid #fff",
+            width: "fit-content",
+            paddingBottom: 2,
+          }}
+        >
+          Shop Now
+        </Link>
+      </div>
+    </div>
   );
 
   return (
@@ -548,7 +705,159 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* 热销商品（新增分页按钮） */}
+        {/* Browse By Category */}
+        <section className="section">
+          <div className="container">
+            <div
+              className="section-header"
+              style={{
+                borderBottom: "1px solid #E0E0E0",
+              }}
+            >
+              <div
+                className="section-tag"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  marginBottom: 16,
+                }}
+              >
+                <div
+                  className="tag-indicator"
+                  style={{
+                    width: 12,
+                    height: 32,
+                    background: "#DB4444",
+                    borderRadius: 4,
+                  }}
+                />
+                <span style={{ color: "#DB4444", fontWeight: 500 }}>
+                  {t("Categories")}
+                </span>
+              </div>
+              <div
+                className="section-title-row"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: 32,
+                }}
+              >
+                <h2
+                  className="section-title"
+                  style={{ fontSize: 48, fontWeight: 600, margin: 0 }}
+                >
+                  {t("Browse By Category")}
+                </h2>
+                {/* 分类滑动左右箭头按钮 */}
+                <Space size={12}>
+                  <Button
+                    shape="circle"
+                    icon={<LeftOutlined />}
+                    onClick={scrollCatLeft}
+                    style={{
+                      width: 44,
+                      height: 44,
+                      border: "none",
+                      background: "#F5F5F5",
+                    }}
+                  />
+                  <Button
+                    shape="circle"
+                    icon={<RightOutlined />}
+                    onClick={scrollCatRight}
+                    style={{
+                      width: 44,
+                      height: 44,
+                      border: "none",
+                      background: "#F5F5F5",
+                    }}
+                  />
+                </Space>
+              </div>
+              {/* 横向滚动分类卡片容器 */}
+              <div
+                style={{
+                  overflow: "hidden",
+                  width: "100%",
+                  marginBottom: 32,
+                  paddingBottom: 8,
+                  boxSizing: "border-box",
+                  touchAction: "pan-x",
+                  userSelect: "none",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 30,
+                    transform: `translateX(-${catScrollX}px)`,
+                    transition: "transform 0.3s ease",
+                    width: "max-content",
+                  }}
+                >
+                  {categoryIconList.map((cat) => (
+                    <div
+                      key={cat.key}
+                      onClick={() => setActiveCat(cat.key)}
+                      style={{
+                        width: 170,
+                        height: 145,
+                        border:
+                          activeCat === cat.key ? "none" : "1px solid #E0E0E0",
+                        background: activeCat === cat.key ? "#DB4444" : "#fff",
+                        borderRadius: 4,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 16,
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                      }}
+                    >
+                      {/* 图标 */}
+                      <span
+                        style={{
+                          color: activeCat === cat.key ? "#fff" : "#000",
+                          fontSize: 50,
+                        }}
+                      >
+                        {cat.icon}
+                      </span>
+                      {/* 分类文字 */}
+                      <span
+                        style={{
+                          fontSize: 20,
+                          fontWeight: 500,
+                          color: activeCat === cat.key ? "#fff" : "#000",
+                        }}
+                      >
+                        {cat.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <Row gutter={[24, 24]}>
+              {currentBestList.map((product) => (
+                <Col
+                  key={product.id}
+                  xs={24}
+                  sm={12}
+                  md={6}
+                >
+                  <ProductCard product={product} />
+                </Col>
+              ))}
+            </Row>
+          </div>
+        </section>
+
+        {/* Best Selling */}
         <section className="section">
           <div className="container">
             <div className="section-header">
@@ -565,7 +874,6 @@ const Home: React.FC = () => {
                 }}
               >
                 <h2 className="section-title">{t("home.best_selling")}</h2>
-                {/* 热销分页按钮 */}
                 <Space>
                   <Button
                     shape="circle"
@@ -580,12 +888,11 @@ const Home: React.FC = () => {
                     onClick={() => setBestPage((p) => p + 1)}
                   />
                   <Link to="/products">
-                    <Button type="primary">{t("home.view_all")}</Button>
+                    {/* <Button type="primary">{t("home.view_all")}</Button> */}
                   </Link>
                 </Space>
               </div>
             </div>
-            {/* 热销当前页商品 */}
             <Row gutter={[24, 24]}>
               {currentBestList.map((product) => (
                 <Col
@@ -601,7 +908,7 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* 广告横幅 */}
+        {/* Banner */}
         <section className="promo-banner">
           <div className="container">
             <div className="banner-content">
@@ -611,14 +918,194 @@ const Home: React.FC = () => {
                 <Button
                   type="primary"
                   size="large"
+                  style={{
+                    backgroundColor: "#00FF66",
+                  }}
                 >
                   {t("home.buy_now")}
                 </Button>
               </div>
               <div className="banner-image">
-                <div className="banner-placeholder">Speaker Image</div>
+                <img
+                  className="banner-placeholder"
+                  src={volume1}
+                  alt="Speaker Image"
+                />
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Our Products */}
+        <section className="section">
+          <div className="container">
+            <div className="section-header">
+              <div
+                className="section-tag"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  marginBottom: 16,
+                }}
+              >
+                <div
+                  className="tag-indicator"
+                  style={{
+                    width: 12,
+                    height: 32,
+                    background: "#DB4444",
+                    borderRadius: 4,
+                  }}
+                />
+                <span style={{ color: "#DB4444", fontWeight: 500 }}>
+                  {t("Our Products")}
+                </span>
+              </div>
+              <div
+                className="section-title-row"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: 32,
+                }}
+              >
+                <h2
+                  className="section-title"
+                  style={{ fontSize: 48, fontWeight: 600, margin: 0 }}
+                >
+                  {t("Explore Our Products")}
+                </h2>
+                {/* 独立翻页箭头 */}
+                <Space size={12}>
+                  <Button
+                    shape="circle"
+                    icon={<LeftOutlined />}
+                    disabled={!productHasPrev}
+                    onClick={() => setProductPage((p) => p - 1)}
+                    style={{
+                      width: 44,
+                      height: 44,
+                      border: "none",
+                      background: "#F5F5F5",
+                    }}
+                  />
+                  <Button
+                    shape="circle"
+                    icon={<RightOutlined />}
+                    disabled={!productHasNext}
+                    onClick={() => setProductPage((p) => p + 1)}
+                    style={{
+                      width: 44,
+                      height: 44,
+                      border: "none",
+                      background: "#F5F5F5",
+                    }}
+                  />
+                </Space>
+              </div>
+            </div>
+            {/* 商品卡片行 */}
+            <Row gutter={[24, 24]}>
+              {currentProductList.map((product) => (
+                <Col
+                  key={product.id}
+                  xs={24}
+                  sm={12}
+                  md={6}
+                >
+                  <ProductCard product={product} />
+                </Col>
+              ))}
+            </Row>
+            {/* 底部居中红色View All按钮，匹配截图 */}
+            <div style={{ textAlign: "center", marginTop: 40 }}>
+              <Link to="/products">
+                <Button
+                  type="primary"
+                  size="large"
+                  style={{
+                    background: "#DB4444",
+                    borderColor: "#DB4444",
+                    padding: "0 40px",
+                    height: 56,
+                    fontSize: 16,
+                  }}
+                >
+                  {t("home.view_all")}
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* New Arrival  */}
+        <section className="section">
+          <div className="container">
+            <div
+              className="section-header"
+              style={{ marginBottom: 32 }}
+            >
+              <div
+                className="section-tag"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  marginBottom: 16,
+                }}
+              >
+                <div
+                  className="tag-indicator"
+                  style={{
+                    width: 12,
+                    height: 32,
+                    background: "#DB4444",
+                    borderRadius: 4,
+                  }}
+                />
+                <span style={{ color: "#DB4444", fontWeight: 500 }}>
+                  Featured
+                </span>
+              </div>
+              <h2
+                className="section-title"
+                style={{ fontSize: 48, fontWeight: 600, margin: 0 }}
+              >
+                New Arrival
+              </h2>
+            </div>
+            {/* 网格布局：左侧大卡片 + 右侧上下两格 */}
+            <Row gutter={24}>
+              <Col
+                xs={24}
+                lg={12}
+              >
+                <NewArrivalBox
+                  item={newArrivalList.leftBig}
+                  big
+                />
+              </Col>
+              <Col
+                xs={24}
+                lg={12}
+              >
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 24 }}
+                >
+                  <NewArrivalBox item={newArrivalList.rightTop} />
+                  <Row gutter={24}>
+                    <Col xs={12}>
+                      <NewArrivalBox item={newArrivalList.rightBottom[0]} />
+                    </Col>
+                    <Col xs={12}>
+                      <NewArrivalBox item={newArrivalList.rightBottom[1]} />
+                    </Col>
+                  </Row>
+                </div>
+              </Col>
+            </Row>
           </div>
         </section>
 
@@ -633,7 +1120,9 @@ const Home: React.FC = () => {
                 <div className="service-item">
                   <div className="service-icon">
                     <div className="icon-circle">
-                      <div className="icon-inner" />
+                      <div className="icon-inner">
+                        <TruckOutlined />
+                      </div>
                     </div>
                   </div>
                   <h3 className="service-title">
@@ -651,7 +1140,9 @@ const Home: React.FC = () => {
                 <div className="service-item">
                   <div className="service-icon">
                     <div className="icon-circle">
-                      <div className="icon-inner" />
+                      <div className="icon-inner">
+                        <CustomerServiceOutlined />
+                      </div>
                     </div>
                   </div>
                   <h3 className="service-title">
@@ -669,7 +1160,9 @@ const Home: React.FC = () => {
                 <div className="service-item">
                   <div className="service-icon">
                     <div className="icon-circle">
-                      <div className="icon-inner" />
+                      <div className="icon-inner">
+                        <SafetyCertificateOutlined />
+                      </div>
                     </div>
                   </div>
                   <h3 className="service-title">{t("services.money_back")}</h3>

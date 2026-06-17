@@ -193,7 +193,7 @@ const Wishlist: React.FC = () => {
           </Spin>
         </div>
 
-        {/* 为你推荐（保留原有模拟数据） */}
+        {/* 为你推荐 */}
         <div className="just-for-you-section">
           <div className="section-header">
             <div className="section-tag">

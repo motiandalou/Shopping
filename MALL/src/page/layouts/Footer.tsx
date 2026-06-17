@@ -1,15 +1,18 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Input, Row, Col, Space } from 'antd';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Input, Row, Col, Space } from "antd";
 import {
   SendOutlined,
   FacebookOutlined,
   TwitterOutlined,
   InstagramOutlined,
   LinkedinOutlined,
-} from '@ant-design/icons';
-import { useTranslation } from 'react-i18next';
-import './Footer.less';
+} from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
+import "./Footer.less";
+import AppStore from "@/page/assets/image/AppStore.png";
+import GooglePlay from "@/page/assets/image/GooglePlay.png";
+import QR1 from "@/page/assets/image/Qrcode_1.png";
 
 const { Search } = Input;
 
@@ -17,7 +20,7 @@ const Footer: React.FC = () => {
   const { t } = useTranslation();
 
   const handleSubscribe = (value: string) => {
-    console.log('Subscribe:', value);
+    console.log("Subscribe:", value);
   };
 
   return (
@@ -25,13 +28,18 @@ const Footer: React.FC = () => {
       <div className="container">
         <Row gutter={[32, 32]}>
           {/* Subscribe */}
-          <Col xs={24} sm={12} md={6} lg={5}>
+          <Col
+            xs={24}
+            sm={12}
+            md={6}
+            lg={5}
+          >
             <div className="footer-section">
               <h3 className="footer-title">Exclusive</h3>
-              <p className="footer-subtitle">{t('footer.subscribe')}</p>
-              <p className="footer-desc">{t('footer.get_discount')}</p>
+              <p className="footer-subtitle">{t("footer.subscribe")}</p>
+              <p className="footer-desc">{t("footer.get_discount")}</p>
               <Search
-                placeholder={t('footer.email_placeholder')}
+                placeholder={t("footer.email_placeholder")}
                 enterButton={<SendOutlined />}
                 onSearch={handleSubscribe}
                 className="subscribe-input"
@@ -40,9 +48,14 @@ const Footer: React.FC = () => {
           </Col>
 
           {/* Support */}
-          <Col xs={24} sm={12} md={6} lg={5}>
+          <Col
+            xs={24}
+            sm={12}
+            md={6}
+            lg={5}
+          >
             <div className="footer-section">
-              <h3 className="footer-title">{t('footer.support')}</h3>
+              <h3 className="footer-title">{t("footer.support")}</h3>
               <div className="footer-links">
                 <p>111 Bijoy sarani, Dhaka,</p>
                 <p>DH 1515, Bangladesh.</p>
@@ -53,57 +66,103 @@ const Footer: React.FC = () => {
           </Col>
 
           {/* Account */}
-          <Col xs={24} sm={12} md={6} lg={4}>
+          <Col
+            xs={24}
+            sm={12}
+            md={6}
+            lg={4}
+          >
             <div className="footer-section">
-              <h3 className="footer-title">{t('footer.account')}</h3>
+              <h3 className="footer-title">{t("footer.account")}</h3>
               <div className="footer-links">
-                <Link to="/account">{t('footer.my_account')}</Link>
-                <Link to="/login">{t('footer.login_register')}</Link>
-                <Link to="/cart">{t('nav.cart')}</Link>
-                <Link to="/wishlist">{t('nav.wishlist')}</Link>
-                <Link to="/products">{t('footer.shop')}</Link>
+                <Link to="/account">{t("footer.my_account")}</Link>
+                <Link to="/login">{t("footer.login_register")}</Link>
+                <Link to="/cart">{t("nav.cart")}</Link>
+                <Link to="/wishlist">{t("nav.wishlist")}</Link>
+                <Link to="/products">{t("footer.shop")}</Link>
               </div>
             </div>
           </Col>
 
           {/* Quick Link */}
-          <Col xs={24} sm={12} md={6} lg={4}>
+          <Col
+            xs={24}
+            sm={12}
+            md={6}
+            lg={4}
+          >
             <div className="footer-section">
-              <h3 className="footer-title">{t('footer.quick_link')}</h3>
+              <h3 className="footer-title">{t("footer.quick_link")}</h3>
               <div className="footer-links">
-                <Link to="/privacy-policy">{t('footer.privacy_policy')}</Link>
-                <Link to="/terms">{t('footer.terms')}</Link>
-                <Link to="/faq">{t('footer.faq')}</Link>
-                <Link to="/contact">{t('nav.contact')}</Link>
+                <Link to="/privacy-policy">{t("footer.privacy_policy")}</Link>
+                <Link to="/terms">{t("footer.terms")}</Link>
+                <Link to="/faq">{t("footer.faq")}</Link>
+                <Link to="/contact">{t("nav.contact")}</Link>
               </div>
             </div>
           </Col>
 
           {/* Download App */}
-          <Col xs={24} sm={24} md={24} lg={6}>
+          <Col
+            xs={24}
+            sm={24}
+            md={24}
+            lg={6}
+          >
             <div className="footer-section">
-              <h3 className="footer-title">{t('footer.download_app')}</h3>
-              <p className="footer-desc small">{t('footer.save_with_app')}</p>
+              <h3 className="footer-title">{t("footer.download_app")}</h3>
+              <p className="footer-desc small">{t("footer.save_with_app")}</p>
               <div className="app-download">
                 <div className="qr-code">
-                  <div className="qr-placeholder">QR</div>
+                  <img
+                    className="app-placeholder"
+                    src={QR1}
+                    alt="QR"
+                  />
                 </div>
                 <div className="app-buttons">
-                  <div className="app-button">Google Play</div>
-                  <div className="app-button">App Store</div>
+                  <img
+                    className="app-button"
+                    src={GooglePlay}
+                    alt="Google Play"
+                  />
+                  <img
+                    className="app-button"
+                    src={AppStore}
+                    alt="App Store"
+                  />
                 </div>
               </div>
-              <Space size="middle" className="social-icons">
-                <a href="#" target="_blank" rel="noopener noreferrer">
+              <Space
+                size="middle"
+                className="social-icons"
+              >
+                <a
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <FacebookOutlined />
                 </a>
-                <a href="#" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <TwitterOutlined />
                 </a>
-                <a href="#" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <InstagramOutlined />
                 </a>
-                <a href="#" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <LinkedinOutlined />
                 </a>
               </Space>
@@ -113,7 +172,7 @@ const Footer: React.FC = () => {
 
         {/* Copyright */}
         <div className="copyright">
-          <p>&copy; {t('footer.copyright')}</p>
+          <p>&copy; {t("footer.copyright")}</p>
         </div>
       </div>
     </footer>
