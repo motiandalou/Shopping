@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "../theme/ThemeContext";
-import MainLayout from "./layouts/MainLayout";
+import MainLayout from "./layouts";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/Products/detail";
@@ -14,6 +14,7 @@ import Wishlist from "./pages/Wishlist";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Chat from "./pages/Chat";
+import NotFound from "./pages/NotFound";
 
 export default function App() {
   return (
@@ -59,6 +60,11 @@ export default function App() {
             <Route
               path="wishlist"
               element={<Wishlist />}
+            />
+            {/* 404 */}
+            <Route
+              path="*"
+              element={<NotFound />}
             />
           </Route>
           <Route

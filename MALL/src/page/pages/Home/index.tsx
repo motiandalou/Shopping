@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col, Card, Button, Rate, Space, Carousel, Spin } from "antd";
-import heroEndframe from "@/page/assets/image/hero_endframe__cvklg0xk3w6e_large 2.png";
 import {
   ArrowRightOutlined,
   HeartOutlined,
@@ -27,6 +26,8 @@ import newArrivalRightBottomLeft from "@/page/assets/image/newArrivalRightBottom
 import newArrivalRightBottomRight from "@/page/assets/image/newArrivalRightBottomRight.png";
 import newArrivalRightTop from "@/page/assets/image/newArrivalRightTop.png";
 import newArrivalLeftBig from "@/page/assets/image/newArrivalLeftBig.png";
+import heroEndframe from "@/page/assets/image/hero_endframe__cvklg0xk3w6e_large 2.png";
+import apple_log from "@/page/assets/image/apple_log.png";
 
 const { Meta } = Card;
 
@@ -401,7 +402,11 @@ const Home: React.FC = () => {
                         size={24}
                       >
                         <div className="hero-brand">
-                          <div className="brand-icon" />
+                          <img
+                            className="brand-icon"
+                            src={apple_log}
+                            alt="logo"
+                          />
                           <span>iPhone 14 Series</span>
                         </div>
                         <h1 className="hero-title">
@@ -432,7 +437,11 @@ const Home: React.FC = () => {
                         size={24}
                       >
                         <div className="hero-brand">
-                          <div className="brand-icon" />
+                          <img
+                            className="brand-icon"
+                            src={apple_log}
+                            alt="logo"
+                          />
                           <span>Summer Collection</span>
                         </div>
                         <h1 className="hero-title">
@@ -463,11 +472,85 @@ const Home: React.FC = () => {
                         size={24}
                       >
                         <div className="hero-brand">
-                          <div className="brand-icon" />
+                          <img
+                            className="brand-icon"
+                            src={apple_log}
+                            alt="logo"
+                          />
                           <span>Premium Deals</span>
                         </div>
                         <h1 className="hero-title">
-                          Exclusive
+                          MALL
+                          <br />
+                          Discounts
+                        </h1>
+                        <Link
+                          to="/products"
+                          className="hero-cta"
+                        >
+                          {t("header.shop_now")} <ArrowRightOutlined />
+                        </Link>
+                      </Space>
+                    </div>
+                    <div className="hero-image">
+                      <img
+                        src={heroEndframe}
+                        alt="Summer Collection"
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="hero-slide">
+                    <div className="hero-content">
+                      <Space
+                        direction="vertical"
+                        size={24}
+                      >
+                        <div className="hero-brand">
+                          <img
+                            className="brand-icon"
+                            src={apple_log}
+                            alt="logo"
+                          />
+                          <span>Premium Deals</span>
+                        </div>
+                        <h1 className="hero-title">
+                          MALL
+                          <br />
+                          Discounts
+                        </h1>
+                        <Link
+                          to="/products"
+                          className="hero-cta"
+                        >
+                          {t("header.shop_now")} <ArrowRightOutlined />
+                        </Link>
+                      </Space>
+                    </div>
+                    <div className="hero-image">
+                      <img
+                        src={heroEndframe}
+                        alt="Summer Collection"
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="hero-slide">
+                    <div className="hero-content">
+                      <Space
+                        direction="vertical"
+                        size={24}
+                      >
+                        <div className="hero-brand">
+                          <img
+                            className="brand-icon"
+                            src={apple_log}
+                            alt="logo"
+                          />
+                          <span>Premium Deals</span>
+                        </div>
+                        <h1 className="hero-title">
+                          MALL
                           <br />
                           Discounts
                         </h1>

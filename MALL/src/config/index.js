@@ -14,7 +14,7 @@ const config = {
   },
 };
 
-// 拼接完整后端地址（自动组合）
+// 拼接完整后端地址
 export const API_BASE_URL = `${config.api.protocol}://${config.api.host}:${config.api.port}${config.api.prefix}`;
 
 export default config;

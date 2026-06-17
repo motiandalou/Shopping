@@ -5,6 +5,7 @@ import "./index.less";
 import { useNavigate } from "react-router-dom";
 import { registerApi } from "@/api/auth";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import login from "@/page/assets/image/login.png";
 
 // 登录表单类型
 type registerFormValues = {
@@ -46,7 +47,7 @@ const Signup: React.FC = () => {
           >
             <div className="signup-image">
               <img
-                src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=600&fit=crop"
+                src={login}
                 alt="Car Wash"
               />
             </div>
@@ -69,7 +70,10 @@ const Signup: React.FC = () => {
                   name="userName"
                   label="Username"
                   rules={[
-                    { required: true, message: "Please enter your userName" },
+                    {
+                      required: true,
+                      message: "Please enter your UserName",
+                    },
                   ]}
                   style={{ marginBottom: 4 }}
                 >
@@ -91,7 +95,10 @@ const Signup: React.FC = () => {
                   name="password"
                   label="Password"
                   rules={[
-                    { required: true, message: "Please enter your password" },
+                    {
+                      required: true,
+                      message: "Please enter your Password",
+                    },
                   ]}
                   style={{ marginBottom: 4 }}
                 >
@@ -117,15 +124,10 @@ const Signup: React.FC = () => {
                     type="primary"
                     htmlType="submit"
                     size="large"
+                    block
                   >
-                    Log In
+                    Create Account
                   </Button>
-                  <Link
-                    to="/forgot-password"
-                    className="forgot-link"
-                  >
-                    Forget Password?
-                  </Link>
                 </div>
               </Form>
 

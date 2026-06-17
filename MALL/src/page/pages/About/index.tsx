@@ -11,6 +11,10 @@ import {
   SafetyOutlined,
 } from "@ant-design/icons";
 import "./index.less";
+import side_image from "@/page/assets/image/Side_Image.png";
+import Frame_874 from "@/page/assets/image/Frame_874.png";
+import Frame_875 from "@/page/assets/image/Frame_875.png";
+import Frame_876 from "@/page/assets/image/Frame_876.png";
 
 const About: React.FC = () => {
   const stats = [
@@ -41,20 +45,17 @@ const About: React.FC = () => {
     {
       name: "Tom Cruise",
       position: "Founder & Chairman",
-      image:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+      image: Frame_874,
     },
     {
       name: "Emma Watson",
       position: "Managing Director",
-      image:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
+      image: Frame_875,
     },
     {
       name: "Will Smith",
       position: "Product Designer",
-      image:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
+      image: Frame_876,
     },
   ];
 
@@ -84,16 +85,16 @@ const About: React.FC = () => {
               size={16}
             >
               <p className="story-text">
-                Launched in 2015, Exclusive is South Asia's premier online
-                shopping marketplace with an active presence in Bangladesh.
-                Supported by wide range of tailored marketing, data and service
-                solutions, Exclusive has 10,500 sallers and 300 brands and
-                serves 3 millions customers across the region.
+                Launched in 2015, MALL is South Asia's premier online shopping
+                marketplace with an active presence in Bangladesh. Supported by
+                wide range of tailored marketing, data and service solutions,
+                MALL has 10,500 sallers and 300 brands and serves 3 millions
+                customers across the region.
               </p>
               <p className="story-text">
-                Exclusive has more than 1 Million products to offer, growing at
-                a very fast pace. Exclusive offers a diverse assortment in
-                categories ranging from consumer.
+                MALL has more than 1 Million products to offer, growing at a
+                very fast pace. MALL offers a diverse assortment in categories
+                ranging from consumer.
               </p>
             </Space>
           </Col>
@@ -103,7 +104,7 @@ const About: React.FC = () => {
           >
             <div className="story-image">
               <img
-                src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop"
+                src={side_image}
                 alt="Shopping"
               />
             </div>

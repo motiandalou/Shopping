@@ -45,7 +45,7 @@ const Contact: React.FC = () => {
                   size={8}
                 >
                   <p>We are available 24/7, 7 days a week.</p>
-                  <p className="highlight">Phone: +8801611122222</p>
+                  <p className="highlight">Phone: +60 172543722</p>
                 </Space>
               </div>
 
@@ -61,8 +61,9 @@ const Contact: React.FC = () => {
                   <p>
                     Fill out our form and we will contact you within 24 hours.
                   </p>
-                  <p className="highlight">Emails: customer@exclusive.com</p>
-                  <p className="highlight">Emails: support@exclusive.com</p>
+                  <p className="highlight">
+                    Emails: cn.jiangwei.1997@gmail.com
+                  </p>
                 </Space>
               </div>
             </Space>

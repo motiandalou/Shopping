@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { getUserInfo } from "@/api/user";
 import { loginApi } from "@/api/auth";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import login from "@/page/assets/image/login.png";
 
 // 登录表单类型
 type LoginFormValues = {
@@ -47,7 +48,7 @@ const Login: React.FC = () => {
           >
             <div className="login-image">
               <img
-                src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=600&fit=crop"
+                src={login}
                 alt="Shopping"
               />
             </div>
@@ -58,7 +59,7 @@ const Login: React.FC = () => {
             md={12}
           >
             <div className="login-form-wrapper">
-              <h1 className="form-title">Log in to Exclusive</h1>
+              <h1 className="form-title">Log in to MALL</h1>
               <p className="form-subtitle">Enter your details below</p>
 
               <Form
@@ -70,7 +71,10 @@ const Login: React.FC = () => {
                   name="userName"
                   label="Username"
                   rules={[
-                    { required: true, message: "Please enter your userName" },
+                    {
+                      required: true,
+                      message: "Please enter your UserName",
+                    },
                   ]}
                   style={{ marginBottom: 4 }}
                 >
@@ -92,7 +96,10 @@ const Login: React.FC = () => {
                   name="password"
                   label="Password"
                   rules={[
-                    { required: true, message: "Please enter your password" },
+                    {
+                      required: true,
+                      message: "Please enter your Password",
+                    },
                   ]}
                   style={{ marginBottom: 4 }}
                 >

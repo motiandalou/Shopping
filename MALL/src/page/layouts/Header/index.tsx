@@ -13,8 +13,8 @@ import {
   CustomerServiceOutlined,
 } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import { useTheme } from "../../theme/ThemeContext";
-import "./Header.less";
+import { useTheme } from "@/theme/ThemeContext";
+import "./index.less";
 import { getCartList } from "@/api/cart";
 import { getFavoriteList } from "@/api/favorite";
 

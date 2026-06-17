@@ -9,7 +9,7 @@ import {
   LinkedinOutlined,
 } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import "./Footer.less";
+import "./index.less";
 import AppStore from "@/page/assets/image/AppStore.png";
 import GooglePlay from "@/page/assets/image/GooglePlay.png";
 import QR1 from "@/page/assets/image/Qrcode_1.png";
@@ -35,7 +35,7 @@ const Footer: React.FC = () => {
             lg={5}
           >
             <div className="footer-section">
-              <h3 className="footer-title">Exclusive</h3>
+              <h3 className="footer-title">MALL</h3>
               <p className="footer-subtitle">{t("footer.subscribe")}</p>
               <p className="footer-desc">{t("footer.get_discount")}</p>
               <Search
@@ -59,7 +59,7 @@ const Footer: React.FC = () => {
               <div className="footer-links">
                 <p>111 Bijoy sarani, Dhaka,</p>
                 <p>DH 1515, Bangladesh.</p>
-                <p>exclusive@gmail.com</p>
+                <p>MALL@gmail.com</p>
                 <p>+88015-88888-9999</p>
               </div>
             </div>
