@@ -48,7 +48,7 @@ public class FlashSaleServiceImpl implements FlashSaleService {
             result.setGoodsList(List.of());
             return result;
         }
-        // 计算全场剩余秒数
+        // 计算全场剩余秒数(活动结束时间 - 现在服务器时间)
         long remainSeconds = Duration.between(now, activity.getEndTime()).toSeconds();
         result.setRemainTotalSeconds(remainSeconds);
         // 查询本场所有上架秒杀商品
