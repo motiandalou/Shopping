@@ -34,3 +34,5 @@ build/
 
 ### sql ###
 Query*.sql
+
+.DS_Store

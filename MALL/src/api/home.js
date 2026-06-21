@@ -28,14 +28,10 @@ export const getFlashDeadline = () => {
   });
 };
 
-// TODO 获取热销商品（前4条）
+// 获取首页热销商品
 export const getBestSellingList = () => {
   return request({
-    url: "/goods/best-selling",
+    url: "/hot/list",
     method: "GET",
-    params: {
-      pageNum: 1,
-      pageSize: 4,
-    },
   });
 };

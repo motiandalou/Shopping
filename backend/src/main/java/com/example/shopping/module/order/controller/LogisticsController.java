@@ -1,7 +1,7 @@
 package com.example.shopping.module.order.controller;
 
 import com.example.shopping.common.util.KdniaoUtil;
-import com.example.shopping.config.Result;
+import com.example.shopping.common.result.Result;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;

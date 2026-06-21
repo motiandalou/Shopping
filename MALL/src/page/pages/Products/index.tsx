@@ -219,6 +219,7 @@ const Products: React.FC = () => {
               type="primary"
               block
               onClick={() => handleAddToCart(product)}
+              className="customer_button"
             >
               {t("product.add_to_cart")}
             </Button>

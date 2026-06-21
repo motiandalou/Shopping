@@ -1,7 +1,7 @@
 package com.example.shopping.module.flash.controller;
 
 import com.example.shopping.common.page.PageRespVO;
-import com.example.shopping.config.Result;
+import com.example.shopping.common.result.Result;
 import com.example.shopping.module.flash.dto.ActivityPageReq;
 import com.example.shopping.module.flash.dto.FlashSaleHomeVO;
 import com.example.shopping.module.flash.entity.FlashSaleActivity;

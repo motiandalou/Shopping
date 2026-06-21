@@ -1,6 +1,6 @@
 package com.example.shopping.module.favorite.controller;
 
-import com.example.shopping.config.Result;
+import com.example.shopping.common.result.Result;
 import com.example.shopping.module.favorite.entity.Favorite;
 import com.example.shopping.module.favorite.service.FavoriteService;
 import com.example.shopping.module.favorite.vo.FavoriteVO;
@@ -14,9 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.kafka.common.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;

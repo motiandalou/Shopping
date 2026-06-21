@@ -1,6 +1,6 @@
 package com.example.shopping.common.exception;
 
-import com.example.shopping.config.Result;
+import com.example.shopping.common.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,20 +1,16 @@
 package com.example.shopping.module.category.controller;
 
-import com.example.shopping.config.Result;
+import com.example.shopping.common.result.Result;
 import com.example.shopping.module.category.entity.Category;
 import com.example.shopping.module.category.service.CategoryService;
 import com.example.shopping.module.log.annotation.Log;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/category")

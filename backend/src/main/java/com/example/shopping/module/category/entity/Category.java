@@ -15,11 +15,9 @@ public class Category {
     @Schema(description = "分类主键ID", example = "1", required = true)
     private Integer id;
 
-    // 分类名称
     @Schema(description = "分类名称", example = "电子产品", required = true)
     private String categoryName;
 
-    // 排序
     @Schema(description = "分类层级/排序值", example = "1")
     private String level;
 }

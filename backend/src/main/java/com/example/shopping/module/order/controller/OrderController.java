@@ -2,7 +2,7 @@ package com.example.shopping.module.order.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.shopping.common.util.KdniaoUtil;
-import com.example.shopping.config.Result;
+import com.example.shopping.common.result.Result;
 import com.example.shopping.gateway.dto.GatewayMessageDTO;
 import com.example.shopping.gateway.handler.GatewayMessageHandler;
 import com.example.shopping.module.log.annotation.Log;

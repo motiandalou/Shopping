@@ -1,12 +1,10 @@
 package com.example.shopping.module.goods.controller;
 
 import com.example.shopping.common.page.PageRespVO;
-import com.example.shopping.module.goods.dto.GoodsQueryDTO;
 import com.example.shopping.module.log.annotation.Log;
-import com.example.shopping.config.Result;
+import com.example.shopping.common.result.Result;
 import com.example.shopping.module.goods.entity.Goods;
 import com.example.shopping.module.goods.service.GoodsService;
-import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,9 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 import com.example.shopping.module.goods.dto.GoodsPageReq;
-
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

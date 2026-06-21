@@ -239,3 +239,12 @@ CREATE TABLE `flash_sale_goods` (
     FOREIGN KEY (`activity_id`) REFERENCES flash_sale_activity(`id`),
     FOREIGN KEY (`goods_id`) REFERENCES t_goods(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '秒杀活动-商品关联表';
+
+CREATE TABLE `goods_hot` (
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `goods_id` bigint NOT NULL COMMENT '商品ID',
+    `sort` int NOT NULL DEFAULT 5000 COMMENT '排序权重，数值越大越靠前，9999置顶',
+    `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY uk_goods_id (`goods_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='热销商品关联表';

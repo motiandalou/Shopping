@@ -1,9 +1,8 @@
 package com.example.shopping.module.chat.controller;
 
-import com.example.shopping.config.Result;
+import com.example.shopping.common.result.Result;
 import com.example.shopping.gateway.handler.GatewayMessageHandler;
 import com.example.shopping.module.chat.entity.ChatMessage;
-import com.example.shopping.module.chat.entity.ChatSession;
 import com.example.shopping.module.chat.service.ChatService;
 import com.example.shopping.module.chat.vo.ChatSessionVO;
 import com.example.shopping.module.log.annotation.Log;

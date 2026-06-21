@@ -193,12 +193,14 @@ export default function MainLayout() {
                 label: <Link to="/system/staff">{t("menu.staff")}</Link>,
               },
               {
-                key: "/system/flashActivity",
+                key: "/system/flash",
                 label: (
-                  <Link to="/system/flashActivity">
-                    {t("menu.flashActivity")}
-                  </Link>
+                  <Link to="/system/flash">{t("menu.flashActivity")}</Link>
                 ),
+              },
+              {
+                key: "/system/hot",
+                label: <Link to="/system/hot">{t("menu.hotGoods")}</Link>,
               },
               {
                 key: "/system/shop",

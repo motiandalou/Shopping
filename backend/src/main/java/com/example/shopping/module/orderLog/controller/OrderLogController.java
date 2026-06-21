@@ -1,6 +1,6 @@
 package com.example.shopping.module.orderLog.controller;
 
-import com.example.shopping.config.Result;
+import com.example.shopping.common.result.Result;
 import com.example.shopping.module.orderLog.service.OrderLogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

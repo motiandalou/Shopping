@@ -1,6 +1,6 @@
 package com.example.shopping.module.dashboard.controller;
 
-import com.example.shopping.config.Result;
+import com.example.shopping.common.result.Result;
 import com.example.shopping.module.dashboard.entity.Dashboard;
 import com.example.shopping.module.dashboard.service.DashboardService;
 import io.swagger.v3.oas.annotations.Operation;

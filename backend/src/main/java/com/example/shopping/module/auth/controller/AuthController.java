@@ -1,8 +1,7 @@
 package com.example.shopping.module.auth.controller;
 
-import com.example.shopping.common.exception.BusinessException;
 import com.example.shopping.common.util.JwtUtil;
-import com.example.shopping.config.Result;
+import com.example.shopping.common.result.Result;
 import com.example.shopping.module.log.annotation.Log;
 import com.example.shopping.module.staff.entity.Staff;
 import com.example.shopping.module.staff.service.StaffService;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;

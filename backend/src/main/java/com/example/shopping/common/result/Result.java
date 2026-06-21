@@ -1,4 +1,4 @@
-package com.example.shopping.config;
+package com.example.shopping.common.result;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

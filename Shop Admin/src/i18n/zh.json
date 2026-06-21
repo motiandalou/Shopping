@@ -25,6 +25,7 @@
   "menu.stockAlert": "库存预警",
   "menu.logs": "操作日志",
   "menu.flashActivity": "秒杀活动管理",
+  "menu.hotGoods": "热销商品管理",
 
   "btn.add": "新增",
   "btn.edit": "编辑",
@@ -121,8 +122,19 @@
   "flash.editSuccess": "修改活动成功",
   "flash.deleteSuccess": "删除活动成功",
   "flash.bindGoodsSuccess": "商品绑定成功",
-
   "flash.confirmDeleteActivity": "确定删除该秒杀活动？删除后所有绑定商品一并清空！",
+
+  "hot.management": "热销商品管理",
+  "hot.goodsName": "商品名称",
+  "hot.sortWeight": "排序权重",
+  "hot.createTime": "创建时间",
+  "hot.confirmRemove": "确认将该商品从热销列表移除？",
+  "hot.selectGoods": "选择商品",
+  "hot.selectGoodsPlaceholder": "搜索并选择商品",
+  "hot.goodsRequired": "请选择商品",
+  "hot.sortRequired": "请输入排序权重",
+  "hot.sortNumberTip": "权重必须为正整数",
+  "hot.topTip": "填入9999可直接置顶到列表第一位",
 
   "dashboard.overview": "数据概览",
   "dashboard.total_users": "总用户数",

@@ -1,6 +1,6 @@
 package com.example.shopping.module.staff.controller;
 
-import com.example.shopping.config.Result;
+import com.example.shopping.common.result.Result;
 import com.example.shopping.module.log.annotation.Log;
 import com.example.shopping.module.staff.entity.Staff;
 import com.example.shopping.module.staff.service.StaffService;

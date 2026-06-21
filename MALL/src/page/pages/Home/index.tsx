@@ -216,8 +216,8 @@ const Home: React.FC = () => {
         totalSecondRef.current = realSec;
         setActivitySec(realSec);
 
-        // const bestRes = await getBestSellingList();
-        // setBestSelling(bestRes.data.list || []);
+        const bestRes = await getBestSellingList();
+        setBestSelling(bestRes.data || []);
       } catch (err) {
         console.error("首页数据加载失败", err);
       } finally {
@@ -232,7 +232,7 @@ const Home: React.FC = () => {
       className="product-card"
       cover={
         <div className="product-image-wrapper">
-          {product.discountRate && (
+          {product.discountRate > 0 && (
             <div className="discount-badge">-{product.discountRate}%</div>
           )}
           <div className="product-actions">
@@ -271,9 +271,10 @@ const Home: React.FC = () => {
           >
             <Space>
               <span className="price">¥{product.flashPrice}</span>
-              {product.originPrice && (
-                <span className="original-price">¥{product.originPrice}</span>
-              )}
+              {product.originPrice &&
+                product.originPrice > product.flashPrice && (
+                  <span className="original-price">¥{product.originPrice}</span>
+                )}
             </Space>
             <Space>
               <Rate
@@ -925,18 +926,6 @@ const Home: React.FC = () => {
                 </div>
               </div>
             </div>
-            <Row gutter={[24, 24]}>
-              {currentBestList.map((product) => (
-                <Col
-                  key={product.id}
-                  xs={24}
-                  sm={12}
-                  md={6}
-                >
-                  <ProductCard product={product} />
-                </Col>
-              ))}
-            </Row>
           </div>
         </section>
 
@@ -1090,7 +1079,7 @@ const Home: React.FC = () => {
               </div>
             </div>
             {/* 商品卡片行 */}
-            <Row gutter={[24, 24]}>
+            {/* <Row gutter={[24, 24]}>
               {currentProductList.map((product) => (
                 <Col
                   key={product.id}
@@ -1101,7 +1090,7 @@ const Home: React.FC = () => {
                   <ProductCard product={product} />
                 </Col>
               ))}
-            </Row>
+            </Row> */}
             {/* 底部居中红色View All按钮，匹配截图 */}
             <div style={{ textAlign: "center", marginTop: 40 }}>
               <Link to="/products">

@@ -4,6 +4,8 @@ import com.example.shopping.common.page.PageDTO;
 import com.github.pagehelper.PageInfo;
 import lombok.Data;
 import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+
 
 @Data
 public class PageRespVO<T> {

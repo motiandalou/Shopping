@@ -1,6 +1,6 @@
 package com.example.shopping.module.cart.controller;
 
-import com.example.shopping.config.Result;
+import com.example.shopping.common.result.Result;
 import com.example.shopping.module.cart.entity.Cart;
 import com.example.shopping.module.cart.service.CartService;
 import com.example.shopping.module.cart.vo.CartVO;

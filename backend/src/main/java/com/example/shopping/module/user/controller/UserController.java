@@ -1,7 +1,7 @@
 package com.example.shopping.module.user.controller;
 
 import com.example.shopping.common.util.JwtUtil;
-import com.example.shopping.config.Result;
+import com.example.shopping.common.result.Result;
 import com.example.shopping.module.log.annotation.Log;
 import com.example.shopping.module.user.entity.User;
 import com.example.shopping.module.user.service.UserService;

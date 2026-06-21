@@ -24,7 +24,8 @@
   "menu.shopConfig": "Shop Settings",
   "menu.stockAlert": "Stock Alerts",
   "menu.logs": "Logs",
-  "menu.flashActivity": "Flash Sale Activity",
+  "menu.flashActivity": "Flash Sale",
+  "menu.hotGoods": "Bestselling",
 
   "btn.add": "Add",
   "btn.edit": "Edit",
@@ -123,6 +124,18 @@
   "flash.bindGoodsSuccess": "Goods bind success",
 
   "flash.confirmDeleteActivity": "Are you sure to delete this activity? All bound flash goods will be deleted together!",
+
+  "hot.management": "Hot Product Management",
+  "hot.goodsName": "Product Name",
+  "hot.sortWeight": "Sort Weight",
+  "hot.createTime": "Create Time",
+  "hot.confirmRemove": "Are you sure you want to remove this product from the hot list?",
+  "hot.selectGoods": "Select Product",
+  "hot.selectGoodsPlaceholder": "Search and select a product",
+  "hot.goodsRequired": "Please select a product",
+  "hot.sortRequired": "Please enter sort weight",
+  "hot.sortNumberTip": "Weight must be a positive integer",
+  "hot.topTip": "Enter 9999 to pin this item to the top of the list",
 
   "dashboard.overview": "Overview",
   "dashboard.total_users": "Total Users",
