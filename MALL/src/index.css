@@ -25,3 +25,9 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+/* 进度条颜色 */
+#nprogress .bar {
+  background: #ffffff !important;
+  height: 2px !important;
+}

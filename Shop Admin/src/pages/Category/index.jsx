@@ -34,7 +34,12 @@ export default function CategoryManage() {
   const fetchCategoryList = async () => {
     try {
       const res = await getCategoryList();
-      setList(res.data.list || res.data);
+      const rawList = res.data.list || res.data || [];
+      // 按 level 降序排序
+      const sortedList = [...rawList].sort(
+        (prev, next) => next.level - prev.level,
+      );
+      setList(sortedList);
     } catch (err) {
       console.error("Failed to fetch goods list:", err);
     }

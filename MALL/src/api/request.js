@@ -1,6 +1,7 @@
 import axios from "axios";
 import { API_BASE_URL } from "@/config";
 import { refreshTokenApi } from "@/api/auth";
+import NProgress from "nprogress";
 
 const service = axios.create({
   baseURL: API_BASE_URL,
@@ -13,6 +14,10 @@ const service = axios.create({
 // 请求拦截
 service.interceptors.request.use(
   (config) => {
+    // 自定义标识：hideProgress 为true则不展示进度条
+    if (!config.hideProgress) {
+      NProgress.start();
+    }
     const token = localStorage.getItem("accessToken");
     const isRefreshApi = config.url.includes("/refreshToken");
 
@@ -22,12 +27,20 @@ service.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error),
+  (error) => {
+    // 请求发起前就报错，关闭进度条
+    NProgress.done();
+    return Promise.reject(error);
+  },
 );
 
 // 响应拦截（双Token自动刷新 + 自动重发请求）
 service.interceptors.response.use(
-  (res) => res.data,
+  (res) => {
+    // 接口成功，结束进度条
+    NProgress.done();
+    return res.data;
+  },
   async (err) => {
     if (err.response) {
       const status = err.response.status;
@@ -62,7 +75,8 @@ service.interceptors.response.use(
         }
       }
     }
-
+    // 接口失败（404/500/超时/网络错误），关闭进度条
+    NProgress.done();
     return Promise.reject(err);
   },
 );

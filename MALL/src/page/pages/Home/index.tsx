@@ -10,6 +10,7 @@ import {
   TruckOutlined,
   CustomerServiceOutlined,
   SafetyCertificateOutlined,
+  ShoppingOutlined,
   MobileOutlined,
   MonitorOutlined,
   ScheduleOutlined,
@@ -28,6 +29,7 @@ import newArrivalRightTop from "@/page/assets/image/newArrivalRightTop.png";
 import newArrivalLeftBig from "@/page/assets/image/newArrivalLeftBig.png";
 import heroEndframe from "@/page/assets/image/hero_endframe__cvklg0xk3w6e_large 2.png";
 import apple_log from "@/page/assets/image/apple_log.png";
+import { getCategoryIconComp } from "@/config/categoryIcon";
 
 const { Meta } = Card;
 
@@ -101,38 +103,6 @@ const Home: React.FC = () => {
   // 分类模块状态
   const [activeCat, setActiveCat] = useState<string>("camera");
   const [catScrollX, setCatScrollX] = useState<number>(0);
-  const categoryIconList = [
-    {
-      name: "Phones",
-      icon: <MobileOutlined size={32} />,
-      key: "phones",
-    },
-    {
-      name: "Computers",
-      icon: <MonitorOutlined size={32} />,
-      key: "computers",
-    },
-    {
-      name: "SmartWatch",
-      icon: <ScheduleOutlined size={32} />,
-      key: "watch",
-    },
-    {
-      name: "Camera",
-      icon: <CameraOutlined size={32} />,
-      key: "camera",
-    },
-    {
-      name: "HeadPhones",
-      icon: <AudioOutlined size={32} />,
-      key: "headphone",
-    },
-    {
-      name: "Gaming",
-      icon: <PlaySquareOutlined size={32} />,
-      key: "gaming",
-    },
-  ];
 
   const scrollCatLeft = () => setCatScrollX((prev) => Math.max(prev - 220, 0));
   const scrollCatRight = () => setCatScrollX((prev) => prev + 220);
@@ -355,7 +325,7 @@ const Home: React.FC = () => {
       <Spin
         spinning={loading}
         size="large"
-        tip={t("common.loading")}
+        tip="Loading..."
       >
         {/* Hero */}
         <div className="hero-section">
@@ -882,47 +852,57 @@ const Home: React.FC = () => {
                     width: "max-content",
                   }}
                 >
-                  {categoryIconList.map((cat) => (
-                    <div
-                      key={cat.key}
-                      onClick={() => setActiveCat(cat.key)}
-                      style={{
-                        width: 170,
-                        height: 145,
-                        border:
-                          activeCat === cat.key ? "none" : "1px solid #E0E0E0",
-                        background: activeCat === cat.key ? "#DB4444" : "#fff",
-                        borderRadius: 4,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 16,
-                        cursor: "pointer",
-                        transition: "all 0.2s",
-                      }}
-                    >
-                      {/* 图标 */}
-                      <span
-                        style={{
-                          color: activeCat === cat.key ? "#fff" : "#000",
-                          fontSize: 50,
-                        }}
-                      >
-                        {cat.icon}
-                      </span>
-                      {/* 分类文字 */}
-                      <span
-                        style={{
-                          fontSize: 20,
-                          fontWeight: 500,
-                          color: activeCat === cat.key ? "#fff" : "#000",
-                        }}
-                      >
-                        {cat.name}
-                      </span>
-                    </div>
-                  ))}
+                  {categories
+                    .sort((a, b) => b.level - 0 - (a.level - 0))
+                    .map((cat) => {
+                      const IconComp = getCategoryIconComp(cat.categoryName);
+
+                      return (
+                        <div
+                          key={cat.id}
+                          onClick={() => setActiveCat(cat.id)}
+                          style={{
+                            width: 170,
+                            height: 145,
+                            border:
+                              activeCat === cat.id
+                                ? "none"
+                                : "1px solid #E0E0E0",
+                            background:
+                              activeCat === cat.id ? "#DB4444" : "#fff",
+                            borderRadius: 4,
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: 16,
+                            cursor: "pointer",
+                            transition: "all 0.2s",
+                            padding: 16,
+                          }}
+                        >
+                          <span
+                            style={{
+                              color: activeCat === cat.id ? "#fff" : "#000",
+                              fontSize: 50,
+                            }}
+                          >
+                            <IconComp />
+                          </span>
+
+                          <span
+                            style={{
+                              fontSize: 20,
+                              fontWeight: 500,
+                              color: activeCat === cat.id ? "#fff" : "#000",
+                              textAlign: "center",
+                            }}
+                          >
+                            {cat.categoryName}
+                          </span>
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
             </div>

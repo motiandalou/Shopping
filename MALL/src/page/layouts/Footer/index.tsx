@@ -57,10 +57,11 @@ const Footer: React.FC = () => {
             <div className="footer-section">
               <h3 className="footer-title">{t("footer.support")}</h3>
               <div className="footer-links">
-                <p>111 Bijoy sarani, Dhaka,</p>
-                <p>DH 1515, Bangladesh.</p>
-                <p>MALL@gmail.com</p>
-                <p>+88015-88888-9999</p>
+                <p>Asia Pacific University of Technology & Innovation,</p>
+                <p>Technology Park Malaysia, Bukit Jalil,</p>
+                <p>57000 Kuala Lumpur, Malaysia.</p>
+                <p>cn.jiangwei.1997@gmail.com</p>
+                <p>+60 172543722</p>
               </div>
             </div>
           </Col>
